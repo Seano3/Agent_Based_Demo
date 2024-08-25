@@ -1,22 +1,22 @@
 public class Location {
-    private int xCord;
-    private int yCord;
+    private double xCord;
+    private double yCord;
 
-    public Location (int x, int y){
+    public Location (double x, double y){
         xCord = x;
         yCord = y;
     }
 
-    public void changePosition(int xVelocity, int yVelocity){
-        xCord += xVelocity;
-        yCord += yVelocity; 
+    public void changePosition(double newX, double newY){
+        xCord = newX;
+        yCord = newY; 
     }
 
-    public int getX(){
+    public double getX(){
         return xCord;
     }
 
-    public int getY(){
+    public double getY(){
         return yCord;
     }
 }

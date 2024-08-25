@@ -1,39 +1,64 @@
+import java.util.*;
+
 public class Agent {
-    private String name;
     private int size;
-    private int xVelocity;
-    private int yVelocity;
+    private double xVelocity;
+    private double yVelocity;
     private Location location;
 
-    public Agent (String name, int size, int xCord, int yCord, int xVel, int yVel){
-        this.name = name;
+    public Agent(int size, double xCord, double yCord, double xVel, double yVel) {
         this.size = size;
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
     }
 
-    public String getName(){
-        return name;
-    }
-
-    public int getSize(){
+    public int getSize() {
         return size;
     }
 
-    public int getXVelocity(){
+    public double getXVelocity() {
         return xVelocity;
     }
 
-    public int getYVelocity(){
+    public double getYVelocity() {
         return yVelocity;
     }
 
-    public Location getLocation(){
-        return location; 
+    public void setYVelocity(double velocity){
+        yVelocity = velocity;
     }
 
-    public void updateLocation(){
-        location.changePosition(xVelocity, yVelocity);
+    public void setXVelocity(double velocity){
+        xVelocity = velocity;
     }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void updateLocation() {
+        double newX = location.getX() + xVelocity;
+        double newY = location.getY() + yVelocity;
+
+        location.changePosition(newX, newY);
+    }
+
+    public boolean checkCollisions(LinkedList<Agent> otherAgents) {
+        for (Agent i : otherAgents) {
+            if (!i.equals(this)) {
+                double dx = location.getX() - i.location.getX();
+                double dy = location.getY() - i.location.getY();
+                double distanceSquared = dx * dx + dy * dy;
+
+                if (distanceSquared <= (size + i.getSize()) * (size + i.getSize()))
+                    ;
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
