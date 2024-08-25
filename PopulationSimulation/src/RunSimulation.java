@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.util.Random;
 
 public class RunSimulation{
     
@@ -10,8 +11,8 @@ public class RunSimulation{
 
 
         //Initialize Agents
-        sim.addAgent(new Agent(20, 200, 300, 5, 0));
-        sim.addAgent(new Agent(20, 400, 300, -5, 0));
+        sim.addAgent(new Agent(20, 200, 300, Math.random() * 5 - 2.5, Math.random() * 5 - 2.5));
+        sim.addAgent(new Agent(20, 400, 300, Math.random() * 5 - 2.5, Math.random() * 5 - 2.5));
 
         frame.pack();
         frame.setVisible(true);      
