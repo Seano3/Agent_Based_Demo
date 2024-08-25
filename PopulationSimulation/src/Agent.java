@@ -32,4 +32,8 @@ public class Agent {
     public Location getLocation(){
         return location; 
     }
+
+    public void updateLocation(){
+        location.changePosition(xVelocity, yVelocity);
+    }
 }

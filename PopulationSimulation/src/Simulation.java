@@ -15,6 +15,8 @@ public class Simulation {
     }
 
     public void update(){
-        //Update Positions
+        for (Agent i : agents) {
+            i.updateLocation();
+        }
     }
 }
