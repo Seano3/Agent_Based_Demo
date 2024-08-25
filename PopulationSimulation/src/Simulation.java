@@ -39,7 +39,7 @@ public class Simulation extends JPanel{
             if(i.getLocation().getX() - i.getSize() < 0 || i.getLocation().getX() + i.getSize() > getWidth()){
                 i.setXVelocity(-i.getXVelocity());
             }
-            if(i.getLocation().getY() - i.getSize() < 0 || i.getLocation().getY() + i.getSize() > getWidth()){
+            if(i.getLocation().getY() - i.getSize() < 0 || i.getLocation().getY() + i.getSize() > getHeight()){
                 i.setYVelocity(-i.getYVelocity());
             }
         }
