@@ -5,11 +5,11 @@ public class Agent {
     private int yVelocity;
     private Location location;
 
-    public Agent (String name, int size, int xCord, int yCord){
+    public Agent (String name, int size, int xCord, int yCord, int xVel, int yVel){
         this.name = name;
         this.size = size;
-        xVelocity = 0;
-        yVelocity = 0;
+        xVelocity = xVel;
+        yVelocity = yVel;
         location = new Location(xCord, yCord);
     }
 

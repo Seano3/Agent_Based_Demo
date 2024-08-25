@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.List;
 
 public class Simulation {
@@ -8,6 +9,7 @@ public class Simulation {
     public Simulation(int width, int height){
         this.width = width;
         this.height = height; 
+        agents = new LinkedList<Agent>(); 
     }
 
     public void addAgent(Agent agent) {
@@ -18,5 +20,9 @@ public class Simulation {
         for (Agent i : agents) {
             i.updateLocation();
         }
+    }
+
+    public List<Agent> getAgents(){
+        return agents;
     }
 }
