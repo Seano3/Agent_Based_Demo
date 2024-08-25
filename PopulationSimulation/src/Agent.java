@@ -46,14 +46,12 @@ public class Agent {
 
     public boolean checkCollisions(LinkedList<Agent> otherAgents) {
         for (Agent i : otherAgents) {
-            if (!i.equals(this)) {
+            if (!i.location.equals(this.location)) {
                 double dx = location.getX() - i.location.getX();
                 double dy = location.getY() - i.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
 
-                if (distanceSquared <= (size + i.getSize()) * (size + i.getSize()))
-                    ;
-                {
+                if (distanceSquared <= (size + i.getSize()) * (size + i.getSize())){
                     return true;
                 }
             }
