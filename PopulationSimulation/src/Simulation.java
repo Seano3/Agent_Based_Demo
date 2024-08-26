@@ -47,6 +47,7 @@ public class Simulation extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
         for (Agent i : agents) {
+            //Draw all agents
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
         }
 

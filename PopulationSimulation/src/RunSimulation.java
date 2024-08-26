@@ -3,6 +3,7 @@ import javax.swing.*;
 public class RunSimulation{
     
     public static void main(String[] args) throws Exception {
+        //Initalize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Simulation sim = new Simulation(800, 600);
