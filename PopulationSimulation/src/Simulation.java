@@ -1,6 +1,6 @@
+import java.awt.*;
 import java.util.LinkedList;
 import javax.swing.*;
-import java.awt.*;
 
 public class Simulation extends JPanel{
     private LinkedList<Agent> agents;
@@ -11,7 +11,7 @@ public class Simulation extends JPanel{
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
 
-        agents = new LinkedList<Agent>(); 
+        agents = new LinkedList<>(); 
 
         timer = new Timer(16, e -> {
             update();
