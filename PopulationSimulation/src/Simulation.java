@@ -29,17 +29,13 @@ public class Simulation extends JPanel{
         for (Agent i : agents) {
             i.updateLocation();
 
-            if(i.checkCollisions(agents)){
-                i.setXVelocity(-i.getXVelocity());
-                i.setYVelocity(-i.getYVelocity());
-                //TODO: Other Circle and More accurate transfer of momentum (Size/Direction)
-            }
+            i.checkCollisions(agents);
 
             //Check Boundaries
-            if(i.getLocation().getX() - i.getSize() < 0 || i.getLocation().getX() + i.getSize() > getWidth()){
+            if(i.getLocation().getX() - i.getSize() < 0 - i.getSize() || i.getLocation().getX() + i.getSize() > getWidth() - i.getSize()){
                 i.setXVelocity(-i.getXVelocity());
             }
-            if(i.getLocation().getY() - i.getSize() < 0 || i.getLocation().getY() + i.getSize() > getHeight()){
+            if(i.getLocation().getY() - i.getSize() < 0 - i.getSize() || i.getLocation().getY() + i.getSize() > getHeight() - i.getSize()){
                 i.setYVelocity(-i.getYVelocity());
             }
         }
@@ -51,7 +47,7 @@ public class Simulation extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
         for (Agent i : agents) {
-            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), i.getSize() * 2, i.getSize() * 2);
+            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
         }
 
     }
