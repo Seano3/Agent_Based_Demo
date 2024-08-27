@@ -46,7 +46,7 @@ public class Agent {
 
     public void checkCollisions(LinkedList<Agent> otherAgents) {
         for (Agent i : otherAgents) {
-            if (!i.location.equals(this.location)) {
+            if (!i.location.equals(this.location)) { //insures that it does not check if the ball is colliding with itself
                 double dx = location.getX() - i.location.getX();
                 double dy = location.getY() - i.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
