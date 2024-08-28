@@ -44,7 +44,6 @@ public class Agent {
         location.changePosition(newX, newY);
     }
 
-    //TODO: Other Circle and More accurate transfer of momentum (Size/Direction)
     public void checkCollisions(LinkedList<Agent> otherAgents) {
         for (Agent i : otherAgents) {
             if (!i.location.equals(this.location)) {
