@@ -2,6 +2,8 @@ import java.util.*;
 
 public class Agent {
     private double size;
+    private double xAccelaration;
+    private double yAcceraration;
     private double xVelocity;
     private double yVelocity;
     private Location location;
@@ -38,10 +40,24 @@ public class Agent {
     }
 
     public void updateLocation() {
+        xVelocity += xAccelaration;
+        yVelocity += yAcceraration;
+        
+        xAccelaration = 0;
+        yAcceraration = 0;
+
         double newX = location.getX() + xVelocity;
         double newY = location.getY() + yVelocity;
 
         location.changePosition(newX, newY);
+    }
+
+    public void applyForce(double xForce, double  yForce){
+        //f = m * a
+        //a = f / m
+
+        xAccelaration = xForce / this.size;
+        yAcceraration = yForce / this.size; 
     }
 
     public void checkCollisions(LinkedList<Agent> otherAgents) {
