@@ -31,21 +31,6 @@ public class Simulation extends JPanel{
 
             i.checkCollisions(agents);
 
-            //Check Boundaries
-            //Possible fix for boundery glitch is to split up each wall into its own if statement and manualy tell the ball which diection to move 
-            if(i.getLocation().getX() + i.getSize() > getWidth() - i.getSize()){
-                i.setXVelocity(-i.getXVelocity());
-            }
-            if(i.getLocation().getY() - i.getSize() < 0 - i.getSize() || i.getLocation().getY() + i.getSize() > getHeight() - i.getSize()){
-                i.setYVelocity(-i.getYVelocity());
-            }
-
-            if(i.getLocation().getX() - i.getSize() < 0 - i.getSize()){
-                double force = i.getXForce();
-                //System.out.println(force);
-                i.applyForce(force, 0);
-            }
-
             //TODO: Write to Excel sheet of locational data of each Agent
             System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
