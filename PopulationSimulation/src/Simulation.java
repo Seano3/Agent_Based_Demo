@@ -39,6 +39,8 @@ public class Simulation extends JPanel{
             if(i.getLocation().getY() - i.getSize() < 0 - i.getSize() || i.getLocation().getY() + i.getSize() > getHeight() - i.getSize()){
                 i.setYVelocity(-i.getYVelocity());
             }
+
+            //TODO: Write to Excel sheet of locational data of each Agent
         }
     }
 
