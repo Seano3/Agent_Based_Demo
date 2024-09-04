@@ -27,12 +27,13 @@ public class Simulation extends JPanel{
 
     public void update(){
         for (Agent i : agents) {
+            //System.out.println(i.xAccelaration);
+            i.checkCollisions(agents);
             i.updateLocation();
 
-            i.checkCollisions(agents);
-
             //TODO: Write to Excel sheet of locational data of each Agent
-            System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
+            
+            //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
     }
 
