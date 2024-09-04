@@ -60,7 +60,7 @@ public class Agent {
         //f = m * a
         //a = f / m
 
-        System.out.println("Allplied " + xForce);
+        //System.out.println("Allplied " + (xForce + yForce));
 
         xAccelaration = xForce / this.size;
         yAcceraration = yForce / this.size;
@@ -75,47 +75,61 @@ public class Agent {
     }
 
     public double getYForce() {
-        double force = size / (0 - yVelocity);
+        double acc = (0 - yVelocity) / 1;
+        double force = size * acc;
         return force;
     }
 
     public void checkCollisions(LinkedList<Agent> otherAgents) {
         //Check Boundaries
         //Possible fix for boundery glitch is to split up each wall into its own if statement and manualy tell the ball which diection to move 
-        if (getLocation().getX() + getSize() > 800 - getSize()) {
-            double force = getXForce() * 2;
-            System.out.println(force);
+        if (getLocation().getX() + getSize() > 800 - getSize()) { //Right  wall
+            double force = - Math.abs(getXForce() * 2);
+            
             this.applyForce(force, 0);
-        }
-        if (getLocation().getY() - getSize() < 0 - getSize() || getLocation().getY() + getSize() > 600 - getSize()) {
-            setYVelocity(-getYVelocity());
         }
 
-        if (getLocation().getX() - getSize() < 0 - getSize()) {
-            double force = getXForce() * 2;
-            System.out.println(force);
+        if (getLocation().getY() - getSize() < 0 - getSize()) { //Top Wall
+            double force = Math.abs(getYForce() * 2);
+            
+            this.applyForce(0, force);
+        }
+
+        if (getLocation().getX() - getSize() < 0 - getSize()) { //Left Wall
+            double force = Math.abs(getXForce() * 2);
+            
             this.applyForce(force, 0);
-            //this.applyForce(force, 0);
+        }
+
+        if (getLocation().getY() + getSize() > 600 - getSize()) { // Bottem wall
+            double force = - Math.abs((getYForce() * 2));
+           
+            this.applyForce(0, force);
         }
 
         //check Other Agents
         for (Agent i : otherAgents) {
-            if (!i.location.equals(this.location)) { //insures that it does not check if the ball is colliding with itself
-                double dx = location.getX() - i.location.getX();
-                double dy = location.getY() - i.location.getY();
+            if (!(i.location.equals(this.location))) { //insures that it does not check if the ball is colliding with itself
+                double dx = this.location.getX() - i.location.getX();
+                double dy = this.location.getY() - i.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
+                double dist = Math.sqrt(distanceSquared);
+                double minDist = this.size + i.getSize();
 
-                if (distanceSquared <= (size + i.getSize()) * (size + i.getSize())) {
+                if (dist <= minDist) {
                     //2D Elastic & Inelastic Collisions For physics info
 
-                    double tempX = this.xVelocity;
-                    double tempY = this.yVelocity;
+                    double xForceOnI = this.getXForce();
+                    double yForceOnI = this.getYForce();
 
-                    this.xVelocity = (this.xVelocity * (this.size - i.size) + 2 * i.size * i.xVelocity) / (this.size + i.size);
-                    this.yVelocity = (this.yVelocity * (this.size - i.size) + 2 * i.size * i.yVelocity) / (this.size + i.size);
+                    // double xForceOnThis = i.getXForce();
+                    // double yForceOnThis = i.getYForce();
 
-                    i.setXVelocity((i.xVelocity * (i.size - this.size) + 2 * this.size * tempX) / (i.size + this.size));
-                    i.setYVelocity((i.yVelocity * (i.size - this.size) + 2 * this.size * tempY) / (i.size + this.size));
+
+                    //this.applyForce(xForceOnThis, yForceOnThis);
+                    System.out.println("Agent " + this.AgentID + " Colliding with Agent " + i.AgentID + " X " + xForceOnI + " Y " + yForceOnI);
+                    i.applyForce(xForceOnI, yForceOnI);
+
 
                 }
             }

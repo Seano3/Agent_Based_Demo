@@ -26,15 +26,22 @@ public class Simulation extends JPanel{
     }
 
     public void update(){
+        int totalVelocty = 0;
         for (Agent i : agents) {
             //System.out.println(i.xAccelaration);
+            //i.checkCollisions(agents);
+            i.updateLocation();
             i.checkCollisions(agents);
             i.updateLocation();
+
+
+            totalVelocty += Math.abs(i.getXVelocity()) + Math.abs(i.getYVelocity());
 
             //TODO: Write to Excel sheet of locational data of each Agent
             
             //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
+        System.out.println("Total Energy: " + totalVelocty);
     }
 
     @Override
