@@ -32,7 +32,7 @@ public class Simulation extends JPanel{
             //i.checkCollisions(agents);
             i.updateLocation();
             i.checkCollisions(agents);
-            i.updateLocation();
+            i.updateCollisionsStorage();
 
 
             totalVelocty += Math.abs(i.getXVelocity()) + Math.abs(i.getYVelocity());
@@ -41,7 +41,7 @@ public class Simulation extends JPanel{
             
             //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
-        System.out.println("Total Energy: " + totalVelocty);
+        //System.out.println("Total Energy: " + totalVelocty);
     }
 
     @Override

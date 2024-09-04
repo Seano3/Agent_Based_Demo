@@ -10,6 +10,7 @@ public class Agent {
     private double xVelocity;
     private double yVelocity;
     private Location location;
+    private List<Collision> collisions;
 
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel) {
         AgentID = name;
@@ -17,6 +18,7 @@ public class Agent {
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
+        collisions = new LinkedList<Collision>();
     }
 
     public double getSize() {
@@ -61,7 +63,6 @@ public class Agent {
         //a = f / m
 
         //System.out.println("Allplied " + (xForce + yForce));
-
         xAccelaration = xForce / this.size;
         yAcceraration = yForce / this.size;
     }
@@ -84,26 +85,26 @@ public class Agent {
         //Check Boundaries
         //Possible fix for boundery glitch is to split up each wall into its own if statement and manualy tell the ball which diection to move 
         if (getLocation().getX() + getSize() > 800 - getSize()) { //Right  wall
-            double force = - Math.abs(getXForce() * 2);
-            
+            double force = -Math.abs(getXForce() * 2);
+
             this.applyForce(force, 0);
         }
 
         if (getLocation().getY() - getSize() < 0 - getSize()) { //Top Wall
             double force = Math.abs(getYForce() * 2);
-            
+
             this.applyForce(0, force);
         }
 
         if (getLocation().getX() - getSize() < 0 - getSize()) { //Left Wall
             double force = Math.abs(getXForce() * 2);
-            
+
             this.applyForce(force, 0);
         }
 
         if (getLocation().getY() + getSize() > 600 - getSize()) { // Bottem wall
-            double force = - Math.abs((getYForce() * 2));
-           
+            double force = -Math.abs((getYForce() * 2));
+
             this.applyForce(0, force);
         }
 
@@ -117,24 +118,45 @@ public class Agent {
                 double minDist = this.size + i.getSize();
 
                 if (dist <= minDist) {
-                    //2D Elastic & Inelastic Collisions For physics info
+                    Collision collision = new Collision(this.AgentID, i.AgentID);
+                    if (checkPreviousCollisions(collision)) {
 
-                    double xForceOnI = this.getXForce();
-                    double yForceOnI = this.getYForce();
+                        //2D Elastic & Inelastic Collisions For physics info
+                        double xForceOnI = this.getXForce();
+                        double yForceOnI = this.getYForce();
+                        System.out.println("Agent " + this.AgentID + " Colliding with Agent " + i.AgentID + " X " + xForceOnI + " Y " + yForceOnI);
 
-                    // double xForceOnThis = i.getXForce();
-                    // double yForceOnThis = i.getYForce();
-
-
-                    //this.applyForce(xForceOnThis, yForceOnThis);
-                    System.out.println("Agent " + this.AgentID + " Colliding with Agent " + i.AgentID + " X " + xForceOnI + " Y " + yForceOnI);
-                    i.applyForce(xForceOnI, yForceOnI);
-
+                        // double xForceOnThis = i.getXForce();
+                        // double yForceOnThis = i.getYForce();
+                        //this.applyForce(xForceOnThis, yForceOnThis);
+                        i.applyForce(xForceOnI, yForceOnI);
+                    }
 
                 }
             }
         }
 
+    }
+
+    private boolean checkPreviousCollisions(Collision collision) {
+        for (Collision i : collisions) {
+            if (i.chesksum == collision.chesksum) {
+                return false;
+            }
+        }
+
+        collisions.add(collision);
+        System.out.println("Adding Collision " + collision.chesksum);
+        return true;
+    }
+
+    public void updateCollisionsStorage() {
+        for (Collision i : collisions) {
+            if (i.removeFrame()) {
+                System.out.println("Removing Collision " + i.chesksum);
+                collisions.remove(i);
+            }
+        }
     }
 
 }
