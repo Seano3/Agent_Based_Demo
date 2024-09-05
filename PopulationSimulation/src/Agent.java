@@ -64,8 +64,8 @@ public class Agent {
         //Assumed to be in a collision so it subtracts the current force from the equation because it is assumed to be imparted onto the other object
 
         // System.out.println("Allplied " + (xForce + yForce));
-        xAccelaration = xForce / this.size;
-        yAcceraration = yForce / this.size;
+        xAccelaration += xForce / this.size;
+        yAcceraration += yForce / this.size;
     }
 
     public double getXForce() {
@@ -173,6 +173,19 @@ public class Agent {
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, i.AgentID, frame);
                     if (checkPreviousAgentCollisions(collision, i)) {
+                        double xForceOnI = this.getXForce();
+                        double xForceOnThis = i.getXForce();
+
+                        i.applyForce(xForceOnThis, 0);
+                        this.applyForce(xForceOnI, 0);
+
+                        i.applyForce(-xForceOnI, 0);
+                        this.applyForce(-xForceOnThis, 0);
+
+                        // i.applyForce(, 0);
+                        // this.applyForce(, 0);
+
+                        
 
                     }
                 }

@@ -10,6 +10,7 @@ public class Simulation extends JPanel{
     int height;
 
 
+
     public Simulation(int width, int height){  
         frame = 0;
         setPreferredSize(new Dimension(width, height));

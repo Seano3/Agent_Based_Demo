@@ -58,8 +58,8 @@ public class RunSimulation{
         
         // sim.addAgent(new Agent(1, 20, 400, 200, 5, 5)); //Change y to 200 to see bad corner behavior
 
-        sim.addAgent(new Agent(1, 20, 550, 200, 5, 0));
-        sim.addAgent(new Agent(2, 20, 100, 300, -5, 0));
+        sim.addAgent(new Agent(1, 20, 550, 300, -5, 0));
+        sim.addAgent(new Agent(2, 20, 100, 300, 10, 0));
 
 
         // sim.addAgent(new Agent(1, 20, 300, 300, 0, 5));
