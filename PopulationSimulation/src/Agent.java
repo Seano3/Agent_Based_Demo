@@ -59,17 +59,18 @@ public class Agent {
     }
 
     public void applyForce(double xForce, double yForce) {
-        //f = m * a
-        //a = f / m
+        // f = m * a
+        // a = f / m
+        //Assumed to be in a collision so it subtracts the current force from the equation because it is assumed to be imparted onto the other object
 
-        //System.out.println("Allplied " + (xForce + yForce));
+        // System.out.println("Allplied " + (xForce + yForce));
         xAccelaration = xForce / this.size;
         yAcceraration = yForce / this.size;
     }
 
     public double getXForce() {
         // a = (v1 * v0) / t
-        //f = m * a
+        // f = m * a
         double acc = (0 - xVelocity) / 1;
         double force = size * acc;
         return force;
@@ -81,36 +82,71 @@ public class Agent {
         return force;
     }
 
-    public void checkCollisions(LinkedList<Agent> otherAgents) {
-        //Check Boundaries
-        //Possible fix for boundery glitch is to split up each wall into its own if statement and manualy tell the ball which diection to move 
-        if (getLocation().getX() + getSize() > 800 - getSize()) { //Right  wall
-            double force = -Math.abs(getXForce() * 2);
+    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height) {
+        // Check Boundaries
+        // Possible fix for boundery glitch is to split up each wall into its own if
+        // statement and manualy tell the ball which diection to move
 
-            this.applyForce(force, 0);
+        checkWalls(frame, width, height);
+        checkAgents(otherAgents, frame);
+
+        // check Other Agents
+
+    }
+
+    private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
+        for (Collision i : collisions) {
+            if (i.chesksum == collision.chesksum) {
+                // System.out.println("Already Collided");
+                return false;
+            }
         }
 
-        if (getLocation().getY() - getSize() < 0 - getSize()) { //Top Wall
-            double force = Math.abs(getYForce() * 2);
+        collisions.add(collision);
+        otherAgent.collisions.add(collision);
+        System.out.println("Adding Collision " + collision.ID);
+        return true;
+    }
 
-            this.applyForce(0, force);
+    public void updateCollisionsStorage() {
+        for (Collision i : collisions) {
+            if (i.removeFrame()) {
+                System.out.println("Removing Collision " + i.ID);
+                collisions.remove(i);
+            }
+        }
+    }
+
+    private void checkWalls(int frame, int width, int height) {
+        if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
+            double force = getXForce() * 2;
+            double wallForce = force; 
+            this.applyForce(wallForce, 0);
         }
 
-        if (getLocation().getX() - getSize() < 0 - getSize()) { //Left Wall
-            double force = Math.abs(getXForce() * 2);
-
-            this.applyForce(force, 0);
+        if (getLocation().getY() - getSize() < 0 - getSize()) { // Top Wall
+            double force = getYForce() * 2;
+            double wallForce = force; 
+            this.applyForce(0, wallForce);
         }
 
-        if (getLocation().getY() + getSize() > 600 - getSize()) { // Bottem wall
-            double force = -Math.abs((getYForce() * 2));
-
-            this.applyForce(0, force);
+        if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
+            double force = getXForce() * 2;
+            double wallForce = force; 
+            this.applyForce(wallForce, 0);
         }
 
-        //check Other Agents
+        if (getLocation().getY() + getSize() > height - getSize()) { // Bottem wall
+            double force = getYForce() * 2;
+            double wallForce = force; 
+            this.applyForce(0, wallForce);
+        }
+    }
+
+    private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
         for (Agent i : otherAgents) {
-            if (!(i.location.equals(this.location))) { //insures that it does not check if the ball is colliding with itself
+            if (!(i.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
+                                                       // itself
                 double dx = this.location.getX() - i.location.getX();
                 double dy = this.location.getY() - i.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
@@ -118,45 +154,16 @@ public class Agent {
                 double minDist = this.size + i.getSize();
 
                 if (dist <= minDist) {
-                    Collision collision = new Collision(this.AgentID, i.AgentID);
-                    if (checkPreviousCollisions(collision)) {
+                    Collision collision = new Collision(this.AgentID, i.AgentID, frame);
+                    if (checkPreviousAgentCollisions(collision, i)) {
 
-                        //2D Elastic & Inelastic Collisions For physics info
-                        double xForceOnI = this.getXForce();
-                        double yForceOnI = this.getYForce();
-                        System.out.println("Agent " + this.AgentID + " Colliding with Agent " + i.AgentID + " X " + xForceOnI + " Y " + yForceOnI);
-
-                        // double xForceOnThis = i.getXForce();
-                        // double yForceOnThis = i.getYForce();
-                        //this.applyForce(xForceOnThis, yForceOnThis);
-                        i.applyForce(xForceOnI, yForceOnI);
                     }
-
                 }
             }
         }
-
     }
-
-    private boolean checkPreviousCollisions(Collision collision) {
-        for (Collision i : collisions) {
-            if (i.chesksum == collision.chesksum) {
-                return false;
-            }
-        }
-
-        collisions.add(collision);
-        System.out.println("Adding Collision " + collision.chesksum);
-        return true;
-    }
-
-    public void updateCollisionsStorage() {
-        for (Collision i : collisions) {
-            if (i.removeFrame()) {
-                System.out.println("Removing Collision " + i.chesksum);
-                collisions.remove(i);
-            }
-        }
-    }
-
 }
+
+// Ideas:
+
+// Subtract the force it gives to others?

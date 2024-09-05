@@ -1,9 +1,11 @@
 public class Collision {
+    int ID;
     int chesksum;
     int framesRemaining; 
 
-    public Collision (int Agent1, int Agent2){
-        chesksum = Agent1 * 10 + Agent2; 
+    public Collision (int Agent1, int Agent2, int frame){
+        int ID = frame;
+        chesksum = Agent1 + Agent2; 
         framesRemaining = 5;
     }
 

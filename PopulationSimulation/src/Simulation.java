@@ -5,9 +5,11 @@ import javax.swing.*;
 public class Simulation extends JPanel{
     private LinkedList<Agent> agents;
     private Timer timer;
+    int frame;
 
 
     public Simulation(int width, int height){  
+        frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
 
@@ -18,6 +20,7 @@ public class Simulation extends JPanel{
             repaint();
         });
         timer.start();
+        
 
     }
 
@@ -28,10 +31,10 @@ public class Simulation extends JPanel{
     public void update(){
         int totalVelocty = 0;
         for (Agent i : agents) {
+            frame++;
             //System.out.println(i.xAccelaration);
-            //i.checkCollisions(agents);
+            i.checkCollisions(agents, frame, 800, 600);
             i.updateLocation();
-            i.checkCollisions(agents);
             i.updateCollisionsStorage();
 
 
@@ -41,7 +44,7 @@ public class Simulation extends JPanel{
             
             //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
-        //System.out.println("Total Energy: " + totalVelocty);
+        System.out.println("Total Energy: " + totalVelocty);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class Simulation extends JPanel{
         for (Agent i : agents) {
             //Draw all agents
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            g2d.setColor(Color.RED);
         }
 
     }
