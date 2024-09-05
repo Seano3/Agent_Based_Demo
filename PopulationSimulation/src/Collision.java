@@ -6,7 +6,7 @@ public class Collision {
     public Collision (int Agent1, int Agent2, int frame){
         int ID = frame;
         chesksum = Agent1 + Agent2; 
-        framesRemaining = 5;
+        framesRemaining = 1;
     }
 
     public Boolean removeFrame(){

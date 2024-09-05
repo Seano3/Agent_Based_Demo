@@ -153,7 +153,7 @@ public class Agent {
         if (getLocation().getY() + getSize() > height - getSize()) { // Bottem wall
             double force = getYForce() * 2;
             double wallForce = force; //Negative
-            Collision collision = new Collision(this.AgentID, -3, frame);
+            Collision collision = new Collision(this.AgentID, -1, frame);
             if (checkPreviousWallCollisions(collision)) {
                 this.applyForce(0, wallForce);
             }

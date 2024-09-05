@@ -6,12 +6,17 @@ public class Simulation extends JPanel{
     private LinkedList<Agent> agents;
     private Timer timer;
     int frame;
+    int width; 
+    int height;
 
 
     public Simulation(int width, int height){  
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
+
+        this.width = width;
+        this.height = height;
 
         agents = new LinkedList<>(); 
 
@@ -33,7 +38,7 @@ public class Simulation extends JPanel{
         for (Agent i : agents) {
             frame++;
             //System.out.println(i.xAccelaration);
-            i.checkCollisions(agents, frame, 800, 600);
+            i.checkCollisions(agents, frame, width, height);
             i.updateLocation();
             i.updateCollisionsStorage();
 
