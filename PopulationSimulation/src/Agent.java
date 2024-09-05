@@ -117,28 +117,28 @@ public class Agent {
         }
     }
 
-    private void checkWalls(int frame, int width, int height) {
+    private void checkWalls(int frame, int width, int height) { //TODO: Set Collision cooldown on wall collisons then the ABS solution to clipping :)
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
             double force = getXForce() * 2;
-            double wallForce = force; 
+            double wallForce = force; //Negative
             this.applyForce(wallForce, 0);
         }
 
         if (getLocation().getY() - getSize() < 0 - getSize()) { // Top Wall
             double force = getYForce() * 2;
-            double wallForce = force; 
+            double wallForce = force; //Positive
             this.applyForce(0, wallForce);
         }
 
         if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
             double force = getXForce() * 2;
-            double wallForce = force; 
+            double wallForce = force; //Positive
             this.applyForce(wallForce, 0);
         }
 
         if (getLocation().getY() + getSize() > height - getSize()) { // Bottem wall
             double force = getYForce() * 2;
-            double wallForce = force; 
+            double wallForce = force; //Negative
             this.applyForce(0, wallForce);
         }
     }
