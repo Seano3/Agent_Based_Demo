@@ -83,15 +83,8 @@ public class Agent {
     }
 
     public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height) {
-        // Check Boundaries
-        // Possible fix for boundery glitch is to split up each wall into its own if
-        // statement and manualy tell the ball which diection to move
-
         checkWalls(frame, width, height);
         checkAgents(otherAgents, frame);
-
-        // check Other Agents
-
     }
 
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
@@ -104,6 +97,18 @@ public class Agent {
 
         collisions.add(collision);
         otherAgent.collisions.add(collision);
+        System.out.println("Adding Collision " + collision.ID);
+        return true;
+    }
+
+    private boolean checkPreviousWallCollisions(Collision collision) {
+        for (Collision i : collisions) {
+            if (i.chesksum == collision.chesksum) {
+                return false;
+            }
+        }
+
+        collisions.add(collision);
         System.out.println("Adding Collision " + collision.ID);
         return true;
     }
@@ -121,32 +126,44 @@ public class Agent {
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
             double force = getXForce() * 2;
             double wallForce = force; //Negative
-            this.applyForce(wallForce, 0);
+            Collision collision = new Collision(this.AgentID, -4, frame);
+            if (checkPreviousWallCollisions(collision)) {
+                this.applyForce(wallForce, 0);
+            }
         }
 
         if (getLocation().getY() - getSize() < 0 - getSize()) { // Top Wall
             double force = getYForce() * 2;
             double wallForce = force; //Positive
-            this.applyForce(0, wallForce);
+            Collision collision = new Collision(this.AgentID, -3, frame);
+            if (checkPreviousWallCollisions(collision)) {
+                this.applyForce(0, wallForce);
+            }
         }
 
         if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
             double force = getXForce() * 2;
             double wallForce = force; //Positive
-            this.applyForce(wallForce, 0);
+            Collision collision = new Collision(this.AgentID, -2, frame);
+            if (checkPreviousWallCollisions(collision)) {
+                this.applyForce(wallForce, 0);
+            }
         }
 
         if (getLocation().getY() + getSize() > height - getSize()) { // Bottem wall
             double force = getYForce() * 2;
             double wallForce = force; //Negative
-            this.applyForce(0, wallForce);
+            Collision collision = new Collision(this.AgentID, -3, frame);
+            if (checkPreviousWallCollisions(collision)) {
+                this.applyForce(0, wallForce);
+            }
         }
     }
 
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
         for (Agent i : otherAgents) {
             if (!(i.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
-                                                       // itself
+                // itself
                 double dx = this.location.getX() - i.location.getX();
                 double dy = this.location.getY() - i.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
