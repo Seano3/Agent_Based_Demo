@@ -97,7 +97,7 @@ public class Agent {
 
         collisions.add(collision);
         otherAgent.collisions.add(collision);
-        System.out.println("Adding Collision " + collision.ID);
+        System.out.println("Adding Collision " + collision.GetID());
         return true;
     }
 
@@ -109,14 +109,14 @@ public class Agent {
         }
 
         collisions.add(collision);
-        System.out.println("Adding Collision " + collision.ID);
+        System.out.println("Adding Collision " + collision.GetID());
         return true;
     }
 
     public void updateCollisionsStorage() {
         for (Collision i : collisions) {
             if (i.removeFrame()) {
-                System.out.println("Removing Collision " + i.ID);
+                System.out.println("Removing Collision " + i.GetID());
                 collisions.remove(i);
             }
         }
@@ -176,11 +176,14 @@ public class Agent {
                         double xForceOnI = this.getXForce();
                         double xForceOnThis = i.getXForce();
 
-                        i.applyForce(xForceOnThis, 0);
-                        this.applyForce(xForceOnI, 0);
+                        double yForceOnI = this.getYForce();
+                        double yForceOnThis = i.getYForce();
 
-                        i.applyForce(-xForceOnI, 0);
-                        this.applyForce(-xForceOnThis, 0);
+                        i.applyForce(xForceOnThis, yForceOnThis);
+                        this.applyForce(xForceOnI, yForceOnI);
+
+                        i.applyForce(-xForceOnI, -yForceOnI);
+                        this.applyForce(-xForceOnThis, -yForceOnThis);
 
                         // i.applyForce(, 0);
                         // this.applyForce(, 0);

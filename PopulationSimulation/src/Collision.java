@@ -1,21 +1,25 @@
 public class Collision {
-    int ID;
+    private int ID;
     int chesksum;
-    int framesRemaining; 
+    private int framesRemaining; 
 
     public Collision (int Agent1, int Agent2, int frame){
-        int ID = frame;
-        chesksum = Agent1 + Agent2; 
-        framesRemaining = 1;
+        ID = frame + Agent1 + Agent2;
+        chesksum = Agent1 + Agent2 + frame; 
+        framesRemaining = 5;
     }
 
     public Boolean removeFrame(){
         framesRemaining--;
 
-        if (framesRemaining == 00){
+        if (framesRemaining == 0){
             return true;
         }
 
         return false;
+    }
+
+    public int GetID(){
+        return ID;
     }
 }
