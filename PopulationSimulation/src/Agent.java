@@ -1,4 +1,7 @@
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Agent {
@@ -11,6 +14,7 @@ public class Agent {
     private double yVelocity;
     private Location location;
     private List<Collision> collisions;
+    private BufferedWriter universalWriter;
 
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel) {
         AgentID = name;
@@ -19,6 +23,15 @@ public class Agent {
         yVelocity = yVel;
         location = new Location(xCord, yCord);
         collisions = new LinkedList<Collision>();
+        String CSVName = "Agent-" + this.AgentID;
+        String[] headers = {"X-Pos", "Y=Pos", "X-Velocity", "Y-Velocity"};
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CSVName))) {
+            universalWriter = writer; 
+            writer.write(String.join(",", headers));
+            System.out.println("CSV file created successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public double getSize() {
@@ -56,6 +69,8 @@ public class Agent {
         double newY = location.getY() + yVelocity;
 
         location.changePosition(newX, newY);
+        updateAgentCSV();
+
     }
 
     public void applyForce(double xForce, double yForce) {
@@ -187,16 +202,31 @@ public class Agent {
 
                         // i.applyForce(, 0);
                         // this.applyForce(, 0);
-
-                        
-
                     }
                 }
             }
         }
     }
+
+    private void updateAgentCSV() {
+        String xPos = String.valueOf(this.location.getX());
+        String yPos = String.valueOf(this.location.getY());
+        String xVel = String.valueOf(xVelocity);
+        String yVel = String.valueOf(yVelocity);
+        String[] row = {xPos, yPos, xVel, yVel};
+        String CSVName = "Agent-" + this.AgentID;
+
+        try (BufferedWriter writer = universalWriter) {
+            writer.newLine();
+            writer.write(String.join(",", row));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+    }
 }
 
 // Ideas:
-
 // Subtract the force it gives to others?
+
