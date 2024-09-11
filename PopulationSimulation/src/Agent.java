@@ -11,14 +11,16 @@ public class Agent {
     private double yVelocity;
     private Location location;
     private List<Collision> collisions;
+    private Simulation sim;
 
-    public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel) {
+    public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
         this.size = size;
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
         collisions = new LinkedList<Collision>();
+        this.sim = sim;
     }
 
     public double getSize() {
@@ -150,7 +152,7 @@ public class Agent {
             }
         }
 
-        if (getLocation().getY() + getSize() > height - getSize()) { // Bottem wall
+        if (getLocation().getY() + getSize() > height - this.sim.getRectHeight() - getSize()) { // Bottem wall
             double force = getYForce() * 2;
             double wallForce = force; //Negative
             Collision collision = new Collision(this.AgentID, -1, frame);

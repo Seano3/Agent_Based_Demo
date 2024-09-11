@@ -8,6 +8,8 @@ public class Simulation extends JPanel{
     int frame;
     int width; 
     int height;
+    int upperBorderHeight;
+    int rectHeight;
 
 
 
@@ -28,6 +30,10 @@ public class Simulation extends JPanel{
         timer.start();
         
 
+    }
+
+    public int getRectHeight(){
+        return rectHeight;
     }
 
     public void addAgent(Agent agent) {
@@ -63,6 +69,9 @@ public class Simulation extends JPanel{
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
             g2d.setColor(Color.RED);
         }
+        g2d.setColor(Color.BLACK);
+        rectHeight = 200;
+        g2d.fillRect(0, height - rectHeight, width, rectHeight);
 
     }
 
