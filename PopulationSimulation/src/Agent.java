@@ -114,9 +114,9 @@ public class Agent {
     }
 
     public void updateCollisionsStorage() {
-        for (Collision i : collisions) {
-            if (i.removeFrame()) {
-                System.out.println("Removing Collision " + i.GetID());
+        for (int i = 0; i < collisions.size(); i++) {
+            if (collisions.get(i).removeFrame()) {
+                System.out.println("Removing Collision " + collisions.get(i).GetID());
                 collisions.remove(i);
             }
         }

@@ -5,12 +5,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import javax.swing.*;
 
-
-
-
 public class RunSimulation{
 
-     
     public static void generateCSV(int numAgents, Simulation sim) { 
         String csvFile = "agent-output.csv"; // Name of the CSV file 
         String[] headers = {"Agent ID", "Size", "X-Velocity", "Y-Velocity", "X-Location", "Y-Location"}; // CSV headers 
