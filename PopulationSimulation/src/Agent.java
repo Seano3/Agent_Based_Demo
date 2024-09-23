@@ -1,6 +1,8 @@
 
 import java.lang.reflect.AccessFlag;
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Agent {
 
@@ -13,6 +15,7 @@ public class Agent {
     private Location location;
     private List<Collision> collisions;
     private Simulation sim;
+    private String csvName;
 
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
@@ -22,6 +25,20 @@ public class Agent {
         location = new Location(xCord, yCord);
         collisions = new LinkedList<Collision>();
         this.sim = sim;
+
+        csvName = "Agent-" + AgentID + ".csv";
+
+        try (FileWriter writer = new FileWriter(csvName)) {
+            writer.write(AgentID + "," + 
+                         size + "," + 
+                         location.getX() + "," + 
+                         location.getY() + "," + 
+                         xVelocity + "," + 
+                         yVelocity);
+            writer.write("\n");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
     }
 
     public double getSize() {
@@ -59,6 +76,7 @@ public class Agent {
         double newY = location.getY() + yVelocity;
 
         location.changePosition(newX, newY);
+        updateCSV();
     }
 
     public void applyForce(double xForce, double yForce) {
@@ -209,6 +227,20 @@ public class Agent {
                ", xVel=" + xVelocity +
                ", yVel=" + yVelocity +
                '}';
+    }
+
+    private void updateCSV(){
+        try (FileWriter writer = new FileWriter(csvName, true)) {
+            writer.write(AgentID + "," + 
+                         size + "," + 
+                         location.getX() + "," + 
+                         location.getY() + "," + 
+                         xVelocity + "," + 
+                         yVelocity);
+            writer.write("\n");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
     }
 }
 
