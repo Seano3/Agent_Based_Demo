@@ -1,5 +1,7 @@
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -40,8 +42,42 @@ public class RunSimulation{
         //Initalize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(800, 600);
+        Simulation sim = new Simulation(800, 800);
         frame.add(sim);
+
+        System.out.println("Current directory: " + System.getProperty("user.dir"));
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader("agent-input.csv"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] attributes = line.split(",");
+                
+                if (attributes.length != 6) {
+                    System.err.println("Invalid number of attributes in line: " + line);
+                    continue;
+                }
+
+                try {
+                    int name = Integer.parseInt(attributes[0]);
+                    double size = Double.parseDouble(attributes[1]);
+                    double xCoord = Double.parseDouble(attributes[2]);
+                    double yCoord = Double.parseDouble(attributes[3]);
+                    double xVel = Double.parseDouble(attributes[4]);
+                    double yVel = Double.parseDouble(attributes[5]);
+
+                    Agent agent = new Agent(name, size, xCoord, yCoord, xVel, yVel, sim);
+                    sim.addAgent(agent);
+                    System.out.println("Created Agent: " + agent);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    
 
 
         //Initialize Agents
@@ -51,16 +87,7 @@ public class RunSimulation{
             
         // } 
         // generateCSV(6, sim); 
-        
-        sim.addAgent(new Agent(1, 20, 400, 200, 5, 5, sim)); //Change y to 200 to see bad corner behavior
-
-        sim.addAgent(new Agent(1, 20, 550, 300, -5, 0, sim));
-        sim.addAgent(new Agent(2, 20, 100, 300, 10, 0, sim));
-
-
-        sim.addAgent(new Agent(1, 20, 300, 300, 0, 5, sim));
-        sim.addAgent(new Agent(2, 20, 300, 100, 0, -5, sim));
-        
+               
         
         frame.pack();
         frame.setVisible(true);

@@ -56,7 +56,7 @@ public class Simulation extends JPanel{
             
             //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
         }
-        System.out.println("Total Energy: " + totalVelocty);
+        //System.out.println("Total Energy: " + totalVelocty);
     }
 
     @Override

@@ -1,4 +1,5 @@
 
+import java.lang.reflect.AccessFlag;
 import java.util.*;
 
 public class Agent {
@@ -196,6 +197,18 @@ public class Agent {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Agent{" +
+               "name=" + AgentID +
+               ", size=" + size +
+               ", xCoord=" + location.getX() +
+               ", yCoord=" + location.getY() +
+               ", xVel=" + xVelocity +
+               ", yVel=" + yVelocity +
+               '}';
     }
 }
 
