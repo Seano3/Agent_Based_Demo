@@ -27,12 +27,12 @@ public class Agent {
         csvName = "Agent-" + AgentID + ".csv";
 
         try (FileWriter writer = new FileWriter(csvName)) {
-            writer.write(AgentID + "," + 
-                         size + "," + 
-                         location.getX() + "," + 
-                         location.getY() + "," + 
-                         xVelocity + "," + 
-                         yVelocity);
+            writer.write(AgentID + "," +
+                    size + "," +
+                    location.getX() + "," +
+                    location.getY() + "," +
+                    xVelocity + "," +
+                    yVelocity);
             writer.write("\n");
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
@@ -77,30 +77,6 @@ public class Agent {
         updateCSV();
     }
 
-    public void applyForce(double xForce, double yForce) {
-        // f = m * a
-        // a = f / m
-        //Assumed to be in a collision so it subtracts the current force from the equation because it is assumed to be imparted onto the other object
-
-        // System.out.println("Allplied " + (xForce + yForce));
-        xAccelaration += xForce / this.size;
-        yAcceraration += yForce / this.size;
-    }
-
-    public double getXForce() {
-        // a = (v1 * v0) / t
-        // f = m * a
-        double acc = (0 - xVelocity) / 1;
-        double force = size * acc;
-        return force;
-    }
-
-    public double getYForce() {
-        double acc = (0 - yVelocity) / 1;
-        double force = size * acc;
-        return force;
-    }
-
     public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height) {
         checkWalls(frame, width, height);
         checkAgents(otherAgents, frame);
@@ -116,7 +92,7 @@ public class Agent {
 
         collisions.add(collision);
         otherAgent.collisions.add(collision);
-        System.out.println("Adding Collision " + collision.GetID());
+        // System.out.println("Adding Collision " + collision.GetID());
         return true;
     }
 
@@ -128,86 +104,80 @@ public class Agent {
         }
 
         collisions.add(collision);
-        System.out.println("Adding Collision " + collision.GetID());
+        // System.out.println("Adding Collision " + collision.GetID());
         return true;
     }
 
     public void updateCollisionsStorage() {
         for (int i = 0; i < collisions.size(); i++) {
             if (collisions.get(i).removeFrame()) {
-                System.out.println("Removing Collision " + collisions.get(i).GetID());
+                // System.out.println("Removing Collision " + collisions.get(i).GetID());
                 collisions.remove(i);
             }
         }
     }
 
-    private void checkWalls(int frame, int width, int height) { //TODO: Set Collision cooldown on wall collisons then the ABS solution to clipping :)
+    private void checkWalls(int frame, int width, int height) { // TODO: Set Collision cooldown on wall collisons then
+                                                                // the ABS solution to clipping :)
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
-            double force = getXForce() * 2;
-            double wallForce = force; //Negative
+
             Collision collision = new Collision(this.AgentID, -4, frame);
             if (checkPreviousWallCollisions(collision)) {
-                this.applyForce(wallForce, 0);
+                this.xVelocity = -Math.abs(xVelocity);
             }
         }
 
         if (getLocation().getY() - getSize() < 0 - getSize()) { // Top Wall
-            double force = getYForce() * 2;
-            double wallForce = force; //Positive
+
             Collision collision = new Collision(this.AgentID, -3, frame);
             if (checkPreviousWallCollisions(collision)) {
-                this.applyForce(0, wallForce);
+                this.yVelocity = Math.abs(yVelocity);
             }
         }
 
         if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
-            double force = getXForce() * 2;
-            double wallForce = force; //Positive
+
             Collision collision = new Collision(this.AgentID, -2, frame);
             if (checkPreviousWallCollisions(collision)) {
-                this.applyForce(wallForce, 0);
+                this.xVelocity = Math.abs(xVelocity);
             }
         }
 
         if (getLocation().getY() + getSize() > height - this.sim.getRectHeight() - getSize()) { // Bottem wall
-            double force = getYForce() * 2;
-            double wallForce = force; //Negative
+
             Collision collision = new Collision(this.AgentID, -1, frame);
             if (checkPreviousWallCollisions(collision)) {
-                this.applyForce(0, wallForce);
+                this.yVelocity = -Math.abs(yVelocity);
             }
         }
     }
 
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
-        for (Agent i : otherAgents) {
-            if (!(i.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
+        for (Agent that : otherAgents) {
+            if (!(that.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
                 // itself
-                double dx = this.location.getX() - i.location.getX();
-                double dy = this.location.getY() - i.location.getY();
+                double dx = this.location.getX() - that.location.getX();
+                double dy = this.location.getY() - that.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
                 double dist = Math.sqrt(distanceSquared);
-                double minDist = this.size + i.getSize();
+                double minDist = this.size + that.getSize();
 
                 if (dist <= minDist) {
-                    Collision collision = new Collision(this.AgentID, i.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, i)) {
-                        double xForceOnI = this.getXForce();
-                        double xForceOnThis = i.getXForce();
+                    Collision collision = new Collision(this.AgentID, that.AgentID, frame);
+                    if (checkPreviousAgentCollisions(collision, that)) {
+                        double dvx = that.xVelocity - this.xVelocity;
+                        double dvy = that.yVelocity - this.yVelocity;
 
-                        double yForceOnI = this.getYForce();
-                        double yForceOnThis = i.getYForce();
+                        double dvdr = dx * dvx + dy * dvy;
+                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * dist);
+                        double Jx = J * dx / dist;
+                        double Jy = J * dy / dist;
 
-                        i.applyForce(xForceOnThis, yForceOnThis);
-                        this.applyForce(xForceOnI, yForceOnI);
+                        this.xVelocity += Jx / this.size;
+                        this.yVelocity += Jy / this.size;
 
-                        i.applyForce(-xForceOnI, -yForceOnI);
-                        this.applyForce(-xForceOnThis, -yForceOnThis);
-
-                        // i.applyForce(, 0);
-                        // this.applyForce(, 0);
-
-                        
+                        that.xVelocity -= Jx / that.size;
+                        that.yVelocity -= Jy / that.size;
 
                     }
                 }
@@ -215,26 +185,52 @@ public class Agent {
         }
     }
 
+    private double timeToHit(Agent that) {
+        double dx = this.location.getX() - that.location.getX();
+        double dy = this.location.getY() - that.location.getY();
+        double dvx = that.xVelocity - this.xVelocity;
+        double dvy = that.xVelocity - this.xVelocity;
+        double dvdr = dx * dvx + dy * dvy;
+
+        if(dvdr > 0){
+            return Double.POSITIVE_INFINITY;
+        }
+        double dvdv = dvx * dvx + dvy * dvy;
+        if (dvdr == 0){
+            return Double.POSITIVE_INFINITY;
+        }
+
+        double drdr = dx * dx + dy * dy;
+        double sigma = this.size + that.size;
+        double d = (dvdr * dvdr) - dvdv * (drdr - sigma * sigma);
+        
+        if (d < 0){
+            return Double.POSITIVE_INFINITY;
+        }
+
+        return -(dvdr + Math.sqrt(d)) / dvdv;
+    }
+
     @Override
     public String toString() {
         return "Agent{" +
-               "name=" + AgentID +
-               ", size=" + size +
-               ", xCoord=" + location.getX() +
-               ", yCoord=" + location.getY() +
-               ", xVel=" + xVelocity +
-               ", yVel=" + yVelocity +
-               '}';
+                "name=" + AgentID +
+                ", size=" + size +
+                ", xCoord=" + location.getX() +
+                ", yCoord=" + location.getY() +
+                ", xVel=" + xVelocity +
+                ", yVel=" + yVelocity +
+                '}';
     }
 
-    private void updateCSV(){
+    private void updateCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
-            writer.write(AgentID + "," + 
-                         size + "," + 
-                         location.getX() + "," + 
-                         location.getY() + "," + 
-                         xVelocity + "," + 
-                         yVelocity);
+            writer.write(AgentID + "," +
+                    size + "," +
+                    location.getX() + "," +
+                    location.getY() + "," +
+                    xVelocity + "," +
+                    yVelocity);
             writer.write("\n");
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
