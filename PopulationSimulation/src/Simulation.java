@@ -1,19 +1,20 @@
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import javax.swing.*;
 
-public class Simulation extends JPanel{
+public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
     private Timer timer;
     int frame;
-    int width; 
+    int width;
     int height;
     int upperBorderHeight;
     int rectHeight;
+    String csvName = "Debug.csv";
 
-
-
-    public Simulation(int width, int height){  
+    public Simulation(int width, int height) {
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
@@ -21,18 +22,22 @@ public class Simulation extends JPanel{
         this.width = width;
         this.height = height;
 
-        agents = new LinkedList<>(); 
+        agents = new LinkedList<>();
+
+        try (FileWriter writer = new FileWriter(csvName)) {
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
 
         timer = new Timer(16, e -> {
             update();
             repaint();
         });
         timer.start();
-        
 
     }
 
-    public int getRectHeight(){
+    public int getRectHeight() {
         return rectHeight;
     }
 
@@ -40,23 +45,20 @@ public class Simulation extends JPanel{
         agents.add(agent);
     }
 
-    public void update(){
-        int totalVelocty = 0;
+    public void update() {
         for (Agent i : agents) {
             frame++;
-            //System.out.println(i.xAccelaration);
+            // System.out.println(i.xAccelaration);
             i.checkCollisions(agents, frame, width, height);
             i.updateLocation();
             i.updateCollisionsStorage();
 
+            // TODO: Write to Excel sheet of locational data of each Agent
 
-            totalVelocty += Math.abs(i.getXVelocity()) + Math.abs(i.getYVelocity());
-
-            //TODO: Write to Excel sheet of locational data of each Agent
-            
-            //System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() + ", Yvel " + i.getYVelocity());
+            // System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() +
+            // ", Yvel " + i.getYVelocity());
         }
-        //System.out.println("Total Energy: " + totalVelocty);
+        debugCSV();
     }
 
     @Override
@@ -65,8 +67,9 @@ public class Simulation extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
         for (Agent i : agents) {
-            //Draw all agents
-            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            // Draw all agents
+            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2,
+                    (int) i.getSize() * 2);
             g2d.setColor(Color.RED);
         }
         g2d.setColor(Color.BLACK);
@@ -75,7 +78,31 @@ public class Simulation extends JPanel{
 
     }
 
-    public LinkedList<Agent> getAgents(){
+    public LinkedList<Agent> getAgents() {
         return agents;
+    }
+
+    private void debugCSV() {
+        try (FileWriter writer = new FileWriter(csvName, true)) {
+            writer.write(getKE() + ","
+                        );
+            writer.write("\n");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+    private double getKE() {
+        double totalKE = 0;
+
+        for(Agent i : agents){
+            double velocity = Math.sqrt(Math.pow(i.getXVelocity(), 2) + Math.pow(i.getYVelocity(), 2));
+
+            double KE = 0.5 * i.getSize() * Math.pow(velocity, 2);
+
+            totalKE =+ KE; 
+        }
+
+        return totalKE;
     }
 }
