@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -59,6 +60,7 @@ public class Simulation extends JPanel {
             // ", Yvel " + i.getYVelocity());
         }
         debugCSV();
+        generateCSV(agents.size(), this);
     }
 
     @Override
@@ -81,6 +83,32 @@ public class Simulation extends JPanel {
     public LinkedList<Agent> getAgents() {
         return agents;
     }
+
+    public static void generateCSV(int numAgents, Simulation sim) { 
+        String csvFile = "agent-output.csv"; // Name of the CSV file 
+        String[][] data = new String[numAgents][6]; // Data to write to CSV file
+        LinkedList<Agent> agents = sim.getAgents();
+        for(int i = 0; i < numAgents; i++){
+            data[i][0] = Integer.toString(agents.get(i).AgentID);
+            data[i][1] = Double.toString(agents.get(i).getSize());
+            data[i][2] = Double.toString(agents.get(i).getLocation().getX());
+            data[i][3] = Double.toString(agents.get(i).getLocation().getY());
+            data[i][4] = Double.toString(agents.get(i).getXVelocity());
+            data[i][5] = Double.toString(agents.get(i).getYVelocity());
+        }
+ 
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) { 
+            writer.newLine(); 
+  
+            for (String[] row : data) { 
+                writer.write(String.join(",", row)); 
+                writer.newLine(); 
+            } 
+ 
+        } catch (IOException e) { 
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+        } 
+    } 
 
     private void debugCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
