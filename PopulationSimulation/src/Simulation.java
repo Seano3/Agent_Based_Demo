@@ -2,6 +2,8 @@ import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import javax.swing.*;
 
@@ -14,6 +16,15 @@ public class Simulation extends JPanel {
     int upperBorderHeight;
     int rectHeight;
     String csvName = "Debug.csv";
+    private JLabel timeLabel;
+    private JButton pausePlayButton;
+    private JButton toggleGridButton;
+    private boolean isPaused;
+    private boolean isGridEnabled;
+    private long startTime;
+    private long pausedTime;
+    private long totalPausedDuration;
+
 
     public Simulation(int width, int height) {
         frame = 0;
@@ -30,13 +41,63 @@ public class Simulation extends JPanel {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
 
+        timeLabel = new JLabel("Time: 00:00:00");
+        pausePlayButton = new JButton("Pause");
+        toggleGridButton = new JButton("Enable Grid");
+        isPaused = false;
+        isGridEnabled = false;
+        totalPausedDuration = 0;
+
+        pausePlayButton.addActionListener(e -> {
+            if (isPaused) {
+                pausePlayButton.setText("Pause");
+                timer.start();
+                totalPausedDuration += System.currentTimeMillis() - pausedTime;
+            } else {
+                pausePlayButton.setText("Play");
+                timer.stop();
+                pausedTime = System.currentTimeMillis();
+            }
+            isPaused = !isPaused;
+        });
+
+        toggleGridButton.addActionListener(e -> {
+            if (isGridEnabled) {
+                toggleGridButton.setText("Enable Grid");
+                isGridEnabled = false;
+                repaint();
+            } else {
+                toggleGridButton.setText("Disable Grid");
+                isGridEnabled = true;
+                repaint();
+            }
+        });
+        setLayout(null);
+        add(timeLabel);
+        add(pausePlayButton);
+        add(toggleGridButton);
+
+        startTime = System.currentTimeMillis();
+
         timer = new Timer(16, e -> {
             update();
             repaint();
+            updateTimerLabel();
         });
         timer.start();
 
+
+
     }
+
+    private void updateTimerLabel() {
+    long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
+    long hours = (elapsedTime / 3600000) % 24;
+    long minutes = (elapsedTime / 60000) % 60;
+    long seconds = (elapsedTime / 1000) % 60;
+    String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    timeLabel.setText("Time: " + formattedTime);
+}
 
     public int getRectHeight() {
         return rectHeight;
@@ -74,10 +135,23 @@ public class Simulation extends JPanel {
                     (int) i.getSize() * 2);
             g2d.setColor(Color.RED);
         }
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.GRAY);
         rectHeight = 200;
         g2d.fillRect(0, height - rectHeight, width, rectHeight);
 
+        timeLabel.setBounds(10, height - rectHeight + 10, 100, 30);
+        pausePlayButton.setBounds(120, height - rectHeight + 10, 80, 30);
+        toggleGridButton.setBounds(210, height - rectHeight + 10, 120, 30);
+        if (isGridEnabled) {
+            g2d.setColor(Color.BLACK);
+            int gridHeight = height - rectHeight;
+            for (int i = 0; i < width; i += 10) {
+                g2d.drawLine(i, 0, i, gridHeight);
+            }
+            for (int i = 0; i < gridHeight; i += 10) {
+                g2d.drawLine(0, i, width, i);
+            }
+        }
     }
 
     public LinkedList<Agent> getAgents() {
