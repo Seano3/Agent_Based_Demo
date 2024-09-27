@@ -24,6 +24,7 @@ public class Simulation extends JPanel {
     private long startTime;
     private long pausedTime;
     private long totalPausedDuration;
+    private double initialKE = 0;
 
 
     public Simulation(int width, int height) {
@@ -203,6 +204,13 @@ public class Simulation extends JPanel {
             double KE = 0.5 * i.getSize() * Math.pow(velocity, 2);
 
             totalKE =+ KE; 
+        }
+        if  (frame == 4) {
+            initialKE = totalKE;
+        }
+        if (frame != 0 && initialKE != totalKE) {
+            //OH GOD OH SHIT OH FUCK WE BROKE THE LAWS OF PHYSICS
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         }
 
         return totalKE;
