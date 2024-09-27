@@ -14,7 +14,7 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
-
+    //tests
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
         this.size = size;
