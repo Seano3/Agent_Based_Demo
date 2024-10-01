@@ -203,7 +203,7 @@ public class Simulation extends JPanel {
 
             double KE = 0.5 * i.getSize() * Math.pow(velocity, 2);
 
-            totalKE =+ KE; 
+            totalKE += KE;
         }
         if  (frame == 4) {
             initialKE = totalKE;
