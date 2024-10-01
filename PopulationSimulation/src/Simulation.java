@@ -208,7 +208,7 @@ public class Simulation extends JPanel {
         }
         if (frame != 0 && initialKE != totalKE) {
             //OH GOD OH SHIT OH FUCK WE BROKE THE LAWS OF PHYSICS
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         }
 
         return totalKE;
