@@ -2,8 +2,6 @@ import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import javax.swing.*;
 
@@ -80,7 +78,7 @@ public class Simulation extends JPanel {
 
         startTime = System.currentTimeMillis();
 
-        timer = new Timer(16, e -> {
+        timer = new Timer(4, e -> {
             update();
             repaint();
             updateTimerLabel();

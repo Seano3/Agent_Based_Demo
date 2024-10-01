@@ -70,8 +70,8 @@ public class Agent {
         xAccelaration = 0;
         yAcceraration = 0;
 
-        double newX = location.getX() + xVelocity;
-        double newY = location.getY() + yVelocity;
+        double newX = location.getX() + (xVelocity/4);
+        double newY = location.getY() + (yVelocity/4);
 
         location.changePosition(newX, newY);
         updateCSV();
@@ -185,31 +185,6 @@ public class Agent {
         }
     }
 
-    private double timeToHit(Agent that) {
-        double dx = this.location.getX() - that.location.getX();
-        double dy = this.location.getY() - that.location.getY();
-        double dvx = that.xVelocity - this.xVelocity;
-        double dvy = that.xVelocity - this.xVelocity;
-        double dvdr = dx * dvx + dy * dvy;
-
-        if(dvdr > 0){
-            return Double.POSITIVE_INFINITY;
-        }
-        double dvdv = dvx * dvx + dvy * dvy;
-        if (dvdr == 0){
-            return Double.POSITIVE_INFINITY;
-        }
-
-        double drdr = dx * dx + dy * dy;
-        double sigma = this.size + that.size;
-        double d = (dvdr * dvdr) - dvdv * (drdr - sigma * sigma);
-        
-        if (d < 0){
-            return Double.POSITIVE_INFINITY;
-        }
-
-        return -(dvdr + Math.sqrt(d)) / dvdv;
-    }
 
     @Override
     public String toString() {
