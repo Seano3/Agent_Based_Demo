@@ -179,8 +179,6 @@ public class Agent {
                         that.xVelocity -= Jx / that.size;
                         that.yVelocity -= Jy / that.size;
 
-                        int line = 1;  
-
                     }
                 }
             }
