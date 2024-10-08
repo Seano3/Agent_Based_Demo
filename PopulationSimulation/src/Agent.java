@@ -169,15 +169,17 @@ public class Agent {
                         double dvy = that.yVelocity - this.yVelocity;
 
                         double dvdr = dx * dvx + dy * dvy;
-                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * dist);
-                        double Jx = J * dx / dist;
-                        double Jy = J * dy / dist;
+                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * minDist);
+                        double Jx = J * dx / minDist;
+                        double Jy = J * dy / minDist;
 
                         this.xVelocity += Jx / this.size;
                         this.yVelocity += Jy / this.size;
 
                         that.xVelocity -= Jx / that.size;
                         that.yVelocity -= Jy / that.size;
+
+                        int line = 1;  
 
                     }
                 }
