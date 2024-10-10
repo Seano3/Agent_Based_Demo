@@ -3,6 +3,12 @@ public class Collision {
     int chesksum;
     private int framesRemaining; 
 
+    /**
+     * This class stores information about each collision 
+     * @param Agent1 An agent in the collision 
+     * @param Agent2 The other agent in the collision
+     * @param frame the frame of the collision
+     */
     public Collision (int Agent1, int Agent2, int frame){
         ID = frame + Agent1 + Agent2;
         chesksum = Agent1 + Agent2 + frame; 
