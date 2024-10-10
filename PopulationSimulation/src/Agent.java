@@ -14,7 +14,16 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
-    //testsdffdf
+    /**
+     * This is the main class we use to create balls in the simulation 
+     * @param name The Integer ID of the agent
+     * @param size The radius of the agent, also acts as the mass
+     * @param xCord The x coordinate of the agent 
+     * @param yCord The y coordinate of the agent
+     * @param xVel The x velocity of the agent 
+     * @param yVel The y velocity of the agent
+     * @param sim Passthrough of the simulation the agent will be added to 
+     */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
         this.size = size;
@@ -63,6 +72,9 @@ public class Agent {
         return location;
     }
 
+    /**
+     * <p>Call to update the location of the agent using its velocity and any acceleration it may have</p>
+     */
     public void updateLocation() {
         xVelocity += xAccelaration;
         yVelocity += yAcceraration;
@@ -77,11 +89,24 @@ public class Agent {
         updateCSV();
     }
 
+    /**
+     * <p> Checks the location of the agent to see if it is colliding with anything and updates the velocity accordingly</p>
+     * @param otherAgents List of all other agents in the simulation
+     * @param frame the current frame
+     * @param width width of the simulation
+     * @param height height of the simulation
+     */
     public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height) {
         checkWalls(frame, width, height);
         checkAgents(otherAgents, frame);
     }
 
+    /**
+     * 
+     * @param collision the collision that needs to be checked
+     * @param otherAgent the other agent involved in the collision 
+     * @return Returns a boolean to see of the collision has happened in the last 5 frames, false = already collided 
+     */
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
         for (Collision i : collisions) {
             if (i.chesksum == collision.chesksum) {
@@ -96,6 +121,11 @@ public class Agent {
         return true;
     }
 
+    /**
+     * 
+     * @param collision the collision with the wall
+     * @return returns false if the agent had already collided with the wall withing 5 frames
+     */
     private boolean checkPreviousWallCollisions(Collision collision) {
         for (Collision i : collisions) {
             if (i.chesksum == collision.chesksum) {
@@ -108,6 +138,9 @@ public class Agent {
         return true;
     }
 
+    /**
+     * <p> Checks to see if the collision should be removed from the buffer and does so if need be </p>
+     */
     public void updateCollisionsStorage() {
         for (int i = 0; i < collisions.size(); i++) {
             if (collisions.get(i).removeFrame()) {
@@ -117,8 +150,14 @@ public class Agent {
         }
     }
 
-    private void checkWalls(int frame, int width, int height) { // TODO: Set Collision cooldown on wall collisons then
-                                                                // the ABS solution to clipping :)
+    /**
+     * <p>Checks the collision with each wall and changes the velocity accordingly</p>
+     * @param frame The current frame
+     * @param width width of the simulation
+     * @param height height of the simulation
+     */
+    private void checkWalls(int frame, int width, int height) { 
+                                                                
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
 
             Collision collision = new Collision(this.AgentID, -4, frame);
@@ -152,6 +191,11 @@ public class Agent {
         }
     }
 
+    /**
+     * <p>Checks the collision with each other agent and changes the velocity accordingly</p>
+     * @param otherAgents an array of all other agents in the simulation 
+     * @param frame the current frame
+     */
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
         for (Agent that : otherAgents) {
             if (!(that.location.equals(this.location))) { // insures that it does not check if the ball is colliding with

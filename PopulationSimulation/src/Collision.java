@@ -9,6 +9,10 @@ public class Collision {
         framesRemaining = 5;
     }
 
+    /**
+     * <p>Removes the a frame from the frames remaining and checks to see if there are no remaining frames left and returns true.</p>
+     * @return True for no remaining frames 
+     */
     public Boolean removeFrame(){
         framesRemaining--;
 

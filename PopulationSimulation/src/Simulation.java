@@ -89,6 +89,7 @@ public class Simulation extends JPanel {
 
     }
 
+
     private void updateTimerLabel() {
     long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
     long hours = (elapsedTime / 3600000) % 24;
@@ -106,6 +107,9 @@ public class Simulation extends JPanel {
         agents.add(agent);
     }
 
+    /**
+     * <p>Updates the simulation each frame </p>
+     */
     public void update() {
         for (Agent i : agents) {
             frame++;
@@ -123,6 +127,9 @@ public class Simulation extends JPanel {
         generateCSV(agents.size(), this);
     }
 
+    /**
+     * <p> Updates the GUI</p>
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -157,6 +164,11 @@ public class Simulation extends JPanel {
         return agents;
     }
 
+    /**
+     * <p> Generates the final positions CSV file </p>
+     * @param numAgents number of agents in the sim
+     * @param sim Passthrough the simulation 
+     */
     public static void generateCSV(int numAgents, Simulation sim) { 
         String csvFile = "agent-output.csv"; // Name of the CSV file 
         String[][] data = new String[numAgents][6]; // Data to write to CSV file
@@ -183,6 +195,9 @@ public class Simulation extends JPanel {
         } 
     } 
 
+    /**
+     * <p>Generates a CSV that has the total KE for every frame of the simulation </p>
+     */
     private void debugCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
             writer.write(getKE() + ","
@@ -193,6 +208,10 @@ public class Simulation extends JPanel {
         }
     }
 
+    /**
+     * 
+     * @return The total KE of every agent in the Simulation 
+     */
     private double getKE() {
         double totalKE = 0;
 
