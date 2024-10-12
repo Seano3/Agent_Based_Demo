@@ -158,6 +158,7 @@ public class Agent {
      */
     private void checkWalls(int frame, int width, int height) { 
                                                                 
+        //Checks the velocity for each wall and inverts the velocty accordingly 
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
 
             Collision collision = new Collision(this.AgentID, -4, frame);
@@ -204,11 +205,12 @@ public class Agent {
                 double dy = this.location.getY() - that.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
                 double dist = Math.sqrt(distanceSquared);
+                //dist is calculated using pythagans theorum
                 double minDist = this.size + that.getSize();
-
+            
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) {
+                    if (checkPreviousAgentCollisions(collision, that)) { //Adds the collison to the previous ones if not alreay there 
                         double dvx = that.xVelocity - this.xVelocity;
                         double dvy = that.yVelocity - this.yVelocity;
 
@@ -222,6 +224,8 @@ public class Agent {
 
                         that.xVelocity -= Jx / that.size;
                         that.yVelocity -= Jy / that.size;
+
+                        //Equations used here from equations.pdf in the teams 
 
                     }
                 }
@@ -257,6 +261,3 @@ public class Agent {
     }
 }
 
-// Ideas:
-
-// Subtract the force it gives to others?
