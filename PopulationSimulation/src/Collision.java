@@ -1,6 +1,6 @@
 public class Collision {
     private int ID;
-    int chesksum;
+    int checksum;
     private int framesRemaining; 
 
     /**
@@ -11,7 +11,7 @@ public class Collision {
      */
     public Collision (int Agent1, int Agent2, int frame){
         ID = frame + Agent1 + Agent2;
-        chesksum = Agent1 + Agent2 + frame; 
+        checksum = Agent1 + Agent2 + frame;
         framesRemaining = 5;
     }
 
