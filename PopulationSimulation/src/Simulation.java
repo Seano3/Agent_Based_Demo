@@ -23,6 +23,7 @@ public class Simulation extends JPanel {
     private long pausedTime;
     private long totalPausedDuration;
     private double initialKE = 0;
+    private int totalAgents = 0;
 
 
     public Simulation(int width, int height) {
@@ -105,15 +106,16 @@ public class Simulation extends JPanel {
 
     public void addAgent(Agent agent) {
         agents.add(agent);
+        totalAgents++;
     }
 
     /**
      * <p>Updates the simulation each frame </p>
      */
     public void update() {
+        frame++;
         for (Agent i : agents) {
-            frame++;
-            // System.out.println(i.xAccelaration);
+            // System.out.println(i.xAcceleration);
             i.checkCollisions(agents, frame, width, height);
             i.updateLocation();
             i.updateCollisionsStorage();

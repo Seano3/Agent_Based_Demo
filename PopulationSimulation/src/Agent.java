@@ -6,8 +6,8 @@ public class Agent {
 
     public int AgentID;
     private double size;
-    public double xAccelaration;
-    private double yAcceraration;
+    public double xAcceleration;
+    private double yAcceleration;
     private double xVelocity;
     private double yVelocity;
     private Location location;
@@ -76,11 +76,11 @@ public class Agent {
      * <p>Call to update the location of the agent using its velocity and any acceleration it may have</p>
      */
     public void updateLocation() {
-        xVelocity += xAccelaration;
-        yVelocity += yAcceraration;
+        xVelocity += xAcceleration;
+        yVelocity += yAcceleration;
 
-        xAccelaration = 0;
-        yAcceraration = 0;
+        xAcceleration = 0;
+        yAcceleration = 0;
 
         double newX = location.getX() + (xVelocity/4);
         double newY = location.getY() + (yVelocity/4);
@@ -109,8 +109,8 @@ public class Agent {
      */
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
         for (Collision i : collisions) {
-            if (i.chesksum == collision.chesksum) {
-                // System.out.println("Already Collided");
+            if (i.GetID() == otherAgent.AgentID + AgentID) {
+                System.out.println("Already Collided");
                 return false;
             }
         }
@@ -128,7 +128,7 @@ public class Agent {
      */
     private boolean checkPreviousWallCollisions(Collision collision) {
         for (Collision i : collisions) {
-            if (i.chesksum == collision.chesksum) {
+            if (i.checksum == collision.checksum) {
                 return false;
             }
         }
@@ -144,7 +144,7 @@ public class Agent {
     public void updateCollisionsStorage() {
         for (int i = 0; i < collisions.size(); i++) {
             if (collisions.get(i).removeFrame()) {
-                // System.out.println("Removing Collision " + collisions.get(i).GetID());
+                System.out.println("Removing Collision " + collisions.get(i).GetID());
                 collisions.remove(i);
             }
         }
@@ -205,12 +205,12 @@ public class Agent {
                 double dy = this.location.getY() - that.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
                 double dist = Math.sqrt(distanceSquared);
-                //dist is calculated using pythagans theorum
+                //dist is calculated using pythagorean theorem
                 double minDist = this.size + that.getSize();
             
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) { //Adds the collison to the previous ones if not alreay there 
+                    if (checkPreviousAgentCollisions(collision, that)) { //Adds the collision to the previous ones if not already there
                         double dvx = that.xVelocity - this.xVelocity;
                         double dvy = that.yVelocity - this.yVelocity;
 
