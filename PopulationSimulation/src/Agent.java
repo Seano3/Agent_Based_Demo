@@ -110,7 +110,7 @@ public class Agent {
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
         for (Collision i : collisions) {
             if (i.GetID() == otherAgent.AgentID + AgentID) {
-                System.out.println("Already Collided");
+                //System.out.println("Already Collided");
                 return false;
             }
         }
@@ -144,7 +144,7 @@ public class Agent {
     public void updateCollisionsStorage() {
         for (int i = 0; i < collisions.size(); i++) {
             if (collisions.get(i).removeFrame()) {
-                System.out.println("Removing Collision " + collisions.get(i).GetID());
+                //System.out.println("Removing Collision " + collisions.get(i).GetID());
                 collisions.remove(i);
             }
         }
@@ -215,15 +215,15 @@ public class Agent {
                         double dvy = that.yVelocity - this.yVelocity;
 
                         double dvdr = dx * dvx + dy * dvy;
-                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * minDist);
-                        double Jx = J * dx / minDist;
-                        double Jy = J * dy / minDist;
+                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * dist);
+                        double Jx = J * dx / dist;
+                        double Jy = J * dy / dist;
 
-                        this.xVelocity += Jx / this.size;
-                        this.yVelocity += Jy / this.size;
+                        this.xVelocity += (Jx / this.size);
+                        this.yVelocity += (Jy / this.size);
 
-                        that.xVelocity -= Jx / that.size;
-                        that.yVelocity -= Jy / that.size;
+                        that.xVelocity -= (Jx / that.size);
+                        that.yVelocity -= (Jy / that.size);
 
                         //Equations used here from equations.pdf in the teams 
 
