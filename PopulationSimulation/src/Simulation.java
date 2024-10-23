@@ -15,12 +15,15 @@ public class Simulation extends JPanel {
     int rectHeight;
     String csvName = "Debug.csv";
     private JLabel timeLabel;
+    private JLabel agentCountLabel;
+    private JLabel frameLabel;
     private JButton pausePlayButton;
     private JButton toggleGridButton;
+    private JButton frameStepButton;
     private boolean isPaused;
     private boolean isGridEnabled;
     private long startTime;
-    private long pausedTime;
+    private long pausedTime = 0;
     private long totalPausedDuration;
     private double initialKE = 0;
     private int totalAgents = 0;
@@ -42,21 +45,30 @@ public class Simulation extends JPanel {
         }
 
         timeLabel = new JLabel("Time: 00:00:00");
-        pausePlayButton = new JButton("Pause");
+        agentCountLabel = new JLabel("Agents: 0");
+        frameLabel = new JLabel("Frame: 0");
+
+        pausePlayButton = new JButton("Play");
         toggleGridButton = new JButton("Enable Grid");
-        isPaused = false;
+        frameStepButton = new JButton("Frame Step");
+
+        isPaused = true;
         isGridEnabled = false;
         totalPausedDuration = 0;
+        startTime = System.currentTimeMillis();
+        pausedTime = System.currentTimeMillis();
 
         pausePlayButton.addActionListener(e -> {
             if (isPaused) {
                 pausePlayButton.setText("Pause");
                 timer.start();
                 totalPausedDuration += System.currentTimeMillis() - pausedTime;
+                frameStepButton.setForeground(Color.gray);
             } else {
                 pausePlayButton.setText("Play");
                 timer.stop();
                 pausedTime = System.currentTimeMillis();
+                frameStepButton.setForeground(Color.black);
             }
             isPaused = !isPaused;
         });
@@ -72,24 +84,34 @@ public class Simulation extends JPanel {
                 repaint();
             }
         });
+
+        frameStepButton.addActionListener(e -> {
+            if (isPaused) {
+                update();
+                repaint();
+            }
+        });
+
+
+
         setLayout(null);
         add(timeLabel);
         add(pausePlayButton);
         add(toggleGridButton);
-
-        startTime = System.currentTimeMillis();
+        add(agentCountLabel);
+        add(frameLabel);
+        add(frameStepButton);
 
         timer = new Timer(4, e -> {
             update();
             repaint();
             updateTimerLabel();
         });
-        timer.start();
+        //timer.start();
 
 
 
     }
-
 
     private void updateTimerLabel() {
     long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
@@ -107,6 +129,7 @@ public class Simulation extends JPanel {
     public void addAgent(Agent agent) {
         agents.add(agent);
         totalAgents++;
+        agentCountLabel.setText("Agents: " + totalAgents);
     }
 
     /**
@@ -114,6 +137,7 @@ public class Simulation extends JPanel {
      */
     public void update() {
         frame++;
+        frameLabel.setText("Frame: " + frame);
         for (Agent i : agents) {
             // System.out.println(i.xAcceleration);
             i.checkCollisions(agents, frame, width, height);
@@ -150,6 +174,9 @@ public class Simulation extends JPanel {
         timeLabel.setBounds(10, height - rectHeight + 10, 100, 30);
         pausePlayButton.setBounds(120, height - rectHeight + 10, 80, 30);
         toggleGridButton.setBounds(210, height - rectHeight + 10, 120, 30);
+        frameStepButton.setBounds(340, height - rectHeight + 10, 120, 30);
+        agentCountLabel.setBounds(10, height - rectHeight + 21, 100, 30);
+        frameLabel.setBounds(10, height - rectHeight + 32, 100, 30);
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
             int gridHeight = height - rectHeight;
