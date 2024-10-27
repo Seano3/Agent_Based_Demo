@@ -3,7 +3,7 @@ public class Exit {
 
     private int size;
     private alignment alignment;
-    private Location location; //topmost or leftmost point --- use negatives to extend right or down
+    private Location location; //topmost or leftmost point --- use negative size to extend right or down
 
     public Exit(int size, Location location, alignment alignment) {
         this.size = size;
