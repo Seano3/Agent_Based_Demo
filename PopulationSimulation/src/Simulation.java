@@ -7,6 +7,7 @@ import javax.swing.*;
 
 public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
+    private LinkedList<Exit> exits;
     private Timer timer;
     int frame;
     int width;
@@ -38,6 +39,7 @@ public class Simulation extends JPanel {
         this.height = height;
 
         agents = new LinkedList<>();
+        exits = new LinkedList<>();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -107,9 +109,6 @@ public class Simulation extends JPanel {
             repaint();
             updateTimerLabel();
         });
-        //timer.start();
-
-
 
     }
 
@@ -132,17 +131,31 @@ public class Simulation extends JPanel {
         agentCountLabel.setText("Agents: " + totalAgents);
     }
 
+    public void addExit(Exit exit) { // no need to remove exits
+        exits.add(exit);
+    }
+
+    public void removeAgent(Agent agent) {
+        agents.remove(agent);
+        totalAgents--;
+        agentCountLabel.setText("Agents: " + totalAgents);
+    }
+
     /**
      * <p>Updates the simulation each frame </p>
      */
     public void update() {
         frame++;
         frameLabel.setText("Frame: " + frame);
-        for (Agent i : agents) {
+        for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
-            i.checkCollisions(agents, frame, width, height);
-            i.updateLocation();
-            i.updateCollisionsStorage();
+            agents.get(i).checkCollisions(agents, frame, width, height, exits);
+            agents.get(i).updateLocation();
+            agents.get(i).updateCollisionsStorage();
+
+            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2) {
+               removeAgent(agents.get(i));
+            }
 
             // TODO: Write to Excel sheet of locational data of each Agent
 
@@ -166,6 +179,17 @@ public class Simulation extends JPanel {
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2,
                     (int) i.getSize() * 2);
             g2d.setColor(Color.RED);
+        }
+
+        for (Exit i : exits) {
+            // Draw all exits
+            g2d.setColor(Color.BLUE);
+            if(i.getAlignment() == Exit.alignment.HORIZONTAL) {
+                g2d.fillRect((int) i.getLocation().getX(), 0, i.getSize(), 10);
+            } else {
+                g2d.fillRect(0, (int) i.getLocation().getY(), 10, i.getSize());
+            }
+
         }
         g2d.setColor(Color.GRAY);
         rectHeight = 200;

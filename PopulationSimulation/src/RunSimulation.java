@@ -50,7 +50,8 @@ public class RunSimulation{
             System.err.println("Error reading file: " + e.getMessage());
         }
     
-
+        Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
+        sim.addExit(exit1);
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){

@@ -15,7 +15,7 @@ public class Agent {
     private Simulation sim;
     private String csvName;
     /**
-     * This is the main class we use to create balls in the simulation 
+     * This is the main class we use to create agents in the simulation
      * @param name The Integer ID of the agent
      * @param size The radius of the agent, also acts as the mass
      * @param xCord The x coordinate of the agent 
@@ -96,8 +96,8 @@ public class Agent {
      * @param width width of the simulation
      * @param height height of the simulation
      */
-    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height) {
-        checkWalls(frame, width, height);
+    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height, LinkedList<Exit> exits) {
+        checkWalls(frame, width, height, exits);
         checkAgents(otherAgents, frame);
     }
 
@@ -150,20 +150,52 @@ public class Agent {
         }
     }
 
+
+
+    private boolean inExit(LinkedList<Exit> exits) {
+        for (Exit i : exits) {
+            if(i.getAlignment() == Exit.alignment.VERTICAL) {
+                double lowerBound = i.getLocation().getY();
+                double upperBound = i.getLocation().getY() + i.getSize();
+                if (location.getY() < upperBound && location.getY() > lowerBound && location.getX() < 10) {
+                    return true;
+                }
+            } else { // horizontal
+                double lowerBound = i.getLocation().getX();
+                double upperBound = i.getLocation().getX() + i.getSize();
+                if (location.getX() < upperBound && location.getX() > lowerBound) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * <p>Checks the collision with each wall and changes the velocity accordingly</p>
      * @param frame The current frame
      * @param width width of the simulation
      * @param height height of the simulation
      */
-    private void checkWalls(int frame, int width, int height) { 
-                                                                
+
+    private void checkWalls(int frame, int width, int height, LinkedList<Exit> exits) {
+        //If we are inside an exit, ignore the wall check
+        if(inExit(exits)) {
+            return;
+        }
         //Checks the velocity for each wall and inverts the velocty accordingly 
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
 
             Collision collision = new Collision(this.AgentID, -4, frame);
             if (checkPreviousWallCollisions(collision)) {
                 this.xVelocity = -Math.abs(xVelocity);
+            }
+        }
+        if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
+
+            Collision collision = new Collision(this.AgentID, -2, frame);
+            if (checkPreviousWallCollisions(collision)) {
+                this.xVelocity = Math.abs(xVelocity);
             }
         }
 
@@ -175,15 +207,7 @@ public class Agent {
             }
         }
 
-        if (getLocation().getX() - getSize() < 0 - getSize()) { // Left Wall
-
-            Collision collision = new Collision(this.AgentID, -2, frame);
-            if (checkPreviousWallCollisions(collision)) {
-                this.xVelocity = Math.abs(xVelocity);
-            }
-        }
-
-        if (getLocation().getY() + getSize() > height - this.sim.getRectHeight() - getSize()) { // Bottem wall
+        if (getLocation().getY() + getSize() > height - this.sim.getRectHeight() - getSize()) { // Bottom wall
 
             Collision collision = new Collision(this.AgentID, -1, frame);
             if (checkPreviousWallCollisions(collision)) {
