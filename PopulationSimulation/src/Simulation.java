@@ -204,10 +204,10 @@ public class Simulation extends JPanel {
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
             int gridHeight = height - rectHeight;
-            for (int i = 0; i < width; i += 10) {
+            for (int i = 0; i < width; i += 30) {
                 g2d.drawLine(i, 0, i, gridHeight);
             }
-            for (int i = 0; i < gridHeight; i += 10) {
+            for (int i = 0; i < gridHeight; i += 30) {
                 g2d.drawLine(0, i, width, i);
             }
         }

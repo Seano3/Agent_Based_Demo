@@ -82,8 +82,8 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
-        double newX = location.getX() + (xVelocity/4);
-        double newY = location.getY() + (yVelocity/4);
+        double newX = location.getX() + (xVelocity*0.01);
+        double newY = location.getY() + (yVelocity*0.01);
 
         location.changePosition(newX, newY);
         updateCSV();

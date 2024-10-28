@@ -23,3 +23,11 @@ Elderly
 Scale	Size	±	Speed	±
 Meters	0.25	0.02	0.8	0.3
 Pixels	7.5	    0.6	    24	9
+
+
+
+Timestep: 
+
+Delta T < 0.1(min radius)/(max velocity)
+
+0.1(0.195)/(1.55) = 0.01
