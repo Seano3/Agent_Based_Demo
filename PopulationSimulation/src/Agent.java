@@ -14,6 +14,7 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
+    private final double TIME_STEP = 0.01; 
     /**
      * This is the main class we use to create agents in the simulation
      * @param name The Integer ID of the agent
@@ -82,8 +83,8 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
-        double newX = location.getX() + (xVelocity*0.01);
-        double newY = location.getY() + (yVelocity*0.01);
+        double newX = location.getX() + (xVelocity*TIME_STEP);
+        double newY = location.getY() + (yVelocity*TIME_STEP);
 
         location.changePosition(newX, newY);
         updateCSV();
