@@ -50,8 +50,42 @@ public class RunSimulation{
             System.err.println("Error reading file: " + e.getMessage());
         }
     
-        Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
-        sim.addExit(exit1);
+        //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
+
+        try (BufferedReader br = new BufferedReader(new FileReader("map-input.csv"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] attributes = line.split(",");
+                
+                if (attributes.length != 4) {
+                    System.err.println("Invalid number of attributes in line: " + line);
+                    continue;
+                }
+
+                try {
+                    int size = Integer.parseInt(attributes[0]);
+                    double xCoord = Double.parseDouble(attributes[1]);
+                    double yCoord = Double.parseDouble(attributes[2]);
+                    double alignmentNum = Double.parseDouble(attributes[3]);
+                    Exit exit;
+                    Location location = new Location(xCoord, yCoord);
+                    if (alignmentNum == 0){
+                        exit = new Exit(size, location, Exit.alignment.VERTICAL);
+                    } else {
+                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
+                    }
+                    
+                    sim.addExit(exit);
+                    System.out.println("Created Exit: " + exit);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){

@@ -28,6 +28,7 @@ public class Simulation extends JPanel {
     private long totalPausedDuration;
     private double initialKE = 0;
     private int totalAgents = 0;
+    private int totalExits = 0;
 
 
     public Simulation(int width, int height) {
@@ -133,6 +134,7 @@ public class Simulation extends JPanel {
 
     public void addExit(Exit exit) { // no need to remove exits
         exits.add(exit);
+        totalExits++;
     }
 
     public void removeAgent(Agent agent) {
