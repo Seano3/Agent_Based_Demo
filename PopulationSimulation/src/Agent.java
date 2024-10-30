@@ -158,13 +158,19 @@ public class Agent {
             if(i.getAlignment() == Exit.alignment.VERTICAL) {
                 double lowerBound = i.getLocation().getY();
                 double upperBound = i.getLocation().getY() + i.getSize();
-                if (location.getY() < upperBound && location.getY() > lowerBound && location.getX() < 10) {
+                if (location.getY() < upperBound - size / 2 &&
+                        location.getY() > lowerBound - size / 2 &&
+                        location.getX() < i.getLocation().getX() + size * 2 &&
+                        location.getX() > i.getLocation().getX() - size * 2){
                     return true;
                 }
             } else { // horizontal
                 double lowerBound = i.getLocation().getX();
                 double upperBound = i.getLocation().getX() + i.getSize();
-                if (location.getX() < upperBound && location.getX() > lowerBound) {
+                if (location.getX() < upperBound - size / 2 &&
+                        location.getX() > lowerBound - size / 2 &&
+                        location.getY() < i.getLocation().getY() + size * 2 &&
+                        location.getY() > i.getLocation().getY() - size * 2){
                     return true;
                 }
             }
