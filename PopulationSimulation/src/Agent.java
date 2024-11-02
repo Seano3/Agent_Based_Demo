@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.Color;
 
 public class Agent {
 
@@ -14,7 +15,8 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
-    private final double TIME_STEP = 0.01; 
+    private final double TIME_STEP = 0.01;
+    private Color color;
     /**
      * This is the main class we use to create agents in the simulation
      * @param name The Integer ID of the agent
@@ -33,6 +35,7 @@ public class Agent {
         location = new Location(xCord, yCord);
         collisions = new LinkedList<Collision>();
         this.sim = sim;
+        this.color = new Color((int)(Math.random() * 0x1000000));
 
         csvName = "Agent-" + AgentID + ".csv";
 
@@ -72,6 +75,11 @@ public class Agent {
     public Location getLocation() {
         return location;
     }
+
+    public Color getColor() {
+        return color;
+    }
+
 
     /**
      * <p>Call to update the location of the agent using its velocity and any acceleration it may have</p>
@@ -161,10 +169,8 @@ public class Agent {
         return null;
     }
 
-
-
     private void checkObstacles(LinkedList<Obstacle> obstacles, LinkedList<Exit> exits) {
-
+        //left blank temporarily
     }
 
     /**

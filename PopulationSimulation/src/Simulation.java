@@ -31,7 +31,6 @@ public class Simulation extends JPanel {
     private int totalAgents = 0;
     private int totalExits = 0;
 
-
     public Simulation(int width, int height) {
         frame = 0;
         setPreferredSize(new Dimension(width, height));
