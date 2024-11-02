@@ -8,6 +8,7 @@ import javax.swing.*;
 public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
     private LinkedList<Exit> exits;
+    private LinkedList<Obstacle> obstacle;
     private Timer timer;
     int frame;
     int width;
@@ -151,7 +152,7 @@ public class Simulation extends JPanel {
         frameLabel.setText("Frame: " + frame);
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
-            agents.get(i).checkCollisions(agents, frame, width, height, exits);
+            agents.get(i).checkCollisions(agents, frame, width, height, exits, obstacle);
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
 

@@ -97,9 +97,10 @@ public class Agent {
      * @param width width of the simulation
      * @param height height of the simulation
      */
-    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height, LinkedList<Exit> exits) {
+    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, int width, int height, LinkedList<Exit> exits, LinkedList<Obstacle> obstacles) {
         checkWalls(frame, width, height, exits);
         checkAgents(otherAgents, frame);
+        checkObstacles(obstacles, exits);
     }
 
     /**
@@ -160,13 +161,18 @@ public class Agent {
         return null;
     }
 
+
+
+    private void checkObstacles(LinkedList<Obstacle> obstacles, LinkedList<Exit> exits) {
+
+    }
+
     /**
      * <p>Checks the collision with each wall and changes the velocity accordingly</p>
      * @param frame The current frame
      * @param width width of the simulation
      * @param height height of the simulation
      */
-
     private void checkWalls(int frame, int width, int height, LinkedList<Exit> exits) {
         //If we are inside an exit, modify wall checks
         Exit currentExit = inExit(exits);
