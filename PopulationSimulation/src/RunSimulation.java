@@ -77,7 +77,7 @@ public class RunSimulation{
                     }
                     
                     sim.addExit(exit);
-                    System.out.println("Created Exit: " + exit);
+                    System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }

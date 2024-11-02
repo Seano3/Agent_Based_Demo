@@ -17,6 +17,10 @@ public class Location {
         yCord = newY; 
     }
 
+    public String toString() {
+        return "(" + xCord + ", " + yCord + ")";
+    }
+
     public double getX(){
         return xCord;
     }
