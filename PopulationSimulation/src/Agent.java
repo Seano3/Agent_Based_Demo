@@ -151,28 +151,10 @@ public class Agent {
         }
     }
 
-
-
     private Exit inExit(LinkedList<Exit> exits) {
         for (Exit i : exits) {
-            if(i.getAlignment() == Exit.alignment.VERTICAL) {
-                double lowerBound = i.getLocation().getY();
-                double upperBound = i.getLocation().getY() + i.getSize();
-                if (location.getY() < upperBound + size &&
-                        location.getY() > lowerBound - size &&
-                        location.getX() < i.getLocation().getX() + size &&
-                        location.getX() > i.getLocation().getX() - size * 2) {
-                    return i;
-                }
-            } else { // horizontal
-                double lowerBound = i.getLocation().getX();
-                double upperBound = i.getLocation().getX() + i.getSize();
-                if (location.getX() < upperBound - size / 2 &&
-                        location.getX() > lowerBound - size / 2 &&
-                        location.getY() < i.getLocation().getY() &&
-                        location.getY() > i.getLocation().getY() - size * 2) {
-                    return i;
-                }
+            if(i.inExit(this)) {
+                return i;
             }
         }
         return null;
@@ -209,7 +191,20 @@ public class Agent {
 
 
             } else { //alignment.horizontal
+                if (getLocation().getX() + getSize() > currentExit.getLocation().getX() + currentExit.getSize()) { // Right wall
 
+                    Collision collision = new Collision(this.AgentID, -4, frame);
+                    if (checkPreviousWallCollisions(collision)) {
+                        this.xVelocity = -Math.abs(xVelocity);
+                    }
+                }
+                if (getLocation().getX() - getSize() < currentExit.getLocation().getX()) { // Left Wall
+
+                    Collision collision = new Collision(this.AgentID, -2, frame);
+                    if (checkPreviousWallCollisions(collision)) {
+                        this.xVelocity = Math.abs(xVelocity);
+                    }
+                }
             }
             return;
         }

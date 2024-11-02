@@ -22,4 +22,22 @@ public class Exit {
     public Location getLocation() {
         return location;
     }
+
+    public boolean inExit(Agent agent) {
+        if(alignment == alignment.VERTICAL) {
+            double lowerBound = location.getY();
+            double upperBound = location.getY() + size;
+            return agent.getLocation().getY() < upperBound + agent.getSize() &&
+                    agent.getLocation().getY() > lowerBound - agent.getSize() &&
+                    agent.getLocation().getX() < location.getX() + agent.getSize() &&
+                    agent.getLocation().getX() > location.getX() - agent.getSize() * 2;
+        } else { // horizontal
+            double lowerBound = location.getX();
+            double upperBound = location.getX() + size;
+            return location.getX() < upperBound - agent.getSize() &&
+                    agent.getLocation().getX() > lowerBound - agent.getSize() &&
+                    agent.getLocation().getY() < location.getY() + agent.getSize() &&
+                    agent.getLocation().getY() > location.getY() - agent.getSize() * 2;
+        }
+    }
 }
