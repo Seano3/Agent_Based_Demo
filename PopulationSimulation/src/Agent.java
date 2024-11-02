@@ -153,29 +153,29 @@ public class Agent {
 
 
 
-    private boolean inExit(LinkedList<Exit> exits) {
+    private Exit inExit(LinkedList<Exit> exits) {
         for (Exit i : exits) {
             if(i.getAlignment() == Exit.alignment.VERTICAL) {
                 double lowerBound = i.getLocation().getY();
                 double upperBound = i.getLocation().getY() + i.getSize();
                 if (location.getY() < upperBound - size / 2 &&
                         location.getY() > lowerBound - size / 2 &&
-                        location.getX() < i.getLocation().getX() + size * 2 &&
-                        location.getX() > i.getLocation().getX() - size * 2){
-                    return true;
+                        location.getX() < i.getLocation().getX() &&
+                        location.getX() > i.getLocation().getX() - size * 2) {
+                    return i;
                 }
             } else { // horizontal
                 double lowerBound = i.getLocation().getX();
                 double upperBound = i.getLocation().getX() + i.getSize();
                 if (location.getX() < upperBound - size / 2 &&
                         location.getX() > lowerBound - size / 2 &&
-                        location.getY() < i.getLocation().getY() + size * 2 &&
-                        location.getY() > i.getLocation().getY() - size * 2){
-                    return true;
+                        location.getY() < i.getLocation().getY() &&
+                        location.getY() > i.getLocation().getY() - size * 2) {
+                    return i;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -186,11 +186,35 @@ public class Agent {
      */
 
     private void checkWalls(int frame, int width, int height, LinkedList<Exit> exits) {
-        //If we are inside an exit, ignore the wall check
-        if(inExit(exits)) {
+        //If we are inside an exit, modify wall checks
+        Exit currentExit = inExit(exits);
+        if (currentExit != null) {
+            if(currentExit.getAlignment() == Exit.alignment.VERTICAL) {
+
+                if (getLocation().getY() - getSize() < currentExit.getLocation().getY() - getSize()) { // Top Wall
+
+                    Collision collision = new Collision(this.AgentID, -3, frame);
+                    if (checkPreviousWallCollisions(collision)) {
+                        this.yVelocity = Math.abs(yVelocity);
+                    }
+                }
+
+                if (getLocation().getY() + getSize() > currentExit.getLocation().getY() + currentExit.getSize()-getSize()) { // Bottom wall
+
+                    Collision collision = new Collision(this.AgentID, -1, frame);
+                    if (checkPreviousWallCollisions(collision)) {
+                        this.yVelocity = -Math.abs(yVelocity);
+                    }
+                }
+
+
+            } else { //alignment.horizontal
+
+            }
             return;
         }
-        //Checks the velocity for each wall and inverts the velocty accordingly 
+
+        //Checks the velocity for each wall and inverts the velocity accordingly
         if (getLocation().getX() + getSize() > width - getSize()) { // Right wall
 
             Collision collision = new Collision(this.AgentID, -4, frame);
