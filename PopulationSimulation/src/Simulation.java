@@ -178,7 +178,7 @@ public class Simulation extends JPanel {
         g2d.setColor(Color.GREEN);
         for (Agent i : agents) {
             // Draw all agents
-            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2,
+            g2d.fillOval((int) i.getLocation().getX()-(int)i.getSize(), (int) i.getLocation().getY()-(int)i.getSize(), (int) i.getSize() * 2,
                     (int) i.getSize() * 2);
             g2d.setColor(Color.RED);
         }
