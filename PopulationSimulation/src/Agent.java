@@ -222,14 +222,14 @@ public class Agent {
         }
 
         //Checks the velocity for each wall and inverts the velocity accordingly
-        if (getLocation().getX() + getSize() > width) { // Right wall
+        if (getLocation().getX() > width) { // Right wall
 
             Collision collision = new Collision(this.AgentID, -4, frame);
             if (checkPreviousWallCollisions(collision)) {
                 this.xVelocity = -Math.abs(xVelocity);
             }
         }
-        if (getLocation().getX() - getSize() < 0) { // Left Wall
+        if (getLocation().getX() < 0) { // Left Wall
 
             Collision collision = new Collision(this.AgentID, -2, frame);
             if (checkPreviousWallCollisions(collision)) {
@@ -237,7 +237,7 @@ public class Agent {
             }
         }
 
-        if (getLocation().getY()  - getSize() < 0) { // Top Wall
+        if (getLocation().getY()  < 0) { // Top Wall
 
             Collision collision = new Collision(this.AgentID, -3, frame);
             if (checkPreviousWallCollisions(collision)) {
@@ -245,7 +245,7 @@ public class Agent {
             }
         }
 
-        if (getLocation().getY() + getSize() > height - this.sim.getRectHeight()) { // Bottom wall
+        if (getLocation().getY() > height - this.sim.getRectHeight()) { // Bottom wall
 
             Collision collision = new Collision(this.AgentID, -1, frame);
             if (checkPreviousWallCollisions(collision)) {
