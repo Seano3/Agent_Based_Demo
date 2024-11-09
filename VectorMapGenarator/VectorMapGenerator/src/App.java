@@ -33,6 +33,17 @@ public class App {
             map[x][0] = 0; 
         }
 
-        
+        //starting with a zero. find all nearby squares without a number or a higher number and set it to n + 1 where in is your squares number
+
+        LinkedList<Cord> exits = new LinkedList<>(); // and Array of all 0 squares
+
+        for(int x = 0; x > map.length; x++){
+            for(int y = 0; y > map[0].length; y++){
+                if(map[x][y] == 0){
+                    exits.add(new Cord(x, y));
+                }
+            }
+        }
+
     }
 }
