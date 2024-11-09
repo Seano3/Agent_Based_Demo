@@ -4,6 +4,8 @@ public class Collision {
     private int framesRemaining;
     private int Agent1;
     private int Agent2;
+    private double height;
+    private double width;
 
     /**
      * This class stores information about each collision 
@@ -41,5 +43,13 @@ public class Collision {
 
     public int GetID(){
         return ID;
+    }
+
+    public double getWidth(){
+        return width;
+    }
+
+    public double getHeight(){
+        return height; 
     }
 }

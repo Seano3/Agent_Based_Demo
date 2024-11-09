@@ -84,6 +84,38 @@ public class RunSimulation{
         }
         
 
+        try (BufferedReader br = new BufferedReader(new FileReader("obsticle-input.csv"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] attributes = line.split(",");
+                
+                if (attributes.length != 4) {
+                    System.err.println("Invalid number of attributes in line: " + line);
+                    continue;
+                }
+
+                try {
+                    int xCoord = Integer.parseInt(attributes[0]);
+                    double yCoord = Double.parseDouble(attributes[1]);
+                    double length = Double.parseDouble(attributes[2]);
+                    double with = Double.parseDouble(attributes[3]);
+
+                    Obstacle obj;
+                    Location location = new Location(xCoord, yCoord);
+                    
+                    obj = new Box(location, length, with,0); 
+                    
+                    sim.addObjs(obj);
+                    System.out.println("Created Obsticle: " + obj.getLocation().toString());
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));

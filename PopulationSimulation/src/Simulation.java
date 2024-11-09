@@ -41,6 +41,7 @@ public class Simulation extends JPanel {
 
         agents = new LinkedList<>();
         exits = new LinkedList<>();
+        obstacle = new LinkedList<>(); 
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -137,6 +138,10 @@ public class Simulation extends JPanel {
         totalExits++;
     }
 
+    public void addObjs(Obstacle obj){
+        obstacle.add(obj);
+    }
+
     public void removeAgent(Agent agent) {
         agents.remove(agent);
         totalAgents--;
@@ -194,6 +199,12 @@ public class Simulation extends JPanel {
                 g2d.fillRect(0, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
+        }
+
+        for (Obstacle i : obstacle){
+            //Draw all obsticles 
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 60, 60);
         }
         g2d.setColor(Color.GRAY);
         rectHeight = 200;
