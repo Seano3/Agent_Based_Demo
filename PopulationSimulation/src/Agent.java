@@ -1,7 +1,7 @@
-import java.util.*;
+import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.awt.Color;
+import java.util.*;
 
 public class Agent {
 
@@ -15,6 +15,7 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
+    private String folder; 
     private final double TIME_STEP = 0.01;
     private Color color;
     /**
@@ -37,7 +38,7 @@ public class Agent {
         this.sim = sim;
         this.color = new Color((int)(Math.random() * 0x1000000));
 
-        csvName = "Agent-" + AgentID + ".csv";
+        csvName = "src/AgentCSVs/Agent-" + AgentID + ".csv";
 
         try (FileWriter writer = new FileWriter(csvName)) {
             writer.write(AgentID + "," +
@@ -48,7 +49,7 @@ public class Agent {
                     yVelocity);
             writer.write("\n");
         } catch (IOException e) {
-            System.err.println("Error writing to CSV file: " + e.getMessage());
+            //System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
 
@@ -318,7 +319,7 @@ public class Agent {
                     yVelocity);
             writer.write("\n");
         } catch (IOException e) {
-            System.err.println("Error writing to CSV file: " + e.getMessage());
+            //System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
 }
