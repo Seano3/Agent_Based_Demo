@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 import javax.swing.*;
 //test
 public class RunSimulation{
@@ -52,7 +49,7 @@ public class RunSimulation{
     
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("map-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("exit-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
