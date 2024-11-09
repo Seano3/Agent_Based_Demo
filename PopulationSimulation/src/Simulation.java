@@ -194,9 +194,9 @@ public class Simulation extends JPanel {
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if(i.getAlignment() == Exit.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), 0, i.getSize(), 10);
+                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), i.getSize(), 10);
             } else {
-                g2d.fillRect(0, (int) i.getLocation().getY(), 10, i.getSize());
+                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 10, i.getSize());
             }
 
         }
@@ -204,7 +204,7 @@ public class Simulation extends JPanel {
         for (Obstacle i : obstacle){
             //Draw all obsticles 
             g2d.setColor(Color.BLACK);
-            g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 60, 60);
+            g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 200, 250); //TODO: Replace with box height/width
         }
         g2d.setColor(Color.GRAY);
         rectHeight = 200;

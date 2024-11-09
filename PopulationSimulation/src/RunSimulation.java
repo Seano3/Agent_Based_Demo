@@ -5,13 +5,14 @@ import javax.swing.*;
 //test
 public class RunSimulation{
 
+    private static final int PANNAL_HEIGHT = 200; 
     
     
     public static void main(String[] args) throws Exception {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(800, 800);
+        Simulation sim = new Simulation(1100, 720 + PANNAL_HEIGHT);
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
@@ -98,13 +99,13 @@ public class RunSimulation{
                 try {
                     int xCoord = Integer.parseInt(attributes[0]);
                     double yCoord = Double.parseDouble(attributes[1]);
-                    double length = Double.parseDouble(attributes[2]);
+                    double height = Double.parseDouble(attributes[2]);
                     double with = Double.parseDouble(attributes[3]);
 
                     Obstacle obj;
                     Location location = new Location(xCoord, yCoord);
                     
-                    obj = new Box(location, length, with,0); 
+                    obj = new Box(location, with, height,0); 
                     
                     sim.addObjs(obj);
                     System.out.println("Created Obsticle: " + obj.getLocation().toString());
