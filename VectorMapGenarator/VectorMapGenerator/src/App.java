@@ -7,41 +7,47 @@ public class App {
     public static void main(String[] args) throws Exception {
         int[][] map = new int[110][72];
 
-        // for (int x = 85; x <= 105; x++) { // Creates an obstacle block
-        // for (int y = 25; y <= 50; y++) {
-        // map[x][y] = -1;
-        // }
-        // }
+        for (int x = 0; x < 110; x++) { 
+            for (int y = 0; y < 72; y++) {
+                map[x][y] = Integer.MAX_VALUE;
+            }
+        }
 
-        // // door 1
-        // for (int x = 44; x <= 45; x++) {
-        // map[x][72] = 0;
-        // }
+        for (int x = 85; x <= 105; x++) { // Creates an obstacle block
+            for (int y = 25; y <= 50; y++) {
+                map[x][y] = -1;
+            }
+        }
 
-        // // door 2
-        // for (int y = 67; y <= 71; y++) {
-        // map[0][y] = 0;
-        // }
+        // door 1
+        for (int x = 44; x <= 45; x++) {
+            map[x][71] = 0;
+        }
 
-        // // door 4
-        // for (int x = 188; x <= 189; x++) {
-        // map[x][0] = 0;
-        // }
+        // door 2
+        for (int y = 67; y <= 71; y++) {
+            map[0][y] = 0;
+        }
 
-        // // door 5
+        // door 4
+        for (int x = 18; x <= 19; x++) {
+            map[x][0] = 0;
+        }
 
-        // for (int x = 940; x <= 941; x++) {
-        // map[x][0] = 0;
-        // }
+        // door 5
 
-        int[][] inputGrid = {
-                { 0, 1, 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 1 },
-                { 1, 1, 1, 0 }
-        };
+        for (int x = 92; x <= 93; x++) {
+            map[x][0] = 0;
+        }
 
-        int[][] result = calculateDistances(inputGrid);
+        // int[][] inputGrid = {
+        // { 0, 1, 1, 1 },
+        // { 1, 1, 1, 1 },
+        // { 1, 1, 1, 1 },
+        // { 0, 1, 1, 0 }
+        // };
+
+        int[][] result = calculateDistances(map);
 
         System.out.println("Results Grid: \n");
         for (int x = 0; x < result.length; x++) {
@@ -98,7 +104,7 @@ public class App {
                 }
             }
         }
-        return distances; 
+        return distances;
 
     }
 
