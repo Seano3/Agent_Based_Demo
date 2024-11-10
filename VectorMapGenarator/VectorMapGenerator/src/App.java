@@ -131,7 +131,7 @@ public class App {
     }
 
     private static boolean isValidPosition(int grid[][], int row, int col) {
-        return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length && grid[row][col] != 0;
+        return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length && grid[row][col] != 0 && grid[row][col] != -1;
     }
 
     public static void exportToCSV(int[][] data, String fileName) throws IOException {
