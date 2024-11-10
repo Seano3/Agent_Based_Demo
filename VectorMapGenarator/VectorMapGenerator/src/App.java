@@ -1,8 +1,12 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class App {
     final int LENGTH = 110;
     final int HEIGHT = 72;
+    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; //these set the dx dy for each possible jump in the BFS algo
 
     public static void main(String[] args) throws Exception {
         int[][] map = new int[110][72];
@@ -55,6 +59,12 @@ public class App {
                 System.out.print("[" + result[x][y] + "]");
             }
             System.out.println();
+        }
+
+        try {
+            exportToCSV(result, "vector_map.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         // starting with a zero. find all nearby squares without a number or a higher
@@ -124,6 +134,16 @@ public class App {
         return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length && grid[row][col] != 0;
     }
 
-    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+    public static void exportToCSV(int[][] data, String fileName) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (int[] row : data) {
+                for (int cell : row) {
+                    writer.write(String.valueOf(cell));
+                    writer.write(",");
+                }
+                writer.newLine();
+            }
+        }
+    }
 
 }
