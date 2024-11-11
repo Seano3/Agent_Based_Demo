@@ -318,29 +318,14 @@ public class Agent {
                     yVelocity);
             writer.write("\n");
         } catch (IOException e) {
+            try {
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
 
-    private double getKE() {
-        double totalKE = 0;
 
-        for(Agent i : agents){
-            double velocity = Math.sqrt(Math.pow(i.getXVelocity(), 2) + Math.pow(i.getYVelocity(), 2));
-
-            double KE = 0.5 * i.getSize() * Math.pow(velocity, 2);
-
-            totalKE += KE;
-        }
-        if  (frame == 4) {
-            initialKE = totalKE;
-        }
-        if (frame != 0 && initialKE != totalKE) {
-            //OH GOD OH SHIT OH FUCK WE BROKE THE LAWS OF PHYSICS
-            //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        }
-
-        return totalKE;
-    }
 }
 
