@@ -21,11 +21,11 @@ public class Agent {
      * This is the main class we use to create agents in the simulation
      * @param name The Integer ID of the agent
      * @param size The radius of the agent, also acts as the mass
-     * @param xCord The x coordinate of the agent 
+     * @param xCord The x coordinate of the agent
      * @param yCord The y coordinate of the agent
-     * @param xVel The x velocity of the agent 
+     * @param xVel The x velocity of the agent
      * @param yVel The y velocity of the agent
-     * @param sim Passthrough of the simulation the agent will be added to 
+     * @param sim Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
@@ -112,7 +112,7 @@ public class Agent {
     }
 
     /**
-     * 
+     *
      * @param collision the collision that needs to be checked
      * @param otherAgent the other agent involved in the collision 
      * @return Returns a boolean to see of the collision has happened in the last 5 frames, false = already collided 
@@ -132,7 +132,7 @@ public class Agent {
     }
 
     /**
-     * 
+     *
      * @param collision the collision with the wall
      * @return returns false if the agent had already collided with the wall withing 5 frames
      */
@@ -269,7 +269,7 @@ public class Agent {
                 double dist = Math.sqrt(distanceSquared);
                 //dist is calculated using pythagorean theorem
                 double minDist = this.size + that.getSize();
-            
+
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, that.AgentID, frame);
                     if (checkPreviousAgentCollisions(collision, that)) { //Adds the collision to the previous ones if not already there

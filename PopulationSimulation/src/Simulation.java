@@ -10,6 +10,7 @@ public class Simulation extends JPanel {
     private LinkedList<Exit> exits;
     private LinkedList<Obstacle> obstacle;
     private Timer timer;
+    private Pathfinding pathfinding;
     int frame;
     int width;
     int height;
@@ -41,7 +42,7 @@ public class Simulation extends JPanel {
 
         agents = new LinkedList<>();
         exits = new LinkedList<>();
-        obstacle = new LinkedList<>(); 
+        obstacle = new LinkedList<>();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -115,13 +116,13 @@ public class Simulation extends JPanel {
     }
 
     private void updateTimerLabel() {
-    long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
-    long hours = (elapsedTime / 3600000) % 24;
-    long minutes = (elapsedTime / 60000) % 60;
-    long seconds = (elapsedTime / 1000) % 60;
-    String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    timeLabel.setText("Time: " + formattedTime);
-}
+        long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
+        long hours = (elapsedTime / 3600000) % 24;
+        long minutes = (elapsedTime / 60000) % 60;
+        long seconds = (elapsedTime / 1000) % 60;
+        String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        timeLabel.setText("Time: " + formattedTime);
+    }
 
     public int getRectHeight() {
         return rectHeight;
@@ -161,7 +162,7 @@ public class Simulation extends JPanel {
             agents.get(i).updateCollisionsStorage();
 
             if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2) {
-               removeAgent(agents.get(i));
+                removeAgent(agents.get(i));
             }
 
             // TODO: Write to Excel sheet of locational data of each Agent
@@ -202,7 +203,7 @@ public class Simulation extends JPanel {
         }
 
         for (Obstacle i : obstacle){
-            //Draw all obsticles 
+            //Draw all obsticles
             g2d.setColor(Color.BLACK);
             g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 200, 250); //TODO: Replace with box height/width
         }
@@ -235,10 +236,10 @@ public class Simulation extends JPanel {
     /**
      * <p> Generates the final positions CSV file </p>
      * @param numAgents number of agents in the sim
-     * @param sim Passthrough the simulation 
+     * @param sim Passthrough the simulation
      */
-    public static void generateCSV(int numAgents, Simulation sim) { 
-        String csvFile = "agent-output.csv"; // Name of the CSV file 
+    public static void generateCSV(int numAgents, Simulation sim) {
+        String csvFile = "agent-output.csv"; // Name of the CSV file
         String[][] data = new String[numAgents][6]; // Data to write to CSV file
         LinkedList<Agent> agents = sim.getAgents();
         for(int i = 0; i < numAgents; i++){
@@ -249,19 +250,19 @@ public class Simulation extends JPanel {
             data[i][4] = Double.toString(agents.get(i).getXVelocity());
             data[i][5] = Double.toString(agents.get(i).getYVelocity());
         }
- 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) { 
-            writer.newLine(); 
-  
-            for (String[] row : data) { 
-                writer.write(String.join(",", row)); 
-                writer.newLine(); 
-            } 
- 
-        } catch (IOException e) { 
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+            writer.newLine();
+
+            for (String[] row : data) {
+                writer.write(String.join(",", row));
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
-        } 
-    } 
+        }
+    }
 
     /**
      * <p>Generates a CSV that has the total KE for every frame of the simulation </p>
@@ -269,7 +270,7 @@ public class Simulation extends JPanel {
     private void debugCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
             writer.write(getKE() + ","
-                        );
+            );
             writer.write("\n");
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
@@ -277,7 +278,7 @@ public class Simulation extends JPanel {
     }
 
     /**
-     * 
+     *
      * @return The total KE of every agent in the Simulation 
      */
     private double getKE() {
