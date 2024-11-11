@@ -6,7 +6,7 @@ import java.util.*;
 public class App {
     final int LENGTH = 110;
     final int HEIGHT = 72;
-    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; //these set the dx dy for each possible jump in the BFS algo
+    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; //these set the {dx dy} for each possible jump in the BFS algo
 
     public static void main(String[] args) throws Exception {
         int[][] map = new int[110][72];
@@ -17,11 +17,11 @@ public class App {
             }
         }
 
-        for (int x = 85; x <= 105; x++) { // Creates an obstacle block
-            for (int y = 25; y <= 50; y++) {
-                map[x][y] = -1;
-            }
-        }
+        // for (int x = 85; x <= 105; x++) { // Creates an obstacle block
+        //     for (int y = 25; y <= 50; y++) {
+        //         map[x][y] = -1;
+        //     }
+        // }
 
         // door 1
         for (int x = 44; x <= 45; x++) {
