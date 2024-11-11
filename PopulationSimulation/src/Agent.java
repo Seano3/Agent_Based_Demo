@@ -316,6 +316,12 @@ public class Agent {
                     location.getY() + "," +
                     xVelocity + "," +
                     yVelocity);
+            int c;
+            int d;
+            int e;
+            int f;
+            c = 0;
+
             writer.write("\n");
         } catch (IOException e) {
             try {
