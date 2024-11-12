@@ -101,10 +101,13 @@ public class Agent {
         int south = map[xMeter][ymeter + 1];
         int east = map[xMeter + 1][ymeter];
         int west = map[xMeter - 1][ymeter]; 
+        //Realistly we should also check the diagonal but just to get it to work these four will do
 
         System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west); 
         System.out.println("X " + xMeter + " Y " + ymeter);
+        //debugging code
         
+        //find shortest direction to door.
         int smallest = Math.min(Math.min(north, south), Math.min(east, west)); 
 
         if (smallest == north) {
@@ -120,9 +123,11 @@ public class Agent {
             yVelocity = 0; 
             xVelocity = -37.5; 
         }
+        //For simplicity, just set to optimal velocity in the best direction
 
         double newX = location.getX() + (xVelocity*TIME_STEP);
         double newY = location.getY() + (yVelocity*TIME_STEP);
+        //set the new location
 
         location.changePosition(newX, newY);
         updateCSV();

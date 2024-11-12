@@ -60,6 +60,7 @@ public class vectorMapGen {
         // }
         
         results = new int[HEIGHT][LENGTH]; 
+        //TODO: flip the map orentation to fit the room 
 
         for (int i = 0; i < result.length; i++){
             for (int j = 0; j < result[0].length; j++){
