@@ -106,7 +106,7 @@ public class Simulation extends JPanel {
         add(frameLabel);
         add(frameStepButton);
 
-        timer = new Timer(4, e -> {
+        timer = new Timer(0, e -> {
             update();
             repaint();
             updateTimerLabel();
