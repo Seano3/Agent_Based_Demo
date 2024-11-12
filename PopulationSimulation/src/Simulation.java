@@ -33,6 +33,8 @@ public class Simulation extends JPanel {
     int[][] vectorMap; 
 
     public Simulation(int width, int height) {
+        vectorMapGen map = new vectorMapGen();
+        vectorMap = map.getResutls();
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);

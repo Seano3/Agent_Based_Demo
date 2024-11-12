@@ -94,15 +94,16 @@ public class Agent {
 
         int[][] map = sim.vectorMap;
 
-        int xMeter = (int) location.getX(); 
-        int ymeter = (int) location.getY();  
-
-        int myLocation = map[xMeter][ymeter]; 
+        int xMeter = (int) location.getX() / 10; 
+        int ymeter = (int) location.getY() / 10;  
 
         int north = map[xMeter][ymeter - 1];
         int south = map[xMeter][ymeter + 1];
         int east = map[xMeter + 1][ymeter];
         int west = map[xMeter - 1][ymeter]; 
+
+        System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west); 
+        System.out.println("X " + xMeter + " Y " + ymeter);
         
         int smallest = Math.min(Math.min(north, south), Math.min(east, west)); 
 
