@@ -30,6 +30,7 @@ public class Simulation extends JPanel {
     private double initialKE = 0;
     private int totalAgents = 0;
     private int totalExits = 0;
+    int[][] vectorMap; 
 
     public Simulation(int width, int height) {
         frame = 0;

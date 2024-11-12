@@ -92,6 +92,34 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
+        int[][] map = sim.vectorMap;
+
+        int xMeter = (int) location.getX(); 
+        int ymeter = (int) location.getY();  
+
+        int myLocation = map[xMeter][ymeter]; 
+
+        int north = map[xMeter][ymeter - 1];
+        int south = map[xMeter][ymeter + 1];
+        int east = map[xMeter + 1][ymeter];
+        int west = map[xMeter - 1][ymeter]; 
+        
+        int smallest = Math.min(Math.min(north, south), Math.min(east, west)); 
+
+        if (smallest == north) {
+            yVelocity = 37.5; 
+            xVelocity = 0; 
+        } else if (smallest == south) {
+            yVelocity = -37.5; 
+            xVelocity = 0; 
+        } else if (smallest == west) {
+            yVelocity = 0; 
+            xVelocity = 37.5; 
+        } else if (smallest == east) {
+            yVelocity = 0; 
+            xVelocity = -37.5; 
+        }
+
         double newX = location.getX() + (xVelocity*TIME_STEP);
         double newY = location.getY() + (yVelocity*TIME_STEP);
 
