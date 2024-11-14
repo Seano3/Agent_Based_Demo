@@ -92,19 +92,20 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
-        int[][] map = sim.vectorMap;
+        //Testing velcocity initialization temp commented out
+        /*int[][] map = sim.vectorMap;
 
         int xMeter = (int) location.getX() / 10;
         int ymeter = (int) location.getY() / 10;
 
-        int north = map[xMeter][ymeter - 0];
+        int north = map[xMeter][ymeter - 1];
         int south = map[xMeter][ymeter + 1];
         int east = map[xMeter + 1][ymeter];
-        int west = map[xMeter - 0][ymeter];
+        int west = map[xMeter - 1][ymeter];
         //Realistly we should also check the diagonal but just to get it to work these four will do
 
         System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
-        System.out.println("X " + xMeter + " Y " + ymeter);
+        System.out.println("X " + xMeter + " Y " + ymeter);*/
         //debugging code
 
         //find shortest direction to door.

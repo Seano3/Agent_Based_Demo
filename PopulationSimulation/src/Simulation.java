@@ -130,22 +130,29 @@ public class Simulation extends JPanel {
         return rectHeight;
     }
 
+
+
+    public void addExit(Exit exit) { // no need to remove exits
+        exits.add(exit);
+        totalExits++;
+    }
+
     public void addAgent(Agent agent) {
         Exit closestExit = findClosestExit(agent.getLocation());
+
         if (closestExit != null) {
+            System.out.println("i work");
             double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
-            agent.setXVelocity(directionVector[0] * Math.abs(agent.getXVelocity()));
-            agent.setYVelocity(directionVector[1] * Math.abs(agent.getYVelocity()));
+            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+            agent.setXVelocity(directionVector[0] * magnitude);
+            agent.setYVelocity(directionVector[1] * magnitude);
         }
 
         agents.add(agent);
         totalAgents++;
         agentCountLabel.setText("Agents: " + totalAgents);
-    }
-
-    public void addExit(Exit exit) { // no need to remove exits
-        exits.add(exit);
-        totalExits++;
     }
 
     public void addObjs(Obstacle obj){
@@ -320,6 +327,7 @@ public class Simulation extends JPanel {
         double minDistance = Double.MAX_VALUE;
 
         for (Exit exit : exits) {
+            System.out.println("Exit works");
             double distance = distanceTo(location, exit.getLocation());
             if (distance < minDistance) {
                 minDistance = distance;
@@ -339,7 +347,7 @@ public class Simulation extends JPanel {
     private double[] calculateDirectionVector(Location agentLocation, Location exitLocation) {
         double dx = exitLocation.getX() - agentLocation.getX();
         double dy = exitLocation.getY() - agentLocation.getY();
-        double magnitude = Math.sqrt(dx * dy + dy * dy);
+        double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
     }
 }

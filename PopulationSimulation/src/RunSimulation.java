@@ -18,6 +18,41 @@ public class RunSimulation{
         System.out.println("Current directory: " + System.getProperty("user.dir"));
 
 
+        try (BufferedReader br = new BufferedReader(new FileReader("exit-input.csv"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] attributes = line.split(",");
+
+                if (attributes.length != 4) {
+                    System.err.println("Invalid number of attributes in line: " + line);
+                    continue;
+                }
+
+                try {
+                    int size = Integer.parseInt(attributes[0]);
+                    double xCoord = Double.parseDouble(attributes[1]);
+                    double yCoord = Double.parseDouble(attributes[2]);
+                    double alignmentNum = Double.parseDouble(attributes[3]);
+                    Exit exit;
+                    Location location = new Location(xCoord, yCoord);
+                    if (alignmentNum == 0){
+                        exit = new Exit(size, location, Exit.alignment.VERTICAL);
+                    } else {
+                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
+                    }
+
+                    sim.addExit(exit);
+                    System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+
+
         try (BufferedReader br = new BufferedReader(new FileReader("agent-input.csv"))) {
 
             String line;
@@ -50,39 +85,7 @@ public class RunSimulation{
     
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("exit-input.csv"))) {
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] attributes = line.split(",");
-                
-                if (attributes.length != 4) {
-                    System.err.println("Invalid number of attributes in line: " + line);
-                    continue;
-                }
-
-                try {
-                    int size = Integer.parseInt(attributes[0]);
-                    double xCoord = Double.parseDouble(attributes[1]);
-                    double yCoord = Double.parseDouble(attributes[2]);
-                    double alignmentNum = Double.parseDouble(attributes[3]);
-                    Exit exit;
-                    Location location = new Location(xCoord, yCoord);
-                    if (alignmentNum == 0){
-                        exit = new Exit(size, location, Exit.alignment.VERTICAL);
-                    } else {
-                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
-                    }
-                    
-                    sim.addExit(exit);
-                    System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid number format in line: " + line);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
         
 
         try (BufferedReader br = new BufferedReader(new FileReader("obsticle-input.csv"))) {
