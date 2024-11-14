@@ -1,25 +1,22 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class vectorMapGen {
     private final int LENGTH = 110;
     private final int HEIGHT = 72;
-    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; //these set the {dx dy} for each possible jump in the BFS algo
-    private int[][] results; 
+    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // these set the {dx dy} for each possible jump in the BFS algo
+    private int[][] results;
 
-    public vectorMapGen(){
+    public vectorMapGen() {
         int[][] map = new int[LENGTH][HEIGHT];
 
-        for (int x = 0; x < 110; x++) { 
-            for (int y = 0; y < 72; y++) {
+        for (int x = 0; x < LENGTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
                 map[x][y] = Integer.MAX_VALUE;
             }
         }
-
-        // for (int x = 85; x <= 105; x++) { // Creates an obstacle block
-        //     for (int y = 25; y <= 50; y++) {
-        //         map[x][y] = -1;
-        //     }
-        // }
 
         // door 1
         for (int x = 44; x <= 45; x++) {
@@ -37,41 +34,22 @@ public class vectorMapGen {
         }
 
         // door 5
-
         for (int x = 92; x <= 93; x++) {
             map[x][0] = 0;
         }
 
-        // int[][] inputGrid = {
-        // { 0, 1, 1, 1 },
-        // { 1, 1, 1, 1 },
-        // { 1, 1, 1, 1 },
-        // { 0, 1, 1, 0 }
-        // };
-
         int[][] result = calculateDistances(map);
 
-        // System.out.println("Results Grid: \n");
-        // for (int x = 0; x < result.length; x++) {
-        //     for (int y = 0; y < result[0].length; y++) {
-        //         System.out.print("[" + result[x][y] + "]");
-        //     }
-        //     System.out.println();
-        // }
-        
-        results = new int[HEIGHT][LENGTH]; 
-        //TODO: flip the map orentation to fit the room 
-
-        for (int i = 0; i < result.length; i++){
-            for (int j = 0; j < result[0].length; j++){
+        results = new int[HEIGHT][LENGTH];
+        // TODO: flip the map orientation to fit the room
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
                 results[j][i] = result[i][j];
             }
         }
-
-        results = result; 
     }
 
-    private  static int[][] calculateDistances(int[][] grid) {
+    private static int[][] calculateDistances(int[][] grid) {
         int rows = grid.length;
         int cols = grid[0].length;
         int[][] distances = new int[rows][cols];
@@ -107,14 +85,13 @@ public class vectorMapGen {
 
                     if (isValidPosition(grid, newRow, newCol) && !visited[newRow][newCol]) {
                         distances[newRow][newCol] = distances[currentPosition[0]][currentPosition[1]] + 1;
-                        queue.offer(new int[]{newRow, newCol});
+                        queue.offer(new int[] { newRow, newCol });
                         visited[newRow][newCol] = true;
                     }
                 }
             }
         }
         return distances;
-
     }
 
     private static List<int[]> findZeroPositions(int[][] grid) {
@@ -122,18 +99,18 @@ public class vectorMapGen {
         for (int r = 0; r < grid.length; r++) {
             for (int c = 0; c < grid[0].length; c++) {
                 if (grid[r][c] == 0) {
-                    positions.add(new int[]{r, c});
+                    positions.add(new int[] { r, c });
                 }
             }
         }
         return positions;
     }
 
-    private  static boolean isValidPosition(int grid[][], int row, int col) {
+    private static boolean isValidPosition(int[][] grid, int row, int col) {
         return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length && grid[row][col] != 0 && grid[row][col] != -1;
     }
 
-    public int[][] getResutls(){
+    public int[][] getResults() {
         return results;
     }
 }

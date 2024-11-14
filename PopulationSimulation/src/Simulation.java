@@ -34,7 +34,7 @@ public class Simulation extends JPanel {
 
     public Simulation(int width, int height) {
         vectorMapGen map = new vectorMapGen();
-        vectorMap = map.getResutls();
+        vectorMap = map.getResults();
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
@@ -131,6 +131,13 @@ public class Simulation extends JPanel {
     }
 
     public void addAgent(Agent agent) {
+        Exit closestExit = findClosestExit(agent.getLocation());
+        if (closestExit != null) {
+            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
+            agent.setXVelocity(directionVector[0] * Math.abs(agent.getXVelocity()));
+            agent.setYVelocity(directionVector[1] * Math.abs(agent.getYVelocity()));
+        }
+
         agents.add(agent);
         totalAgents++;
         agentCountLabel.setText("Agents: " + totalAgents);
@@ -231,6 +238,10 @@ public class Simulation extends JPanel {
         }
     }
 
+    public LinkedList<Exit> getExits() {
+        return exits;
+    }
+
     public LinkedList<Agent> getAgents() {
         return agents;
     }
@@ -302,5 +313,33 @@ public class Simulation extends JPanel {
         }
 
         return totalKE;
+    }
+
+    private Exit findClosestExit(Location location) {
+        Exit closestExit = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Exit exit : exits) {
+            double distance = distanceTo(location, exit.getLocation());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestExit = exit;
+            }
+        }
+
+        return closestExit;
+    }
+
+    private double distanceTo(Location start, Location finish) {
+        double dx = start.getX() - finish.getX();
+        double dy = start.getY() - finish.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private double[] calculateDirectionVector(Location agentLocation, Location exitLocation) {
+        double dx = exitLocation.getX() - agentLocation.getX();
+        double dy = exitLocation.getY() - agentLocation.getY();
+        double magnitude = Math.sqrt(dx * dy + dy * dy);
+        return new double[]{dx / magnitude, dy / magnitude};
     }
 }

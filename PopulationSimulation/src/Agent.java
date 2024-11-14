@@ -94,35 +94,37 @@ public class Agent {
 
         int[][] map = sim.vectorMap;
 
-        int xMeter = (int) location.getX() / 10; 
-        int ymeter = (int) location.getY() / 10;  
+        int xMeter = (int) location.getX() / 10;
+        int ymeter = (int) location.getY() / 10;
 
-        int north = map[xMeter][ymeter - 1];
+        int north = map[xMeter][ymeter - 0];
         int south = map[xMeter][ymeter + 1];
         int east = map[xMeter + 1][ymeter];
-        int west = map[xMeter - 1][ymeter]; 
+        int west = map[xMeter - 0][ymeter];
         //Realistly we should also check the diagonal but just to get it to work these four will do
 
-        System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west); 
+        System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
         System.out.println("X " + xMeter + " Y " + ymeter);
         //debugging code
-        
+
         //find shortest direction to door.
-        int smallest = Math.min(Math.min(north, south), Math.min(east, west)); 
+
+        //Joey-Commented out to test initialized velocity
+        /*int smallest = Math.min(Math.min(north, south), Math.min(east, west));
 
         if (smallest == north) {
-            yVelocity = 37.5; 
-            xVelocity = 0; 
+            yVelocity = 37.5;
+            xVelocity = 0;
         } else if (smallest == south) {
-            yVelocity = -37.5; 
-            xVelocity = 0; 
+            yVelocity = -37.5;
+            xVelocity = 0;
         } else if (smallest == west) {
-            yVelocity = 0; 
-            xVelocity = 37.5; 
+            yVelocity = 0;
+            xVelocity = 37.5;
         } else if (smallest == east) {
-            yVelocity = 0; 
-            xVelocity = -37.5; 
-        }
+            yVelocity = 0;
+            xVelocity = -37.5;
+        }*/
         //For simplicity, just set to optimal velocity in the best direction
 
         double newX = location.getX() + (xVelocity*TIME_STEP);
@@ -295,40 +297,33 @@ public class Agent {
      * @param frame the current frame
      */
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
-        for (Agent that : otherAgents) {
-            if (!(that.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
-                // itself
-                double dx = this.location.getX() - that.location.getX();
-                double dy = this.location.getY() - that.location.getY();
-                double distanceSquared = dx * dx + dy * dy;
-                double dist = Math.sqrt(distanceSquared);
-                //dist is calculated using pythagorean theorem
-                double minDist = this.size + that.getSize();
-            
-                if (dist <= minDist) {
-                    Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) { //Adds the collision to the previous ones if not already there
-                        double dvx = that.xVelocity - this.xVelocity;
-                        double dvy = that.yVelocity - this.yVelocity;
+    for (Agent that : otherAgents) {
+        if (!(that.location.equals(this.location))) {
+            double dx = this.location.getX() - that.location.getX();
+            double dy = this.location.getY() - that.location.getY();
+            double distanceSquared = dx * dx + dy * dy;
+            double dist = Math.sqrt(distanceSquared);
+            double minDist = this.size + that.getSize();
 
-                        double dvdr = dx * dvx + dy * dvy;
-                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * dist);
-                        double Jx = J * dx / dist;
-                        double Jy = J * dy / dist;
+            if (dist <= minDist) {
+                Collision collision = new Collision(this.AgentID, that.AgentID, frame);
+                if (checkPreviousAgentCollisions(collision, that)) {
+                    double overlap = minDist - dist;
+                    double pushForce = 0.1 * overlap;
 
-                        this.xVelocity += (Jx / this.size);
-                        this.yVelocity += (Jy / this.size);
+                    double pushX = (dx / dist) * pushForce;
+                    double pushY = (dy / dist) * pushForce;
 
-                        that.xVelocity -= (Jx / that.size);
-                        that.yVelocity -= (Jy / that.size);
+                    this.xVelocity += pushX / this.size;
+                    this.yVelocity += pushY / this.size;
 
-                        //Equations used here from equations.pdf in the teams 
-
-                    }
+                    that.xVelocity -= pushX / that.size;
+                    that.yVelocity -= pushY / that.size;
                 }
             }
         }
     }
+}
 
 
     @Override
