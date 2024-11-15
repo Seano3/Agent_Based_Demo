@@ -40,13 +40,21 @@ public class vectorMapGen {
 
         int[][] result = calculateDistances(map);
 
-        int[][] results = new int[72][110]; 
+        results = new int[72][110]; 
 
         for (int i = 0; i < result.length; i++){
             for (int j = 0; j < result[0].length; j++){
                 results[j][i] = result[i][j];
             }
         }  
+
+        System.out.println("Results Grid: \n");
+        for (int x = 0; x < result.length; x++) {
+            for (int y = 0; y < result[0].length; y++) {
+                System.out.print("[" + result[x][y] + "]");
+            }
+            System.out.println();
+        }
     }
 
     private static int[][] calculateDistances(int[][] grid) {

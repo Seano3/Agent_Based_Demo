@@ -93,7 +93,7 @@ public class Agent {
         yAcceleration = 0;
 
         //Testing velcocity initialization temp commented out
-        /*int[][] map = sim.vectorMap;
+        int[][] map = sim.vectorMap;
 
         int xMeter = (int) location.getX() / 10;
         int ymeter = (int) location.getY() / 10;
@@ -102,16 +102,18 @@ public class Agent {
         int south = map[xMeter][ymeter + 1];
         int east = map[xMeter + 1][ymeter];
         int west = map[xMeter - 1][ymeter];
+        //TODO: Diagonal checks and make sure that there are no 0s when near a wall. :)
+        
         //Realistly we should also check the diagonal but just to get it to work these four will do
 
         System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
-        System.out.println("X " + xMeter + " Y " + ymeter);*/
+        System.out.println("X " + xMeter + " Y " + ymeter);
         //debugging code
 
         //find shortest direction to door.
 
         //Joey-Commented out to test initialized velocity
-        /*int smallest = Math.min(Math.min(north, south), Math.min(east, west));
+        int smallest = Math.min(Math.min(north, south), Math.min(east, west));
 
         if (smallest == north) {
             yVelocity = 37.5;
@@ -125,7 +127,7 @@ public class Agent {
         } else if (smallest == east) {
             yVelocity = 0;
             xVelocity = -37.5;
-        }*/
+        }
         //For simplicity, just set to optimal velocity in the best direction
 
         double newX = location.getX() + (xVelocity*TIME_STEP);
