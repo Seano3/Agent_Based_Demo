@@ -40,13 +40,13 @@ public class vectorMapGen {
 
         int[][] result = calculateDistances(map);
 
-        results = new int[HEIGHT][LENGTH];
-        // TODO: flip the map orientation to fit the room
-        for (int i = 0; i < result.length; i++) {
-            for (int j = 0; j < result[0].length; j++) {
+        int[][] results = new int[72][110]; 
+
+        for (int i = 0; i < result.length; i++){
+            for (int j = 0; j < result[0].length; j++){
                 results[j][i] = result[i][j];
             }
-        }
+        }  
     }
 
     private static int[][] calculateDistances(int[][] grid) {
