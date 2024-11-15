@@ -22,8 +22,10 @@ public class Simulation extends JPanel {
     private JButton pausePlayButton;
     private JButton toggleGridButton;
     private JButton frameStepButton;
+    private JButton toggleAgentNumbersButton;
     private boolean isPaused;
     private boolean isGridEnabled;
+    private boolean isAgentNumbersEnabled;
     private long startTime;
     private long pausedTime = 0;
     private long totalPausedDuration;
@@ -99,6 +101,21 @@ public class Simulation extends JPanel {
             }
         });
 
+        isAgentNumbersEnabled = true;
+
+        toggleAgentNumbersButton = new JButton("Hide Agent Numbers");
+        toggleAgentNumbersButton.addActionListener(e -> {
+            isAgentNumbersEnabled = !isAgentNumbersEnabled;
+            if (isAgentNumbersEnabled) {
+                toggleAgentNumbersButton.setText("Hide Agent Numbers");
+            } else {
+                toggleAgentNumbersButton.setText("Show Agent Numbers");
+            }
+            repaint();
+        });
+
+        add(toggleAgentNumbersButton);
+
 
 
         setLayout(null);
@@ -108,6 +125,7 @@ public class Simulation extends JPanel {
         add(agentCountLabel);
         add(frameLabel);
         add(frameStepButton);
+        add(toggleAgentNumbersButton);
 
         timer = new Timer(0, e -> {
             update();
@@ -202,8 +220,10 @@ public class Simulation extends JPanel {
             // Draw all agents
             g2d.setColor(i.getColor());
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
+            if (isAgentNumbersEnabled) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
+            }
         }
 
 
@@ -233,6 +253,8 @@ public class Simulation extends JPanel {
         frameStepButton.setBounds(340, height - rectHeight + 10, 120, 30);
         agentCountLabel.setBounds(10, height - rectHeight + 21, 100, 30);
         frameLabel.setBounds(10, height - rectHeight + 32, 100, 30);
+        toggleAgentNumbersButton.setBounds(470, height - rectHeight + 10, 150, 30);
+
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
             int gridHeight = height - rectHeight;
