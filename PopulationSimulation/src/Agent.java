@@ -217,9 +217,7 @@ public class Agent {
         }
 
         for (Obstacle i : obstacles) {
-            Agent temp = i.checkCollision(this, frame);
-            xVelocity = temp.getXVelocity();
-            yVelocity = temp.getYVelocity(); // TODO: this is stupid, fix this later
+            i.checkCollision(this, frame);
         }
 
     }

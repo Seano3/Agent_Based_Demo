@@ -51,35 +51,89 @@ public class RunSimulation{
         }
     
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
+        Obstacle obstacle1 = new Box(new Location(200, 200), 100, 100, 0);
+        sim.addObstacle(obstacle1);
 
         try (BufferedReader br = new BufferedReader(new FileReader("map-input.csv"))) {
-
+            boolean first = true;
+            boolean obstaclesDone = false;
             String line;
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
-                
-                if (attributes.length != 4) {
-                    System.err.println("Invalid number of attributes in line: " + line);
+
+                if (first) {
+                    if (attributes.length != 1) {
+                        System.err.println("Invalid map type");
+                        continue;
+                    }
+                    if (attributes[0].equals("walls")) {
+                        System.out.println("Walls type map created");
+                        Obstacle top = new Box(new Location(0, -1), sim.getWidth(), 1, 0);
+                        Obstacle bottom = new Box(new Location(0, sim.getHeight()-sim.getRectHeight()+1), sim.getWidth(), 1, 0);
+                        Obstacle left = new Box(new Location(-1, 0), 1, sim.getHeight(), 0);
+                        Obstacle right = new Box(new Location(sim.getWidth(), 0), 1, sim.getHeight(), 0);
+
+                        sim.addObstacle(top);
+                        sim.addObstacle(bottom);
+                        sim.addObstacle(left);
+                        sim.addObstacle(right);
+                    }
+                    first = false;
                     continue;
                 }
 
-                try {
-                    int size = Integer.parseInt(attributes[0]);
-                    double xCoord = Double.parseDouble(attributes[1]);
-                    double yCoord = Double.parseDouble(attributes[2]);
-                    double alignmentNum = Double.parseDouble(attributes[3]);
-                    Exit exit;
-                    Location location = new Location(xCoord, yCoord);
-                    if (alignmentNum == 0){
-                        exit = new Exit(size, location, Exit.alignment.VERTICAL);
+                if (!obstaclesDone) {
+                    if (!(attributes[0]).equalsIgnoreCase("obstacles")) {
+                        System.err.println("No obstacles found");
+                        obstaclesDone = true;
+                        continue;
+                    } else if (attributes[0].toLowerCase().equals("exits")) {
+                        System.out.println("Obstacles finished");
+                        obstaclesDone = true;
+                        continue;
                     } else {
-                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
+                        if (attributes.length != 5) {
+                            System.err.println("Invalid number of attributes in line: " + line);
+                            continue;
+                        }
+                        try {
+                            String type = attributes[0];
+                            double xCoord = Double.parseDouble(attributes[1]);
+                            double yCoord = Double.parseDouble(attributes[2]);
+                            int width = Integer.parseInt(attributes[3]);
+                            int height = Integer.parseInt(attributes[4]);
+                            Location location = new Location(xCoord, yCoord);
+                            if(type.equalsIgnoreCase("box")) {
+                                Box box = new Box(location, width, height, 0);
+                                sim.addObstacle(box);
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid number format in line: " + line);
+                        }
                     }
-                    
-                    sim.addExit(exit);
-                    System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid number format in line: " + line);
+                } else { // exits
+                    if (attributes.length != 4) {
+                        System.err.println("Invalid number of attributes in line: " + line);
+                        continue;
+                    }
+                    try {
+                        int size = Integer.parseInt(attributes[0]);
+                        double xCoord = Double.parseDouble(attributes[1]);
+                        double yCoord = Double.parseDouble(attributes[2]);
+                        double alignmentNum = Double.parseDouble(attributes[3]);
+                        Exit exit;
+                        Location location = new Location(xCoord, yCoord);
+                        if (alignmentNum == 0) {
+                            exit = new Exit(size, location, Exit.alignment.VERTICAL);
+                        } else {
+                            exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
+                        }
+
+                        sim.addExit(exit);
+                        System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid number format in line: " + line);
+                    }
                 }
             }
         } catch (IOException e) {

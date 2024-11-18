@@ -8,7 +8,7 @@ import javax.swing.*;
 public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
     private LinkedList<Exit> exits;
-    private LinkedList<Obstacle> obstacle;
+    private LinkedList<Obstacle> obstacles;
     private Timer timer;
     int frame;
     int width;
@@ -41,6 +41,7 @@ public class Simulation extends JPanel {
 
         agents = new LinkedList<>();
         exits = new LinkedList<>();
+        obstacles = new LinkedList<>();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -137,6 +138,10 @@ public class Simulation extends JPanel {
         totalExits++;
     }
 
+    public void addObstacle(Obstacle obstacle) {
+        obstacles.add(obstacle);
+    }
+
     public void removeAgent(Agent agent) {
         agents.remove(agent);
         totalAgents--;
@@ -151,7 +156,7 @@ public class Simulation extends JPanel {
         frameLabel.setText("Frame: " + frame);
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
-            agents.get(i).checkCollisions(agents, frame, width, height, exits, obstacle);
+            agents.get(i).checkCollisions(agents, frame, exits, obstacles);
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
 
@@ -195,6 +200,11 @@ public class Simulation extends JPanel {
             }
 
         }
+
+        for (Obstacle i : obstacles) {
+            i.paint(g2d);
+        }
+
         g2d.setColor(Color.GRAY);
         rectHeight = 200;
         g2d.fillRect(0, height - rectHeight, width, rectHeight);
@@ -219,6 +229,14 @@ public class Simulation extends JPanel {
 
     public LinkedList<Agent> getAgents() {
         return agents;
+    }
+
+    public LinkedList<Exit> getExits() {
+        return exits;
+    }
+
+    public LinkedList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     /**

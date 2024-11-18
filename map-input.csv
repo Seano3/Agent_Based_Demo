@@ -1,2 +1,6 @@
+walls
+obstacles
+box 400 400 50 50
+exits
 100, 0, 300, 0
 50, 0, 50, 0

@@ -1,3 +1,4 @@
+import java.awt.*;
 
 public class Circle extends Obstacle {
     private double radius;
@@ -11,4 +12,14 @@ public class Circle extends Obstacle {
         super(location, xForce, yForce);
         this.radius = radius;
     }
+
+    @Override
+    public void checkCollision(Agent currentAgent, int frame) {
+    }
+
+    @Override
+    public void paint(Graphics g) {
+
+    }
+
 }

@@ -34,7 +34,7 @@ public abstract class Obstacle {
         return this.fill;
     }
 
-    public abstract Agent checkCollision(Agent currentAgent, int frame);
+    public abstract void checkCollision(Agent currentAgent, int frame);
     public abstract void paint(Graphics g);
 
 }
