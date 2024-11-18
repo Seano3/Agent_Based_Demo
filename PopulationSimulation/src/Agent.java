@@ -110,20 +110,40 @@ public class Agent {
             System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
             System.out.println("X " + xMeter + " Y " + yMeter);
 
-            int smallest = Math.min(Math.min(north, south), Math.min(east, west));
+            int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
             if (smallest == north) {
+                System.out.println("Going North");
                 yVelocity = 37.5;
                 xVelocity = 0;
             } else if (smallest == south) {
+                System.out.println("Going South");
                 yVelocity = -37.5;
                 xVelocity = 0;
             } else if (smallest == west) {
+                System.out.println("Going West");
                 yVelocity = 0;
                 xVelocity = 37.5;
             } else if (smallest == east) {
+                System.out.println("Going East");
                 yVelocity = 0;
                 xVelocity = -37.5;
+            }else if (smallest == northEast) {
+                System.out.println("Going North East");
+                yVelocity = 18.75;
+                xVelocity = -18.75;
+            } else if (smallest == northWest) {
+                System.out.println("Going North West");
+                yVelocity = 18.75;
+                xVelocity = 18.75;
+            } else if (smallest == southEast) {
+                System.out.println("Going South East");
+                yVelocity = -18.75;
+                xVelocity = -18.75;
+            } else if (smallest == southWest) {
+                System.out.println("Going South West");
+                yVelocity = -18.75;
+                xVelocity = 18.75;
             }
         }
 
