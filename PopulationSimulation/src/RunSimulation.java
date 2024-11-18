@@ -1,9 +1,6 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 import javax.swing.*;
 //test
 public class RunSimulation{
@@ -69,7 +66,7 @@ public class RunSimulation{
                     if (attributes[0].equals("walls")) {
                         System.out.println("Walls type map created");
                         Obstacle top = new Box(new Location(0, -1), sim.getWidth(), 1, 0);
-                        Obstacle bottom = new Box(new Location(0, sim.getHeight()-sim.getRectHeight()+1), sim.getWidth(), 1, 0);
+                        Obstacle bottom = new Box(new Location(0, sim.getHeight()-sim.getPanelHeight()+1), sim.getWidth(), 1, 0);
                         Obstacle left = new Box(new Location(-1, 0), 1, sim.getHeight(), 0);
                         Obstacle right = new Box(new Location(sim.getWidth(), 0), 1, sim.getHeight(), 0);
 
