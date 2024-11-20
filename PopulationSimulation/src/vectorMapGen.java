@@ -48,13 +48,13 @@ public class vectorMapGen {
             }
         }  
 
-        System.out.println("Results Grid: \n");
-        for (int x = 0; x < result.length; x++) {
-            for (int y = 0; y < result[0].length; y++) {
-                System.out.print("[" + result[x][y] + "]");
-            }
-            System.out.println();
-        }
+        // System.out.println("Results Grid: \n");
+        // for (int x = 0; x < result.length; x++) {
+        //     for (int y = 0; y < result[0].length; y++) {
+        //         System.out.print("[" + result[x][y] + "]");
+        //     }
+        //     System.out.println();
+        // }
     }
 
     private static int[][] calculateDistances(int[][] grid) {
