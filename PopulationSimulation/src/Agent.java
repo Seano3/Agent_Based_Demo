@@ -98,6 +98,7 @@ public class Agent {
         int yMeter = (int) location.getY() / 10;
 
         if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
+            int center = map[xMeter][yMeter];
             int north = map[xMeter][yMeter - 1];
             int south = map[xMeter][yMeter + 1];
             int east = map[xMeter + 1][yMeter];
@@ -107,8 +108,11 @@ public class Agent {
             int southEast = map[xMeter + 1][yMeter + 1];
             int southWest = map[xMeter - 1][yMeter + 1];
 
-            System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
+            System.out.println("\nNorth West : " + northWest + " North : " + north + " North East : " + northEast);
+            System.out.println("East : " + east + " Center : " + center + " West : " + west);
+            System.out.println("South West : " + southWest + " South : " + south + " South East : " + southEast);
             System.out.println("X " + xMeter + " Y " + yMeter);
+
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
