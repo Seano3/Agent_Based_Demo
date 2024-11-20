@@ -15,18 +15,18 @@ public class Agent {
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
-    private String folder; 
+    private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
     /**
      * This is the main class we use to create agents in the simulation
      * @param name The Integer ID of the agent
      * @param size The radius of the agent, also acts as the mass
-     * @param xCord The x coordinate of the agent 
+     * @param xCord The x coordinate of the agent
      * @param yCord The y coordinate of the agent
-     * @param xVel The x velocity of the agent 
+     * @param xVel The x velocity of the agent
      * @param yVel The y velocity of the agent
-     * @param sim Passthrough of the simulation the agent will be added to 
+     * @param sim Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         AgentID = name;
@@ -92,8 +92,63 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
-        double newX = location.getX() + (xVelocity*TIME_STEP);
-        double newY = location.getY() + (yVelocity*TIME_STEP);
+        int[][] map = sim.vectorMap;
+
+        int xMeter = (int) location.getX() / 10;
+        int yMeter = (int) location.getY() / 10;
+
+        if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
+            int north = map[xMeter][yMeter - 1];
+            int south = map[xMeter][yMeter + 1];
+            int east = map[xMeter + 1][yMeter];
+            int west = map[xMeter - 1][yMeter];
+            int northEast = map[xMeter + 1][yMeter - 1];
+            int northWest = map[xMeter - 1][yMeter - 1];
+            int southEast = map[xMeter + 1][yMeter + 1];
+            int southWest = map[xMeter - 1][yMeter + 1];
+
+            System.out.println("North : " + north + " South : " + south + " East : " + east + " West: " + west);
+            System.out.println("X " + xMeter + " Y " + yMeter);
+
+            int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
+
+            if (smallest == north) {
+                System.out.println("Going North");
+                yVelocity = 37.5;
+                xVelocity = 0;
+            } else if (smallest == south) {
+                System.out.println("Going South");
+                yVelocity = -37.5;
+                xVelocity = 0;
+            } else if (smallest == west) {
+                System.out.println("Going West");
+                yVelocity = 0;
+                xVelocity = 37.5;
+            } else if (smallest == east) {
+                System.out.println("Going East");
+                yVelocity = 0;
+                xVelocity = -37.5;
+            }else if (smallest == northEast) {
+                System.out.println("Going North East");
+                yVelocity = 18.75;
+                xVelocity = -18.75;
+            } else if (smallest == northWest) {
+                System.out.println("Going North West");
+                yVelocity = 18.75;
+                xVelocity = 18.75;
+            } else if (smallest == southEast) {
+                System.out.println("Going South East");
+                yVelocity = -18.75;
+                xVelocity = -18.75;
+            } else if (smallest == southWest) {
+                System.out.println("Going South West");
+                yVelocity = -18.75;
+                xVelocity = 18.75;
+            }
+        }
+
+        double newX = location.getX() + (xVelocity * TIME_STEP);
+        double newY = location.getY() + (yVelocity * TIME_STEP);
 
         location.changePosition(newX, newY);
         updateCSV();
@@ -113,10 +168,10 @@ public class Agent {
     }
 
     /**
-     * 
+     *
      * @param collision the collision that needs to be checked
-     * @param otherAgent the other agent involved in the collision 
-     * @return Returns a boolean to see of the collision has happened in the last 5 frames, false = already collided 
+     * @param otherAgent the other agent involved in the collision
+     * @return Returns a boolean to see of the collision has happened in the last 5 frames, false = already collided
      */
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
         for (Collision i : collisions) {
@@ -133,7 +188,7 @@ public class Agent {
     }
 
     /**
-     * 
+     *
      * @param collision the collision with the wall
      * @return returns false if the agent had already collided with the wall withing 5 frames
      */
@@ -257,39 +312,32 @@ public class Agent {
 
     /**
      * <p>Checks the collision with each other agent and changes the velocity accordingly</p>
-     * @param otherAgents an array of all other agents in the simulation 
+     * @param otherAgents an array of all other agents in the simulation
      * @param frame the current frame
      */
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
         for (Agent that : otherAgents) {
-            if (!(that.location.equals(this.location))) { // insures that it does not check if the ball is colliding with
-                // itself
+            if (!(that.location.equals(this.location))) {
                 double dx = this.location.getX() - that.location.getX();
                 double dy = this.location.getY() - that.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
                 double dist = Math.sqrt(distanceSquared);
-                //dist is calculated using pythagorean theorem
                 double minDist = this.size + that.getSize();
-            
+
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) { //Adds the collision to the previous ones if not already there
-                        double dvx = that.xVelocity - this.xVelocity;
-                        double dvy = that.yVelocity - this.yVelocity;
+                    if (checkPreviousAgentCollisions(collision, that)) {
+                        double overlap = minDist - dist;
+                        double pushForce = 0.1 * overlap;
 
-                        double dvdr = dx * dvx + dy * dvy;
-                        double J = 2 * this.size * that.size * dvdr / ((this.size + that.size) * dist);
-                        double Jx = J * dx / dist;
-                        double Jy = J * dy / dist;
+                        double pushX = (dx / dist) * pushForce;
+                        double pushY = (dy / dist) * pushForce;
 
-                        this.xVelocity += (Jx / this.size);
-                        this.yVelocity += (Jy / this.size);
+                        this.xVelocity += pushX / this.size;
+                        this.yVelocity += pushY / this.size;
 
-                        that.xVelocity -= (Jx / that.size);
-                        that.yVelocity -= (Jy / that.size);
-
-                        //Equations used here from equations.pdf in the teams 
-
+                        that.xVelocity -= pushX / that.size;
+                        that.yVelocity -= pushY / that.size;
                     }
                 }
             }

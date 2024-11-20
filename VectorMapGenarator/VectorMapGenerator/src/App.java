@@ -53,16 +53,24 @@ public class App {
 
         int[][] result = calculateDistances(map);
 
-        System.out.println("Results Grid: \n");
-        for (int x = 0; x < result.length; x++) {
-            for (int y = 0; y < result[0].length; y++) {
-                System.out.print("[" + result[x][y] + "]");
+        int [][] results = new int[72][110]; 
+
+        for (int i = 0; i < result.length; i++){
+            for (int j = 0; j < result[0].length; j++){
+                results[j][i] = result[i][j];
             }
-            System.out.println();
         }
 
+        // System.out.println("Results Grid: \n");
+        // for (int x = 0; x < result.length; x++) {
+        //     for (int y = 0; y < result[0].length; y++) {
+        //         System.out.print("[" + result[x][y] + "]");
+        //     }
+        //     System.out.println();
+        // }
+
         try {
-            exportToCSV(result, "vector_map.csv");
+            exportToCSV(results, "vector_map.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }

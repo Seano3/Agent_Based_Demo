@@ -22,16 +22,21 @@ public class Simulation extends JPanel {
     private JButton pausePlayButton;
     private JButton toggleGridButton;
     private JButton frameStepButton;
+    private JButton toggleAgentNumbersButton;
     private boolean isPaused;
     private boolean isGridEnabled;
+    private boolean isAgentNumbersEnabled;
     private long startTime;
     private long pausedTime = 0;
     private long totalPausedDuration;
     private double initialKE = 0;
     private int totalAgents = 0;
     private int totalExits = 0;
+    int[][] vectorMap; 
 
     public Simulation(int width, int height) {
+        vectorMapGen map = new vectorMapGen();
+        vectorMap = map.getResults();
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
@@ -96,6 +101,21 @@ public class Simulation extends JPanel {
             }
         });
 
+        isAgentNumbersEnabled = true;
+
+        toggleAgentNumbersButton = new JButton("Hide Agent Numbers");
+        toggleAgentNumbersButton.addActionListener(e -> {
+            isAgentNumbersEnabled = !isAgentNumbersEnabled;
+            if (isAgentNumbersEnabled) {
+                toggleAgentNumbersButton.setText("Hide Agent Numbers");
+            } else {
+                toggleAgentNumbersButton.setText("Show Agent Numbers");
+            }
+            repaint();
+        });
+
+        add(toggleAgentNumbersButton);
+
 
 
         setLayout(null);
@@ -105,6 +125,7 @@ public class Simulation extends JPanel {
         add(agentCountLabel);
         add(frameLabel);
         add(frameStepButton);
+        add(toggleAgentNumbersButton);
 
         timer = new Timer(0, e -> {
             update();
@@ -127,15 +148,29 @@ public class Simulation extends JPanel {
         return rectHeight;
     }
 
-    public void addAgent(Agent agent) {
-        agents.add(agent);
-        totalAgents++;
-        agentCountLabel.setText("Agents: " + totalAgents);
-    }
+
 
     public void addExit(Exit exit) { // no need to remove exits
         exits.add(exit);
         totalExits++;
+    }
+
+    public void addAgent(Agent agent) {
+        Exit closestExit = findClosestExit(agent.getLocation());
+
+        if (closestExit != null) {
+            System.out.println("i work");
+            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
+            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+            agent.setXVelocity(directionVector[0] * magnitude);
+            agent.setYVelocity(directionVector[1] * magnitude);
+        }
+
+        agents.add(agent);
+        totalAgents++;
+        agentCountLabel.setText("Agents: " + totalAgents);
     }
 
     public void addObjs(Obstacle obj){
@@ -185,8 +220,10 @@ public class Simulation extends JPanel {
             // Draw all agents
             g2d.setColor(i.getColor());
             g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
+            if (isAgentNumbersEnabled) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
+            }
         }
 
 
@@ -216,6 +253,8 @@ public class Simulation extends JPanel {
         frameStepButton.setBounds(340, height - rectHeight + 10, 120, 30);
         agentCountLabel.setBounds(10, height - rectHeight + 21, 100, 30);
         frameLabel.setBounds(10, height - rectHeight + 32, 100, 30);
+        toggleAgentNumbersButton.setBounds(470, height - rectHeight + 10, 150, 30);
+
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
             int gridHeight = height - rectHeight;
@@ -226,6 +265,10 @@ public class Simulation extends JPanel {
                 g2d.drawLine(0, i, width, i);
             }
         }
+    }
+
+    public LinkedList<Exit> getExits() {
+        return exits;
     }
 
     public LinkedList<Agent> getAgents() {
@@ -299,5 +342,34 @@ public class Simulation extends JPanel {
         }
 
         return totalKE;
+    }
+
+    private Exit findClosestExit(Location location) {
+        Exit closestExit = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Exit exit : exits) {
+            System.out.println("Exit works");
+            double distance = distanceTo(location, exit.getLocation());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestExit = exit;
+            }
+        }
+
+        return closestExit;
+    }
+
+    private double distanceTo(Location start, Location finish) {
+        double dx = start.getX() - finish.getX();
+        double dy = start.getY() - finish.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private double[] calculateDirectionVector(Location agentLocation, Location exitLocation) {
+        double dx = exitLocation.getX() - agentLocation.getX();
+        double dy = exitLocation.getY() - agentLocation.getY();
+        double magnitude = Math.sqrt(dx * dx + dy * dy);
+        return new double[]{dx / magnitude, dy / magnitude};
     }
 }
