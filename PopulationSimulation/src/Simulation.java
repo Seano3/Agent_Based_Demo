@@ -195,7 +195,7 @@ public class Simulation extends JPanel {
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
 
-            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2) {
+            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getX() > width + agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() > height - rectHeight + agents.get(i).getSize()*2) {
                removeAgent(agents.get(i));
             }
 

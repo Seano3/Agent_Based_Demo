@@ -116,6 +116,7 @@ public class Agent {
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
+            /*
             if (smallest == north) {
                 System.out.println("Going North");
                 yVelocity = 37.5;
@@ -149,6 +150,7 @@ public class Agent {
                 yVelocity = -18.75;
                 xVelocity = 18.75;
             }
+            */
         }
 
         double newX = location.getX() + (xVelocity * TIME_STEP);
