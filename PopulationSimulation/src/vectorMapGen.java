@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,6 +58,14 @@ public class vectorMapGen {
         //     }
         //     System.out.println();
         // }
+
+        //System.out.println("MAP: " + results[10][10]);
+
+        try {
+            exportToCSV(results, "debug_vector_map.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static int[][] calculateDistances(int[][] grid) {
@@ -120,5 +131,17 @@ public class vectorMapGen {
 
     public int[][] getResults() {
         return results;
+    }
+
+    public static void exportToCSV(int[][] data, String fileName) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (int[] row : data) {
+                for (int cell : row) {
+                    writer.write(String.valueOf(cell));
+                    writer.write(",");
+                }
+                writer.newLine();
+            }
+        }
     }
 }

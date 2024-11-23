@@ -94,60 +94,60 @@ public class Agent {
 
         int[][] map = sim.vectorMap;
 
-        int xMeter = (int) location.getX() / 10;
-        int yMeter = (int) location.getY() / 10;
+        int xMeter = (int) location.getY() / 10; //All of the X and Ys are messed up in this section but the location.get is what to go off
+        int yMeter = (int) location.getX() / 10;
 
         if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
             int center = map[xMeter][yMeter];
-            int north = map[xMeter][yMeter - 1];
-            int south = map[xMeter][yMeter + 1];
+            int north = map[xMeter][yMeter + 1];
+            int south = map[xMeter][yMeter - 1];
             int east = map[xMeter + 1][yMeter];
             int west = map[xMeter - 1][yMeter];
-            int northEast = map[xMeter + 1][yMeter - 1];
-            int northWest = map[xMeter - 1][yMeter - 1];
-            int southEast = map[xMeter + 1][yMeter + 1];
-            int southWest = map[xMeter - 1][yMeter + 1];
+            int northEast = map[xMeter - 1][yMeter + 1];
+            int northWest = map[xMeter + 1][yMeter + 1];
+            int southEast = map[xMeter - 1][yMeter - 1];
+            int southWest = map[xMeter + 1][yMeter - 1];
 
-            System.out.println("\nNorth West : " + northWest + " North : " + north + " North East : " + northEast);
-            System.out.println("East : " + east + " Center : " + center + " West : " + west);
-            System.out.println("South West : " + southWest + " South : " + south + " South East : " + southEast);
-            System.out.println("X " + xMeter + " Y " + yMeter);
+            System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
+            System.out.println("[" + east + "][" + center + "][" + west + "]");
+            System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+            System.out.println("Y " + xMeter + " X " + yMeter);
 
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
             if (smallest == north) {
                 System.out.println("Going North");
-                yVelocity = 37.5;
+                yVelocity = -37.5;
                 xVelocity = 0;
             } else if (smallest == south) {
                 System.out.println("Going South");
-                yVelocity = -37.5;
+                yVelocity = 37.5;
                 xVelocity = 0;
             } else if (smallest == west) {
                 System.out.println("Going West");
                 yVelocity = 0;
-                xVelocity = 37.5;
+                xVelocity = -37.5;
             } else if (smallest == east) {
                 System.out.println("Going East");
                 yVelocity = 0;
-                xVelocity = -37.5;
+                xVelocity = 37.5;
             }else if (smallest == northEast) {
                 System.out.println("Going North East");
-                yVelocity = 18.75;
-                xVelocity = -18.75;
+                yVelocity = -18.75;
+                xVelocity = 18.75;
             } else if (smallest == northWest) {
                 System.out.println("Going North West");
-                yVelocity = 18.75;
-                xVelocity = 18.75;
-            } else if (smallest == southEast) {
-                System.out.println("Going South East");
                 yVelocity = -18.75;
                 xVelocity = -18.75;
+            } else if (smallest == southEast) {
+                System.out.println("Going South East");
+                yVelocity = 18.75;
+                xVelocity = 18.75;
             } else if (smallest == southWest) {
                 System.out.println("Going South West");
-                yVelocity = -18.75;
-                xVelocity = 18.75;
+                yVelocity = 18.75;
+                xVelocity = -18.75;
             }
         }
 
