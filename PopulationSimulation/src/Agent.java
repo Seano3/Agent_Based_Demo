@@ -94,29 +94,29 @@ public class Agent {
 
         int[][] map = sim.vectorMap;
 
-        int xMeter = (int) location.getY() / 10; //All of the X and Ys are messed up in this section but the location.get is what to go off
-        int yMeter = (int) location.getX() / 10;
+        int yMeter = (int) location.getY() / 10; 
+        int xMeter = (int) location.getX() / 10;
 
         if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
-            int center = map[xMeter][yMeter];
-            int north = map[xMeter][yMeter + 1];
-            int south = map[xMeter][yMeter - 1];
-            int east = map[xMeter + 1][yMeter];
-            int west = map[xMeter - 1][yMeter];
-            int northEast = map[xMeter - 1][yMeter + 1];
-            int northWest = map[xMeter + 1][yMeter + 1];
-            int southEast = map[xMeter - 1][yMeter - 1];
-            int southWest = map[xMeter + 1][yMeter - 1];
+            int center = map[yMeter][xMeter];
+            int north = map[yMeter - 1][xMeter];
+            int south = map[yMeter + 1][xMeter];
+            int east = map[yMeter][xMeter - 1];
+            int west = map[yMeter][xMeter + 1];
+            int northEast = map[yMeter - 1][xMeter + 1];
+            int northWest = map[yMeter - 1 ][xMeter - 1];
+            int southEast = map[yMeter + 1][xMeter + 1];
+            int southWest = map[yMeter + 1][xMeter - 1];
 
             System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
             System.out.println("[" + east + "][" + center + "][" + west + "]");
             System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            System.out.println("Y " + xMeter + " X " + yMeter);
+            System.out.println("X " + xMeter + " Y " + yMeter);
 
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
-            /*
+            
             if (smallest == north) {
                 System.out.println("Going North");
                 yVelocity = -37.5;
@@ -150,7 +150,7 @@ public class Agent {
                 yVelocity = 18.75;
                 xVelocity = -18.75;
             }
-            */
+            
         }
 
         double newX = location.getX() + (xVelocity * TIME_STEP);
