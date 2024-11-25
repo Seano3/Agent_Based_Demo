@@ -197,9 +197,9 @@ public class Simulation extends JPanel {
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if(i.getAlignment() == Exit.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), 0, i.getSize(), 10);
+                g2d.fillRect((int) i.getLocation().getX(), (int)i.getLocation().getY()-5, i.getSize(), 10);
             } else {
-                g2d.fillRect(0, (int) i.getLocation().getY(), 10, i.getSize());
+                g2d.fillRect((int) i.getLocation().getX()-5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
         }

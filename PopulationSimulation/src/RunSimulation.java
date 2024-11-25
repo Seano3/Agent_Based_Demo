@@ -53,6 +53,8 @@ public class RunSimulation{
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
         Obstacle obstacle1 = new Box(new Location(200, 200), 100, 100, 0);
         Obstacle obstacle2 = new Box(new Location(200, 200), 300, 300, 0);
+        Exit exit1 = new Exit(100,new Location(500, 200), Exit.alignment.VERTICAL);
+        sim.addExit(exit1);
         sim.addObstacle(obstacle1);
         sim.addObstacle(obstacle2);
 
@@ -70,15 +72,8 @@ public class RunSimulation{
                     }
                     if (attributes[0].equals("walls")) {
                         System.out.println("Walls type map created");
-                        Obstacle top = new Box(new Location(1, 1), sim.getWidth(), 1, 0);
-                        Obstacle bottom = new Box(new Location(1, sim.getHeight()-sim.getPanelHeight()+1), sim.getWidth(), 1, 0);
-                        Obstacle left = new Box(new Location(1, 1), 1, sim.getHeight(), 0);
-                        Obstacle right = new Box(new Location(sim.getWidth(), 1), 1, sim.getHeight(), 0);
-
-                        sim.addObstacle(top);
-                        sim.addObstacle(bottom);
-                        sim.addObstacle(left);
-                        sim.addObstacle(right);
+                        Box walls = new Box(new Location(0, 0), 800, 800, 0); //TODO: sim width and height parameters don't work here for some reason
+                        sim.addObstacle(walls);
                     }
                     first = false;
                     continue;
