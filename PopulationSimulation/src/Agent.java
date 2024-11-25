@@ -97,7 +97,7 @@ public class Agent {
         int yMeter = (int) location.getY() / 10; 
         int xMeter = (int) location.getX() / 10;
 
-        if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
+        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
             int center = map[yMeter][xMeter];
             int north = map[yMeter - 1][xMeter];
             int south = map[yMeter + 1][xMeter];

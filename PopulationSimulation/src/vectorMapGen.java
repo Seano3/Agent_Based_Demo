@@ -41,6 +41,12 @@ public class vectorMapGen {
             map[x][0] = 0;
         }
 
+        for (int x = 30; x < 60; x++){
+            for (int y = 30; y < 60; y++){
+                map[x][y] = -1; 
+            }
+        }
+
         int[][] result = calculateDistances(map);
 
         results = new int[73][111]; 
