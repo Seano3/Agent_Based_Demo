@@ -96,7 +96,7 @@ public class Agent {
 
         int yMeter = (int) location.getY() / 10; 
         int xMeter = (int) location.getX() / 10;
-
+/*
         if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
             int center = map[yMeter][xMeter];
             int north = map[yMeter - 1][xMeter];
@@ -151,7 +151,7 @@ public class Agent {
                 xVelocity = -18.75;
             }
             
-        }
+        }*/
 
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
@@ -242,79 +242,67 @@ public class Agent {
      * @param height height of the simulation
      */
     private void checkWalls(int frame, int width, int height, LinkedList<Exit> exits) {
-        //If we are inside an exit, modify wall checks
-        Exit currentExit = inExit(exits);
-        if (currentExit != null) {
-            if(currentExit.getAlignment() == Exit.alignment.VERTICAL) {
-
-                if (getLocation().getY() - getSize() < currentExit.getLocation().getY()) { // Top Wall
-
-                    Collision collision = new Collision(this.AgentID, -3, frame);
-                    if (checkPreviousWallCollisions(collision)) {
-                        this.yVelocity = Math.abs(yVelocity);
-                    }
-                }
-
-                if (getLocation().getY() + getSize() > currentExit.getLocation().getY() + currentExit.getSize()) { // Bottom wall
-
-                    Collision collision = new Collision(this.AgentID, -1, frame);
-                    if (checkPreviousWallCollisions(collision)) {
-                        this.yVelocity = -Math.abs(yVelocity);
-                    }
-                }
-
-
-            } else { //alignment.horizontal
-                if (getLocation().getX() + getSize() > currentExit.getLocation().getX() + currentExit.getSize()) { // Right wall
-
-                    Collision collision = new Collision(this.AgentID, -4, frame);
-                    if (checkPreviousWallCollisions(collision)) {
-                        this.xVelocity = -Math.abs(xVelocity);
-                    }
-                }
-                if (getLocation().getX() - getSize() < currentExit.getLocation().getX()) { // Left Wall
-
-                    Collision collision = new Collision(this.AgentID, -2, frame);
-                    if (checkPreviousWallCollisions(collision)) {
-                        this.xVelocity = Math.abs(xVelocity);
-                    }
+    // If we are inside an exit, modify wall checks
+    Exit currentExit = inExit(exits);
+    if (currentExit != null) {
+        if (currentExit.getAlignment() == Exit.alignment.VERTICAL) {
+            if (getLocation().getY() - getSize() < currentExit.getLocation().getY()) { // Top Wall
+                Collision collision = new Collision(this.AgentID, -3, frame);
+                if (checkPreviousWallCollisions(collision)) {
+                    this.yVelocity = Math.abs(yVelocity);
                 }
             }
-            return;
-        }
-
-        //Checks the velocity for each wall and inverts the velocity accordingly
-        if (getLocation().getX() > width) { // Right wall
-
-            Collision collision = new Collision(this.AgentID, -4, frame);
-            if (checkPreviousWallCollisions(collision)) {
-                this.xVelocity = -Math.abs(xVelocity);
+            if (getLocation().getY() + getSize() > currentExit.getLocation().getY() + currentExit.getSize()) { // Bottom wall
+                Collision collision = new Collision(this.AgentID, -1, frame);
+                if (checkPreviousWallCollisions(collision)) {
+                    this.yVelocity = -Math.abs(yVelocity);
+                }
+            }
+        } else { // alignment.horizontal
+            if (getLocation().getX() + getSize() > currentExit.getLocation().getX() + currentExit.getSize()) { // Right wall
+                Collision collision = new Collision(this.AgentID, -4, frame);
+                if (checkPreviousWallCollisions(collision)) {
+                    this.xVelocity = -Math.abs(xVelocity);
+                }
+            }
+            if (getLocation().getX() - getSize() < currentExit.getLocation().getX()) { // Left Wall
+                Collision collision = new Collision(this.AgentID, -2, frame);
+                if (checkPreviousWallCollisions(collision)) {
+                    this.xVelocity = Math.abs(xVelocity);
+                }
             }
         }
-        if (getLocation().getX() < 0) { // Left Wall
+        return;
+    }
 
-            Collision collision = new Collision(this.AgentID, -2, frame);
-            if (checkPreviousWallCollisions(collision)) {
-                this.xVelocity = Math.abs(xVelocity);
-            }
-        }
-
-        if (getLocation().getY()  < 0) { // Top Wall
-
-            Collision collision = new Collision(this.AgentID, -3, frame);
-            if (checkPreviousWallCollisions(collision)) {
-                this.yVelocity = Math.abs(yVelocity);
-            }
-        }
-
-        if (getLocation().getY() > height - this.sim.getRectHeight()) { // Bottom wall
-
-            Collision collision = new Collision(this.AgentID, -1, frame);
-            if (checkPreviousWallCollisions(collision)) {
-                this.yVelocity = -Math.abs(yVelocity);
-            }
+    // Checks the velocity for each wall and inverts the velocity accordingly
+    if (getLocation().getX() > width) { // Right wall
+        Collision collision = new Collision(this.AgentID, -4, frame);
+        if (checkPreviousWallCollisions(collision)) {
+            this.xVelocity = -Math.abs(xVelocity);
         }
     }
+    if (getLocation().getX() < 0) { // Left Wall
+        Collision collision = new Collision(this.AgentID, -2, frame);
+        if (checkPreviousWallCollisions(collision)) {
+            this.xVelocity = Math.abs(xVelocity);
+        }
+    }
+
+    if (getLocation().getY() < 0) { // Top Wall
+        Collision collision = new Collision(this.AgentID, -3, frame);
+        if (checkPreviousWallCollisions(collision)) {
+            this.yVelocity = Math.abs(yVelocity);
+        }
+    }
+
+    if (getLocation().getY() > height - this.sim.getRectHeight()) { // Top of control panel as the bottom wall
+        Collision collision = new Collision(this.AgentID, -1, frame);
+        if (checkPreviousWallCollisions(collision)) {
+            this.yVelocity = -Math.abs(yVelocity);
+        }
+    }
+}
 
     /**
      * <p>Checks the collision with each other agent and changes the velocity accordingly</p>

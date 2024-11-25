@@ -186,27 +186,33 @@ public class Simulation extends JPanel {
     /**
      * <p>Updates the simulation each frame </p>
      */
-    public void update() {
-        frame++;
-        frameLabel.setText("Frame: " + frame);
-        for (int i = 0; i < agents.size(); i++) {
-            // System.out.println(i.xAcceleration);
-            agents.get(i).checkCollisions(agents, frame, width, height, exits, obstacle);
-            agents.get(i).updateLocation();
-            agents.get(i).updateCollisionsStorage();
+    // Simulation.java
 
-            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getX() > width + agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() > height - rectHeight + agents.get(i).getSize()*2) {
-               removeAgent(agents.get(i));
-            }
+private void update() {
+    frame++;
+    frameLabel.setText("Frame: " + frame);
+    for (int i = 0; i < agents.size(); i++) {
+        Agent agent = agents.get(i);
+        agent.checkCollisions(agents, frame, width, height, exits, obstacle);
+        agent.updateLocation();
+        agent.updateCollisionsStorage();
 
-            // TODO: Write to Excel sheet of locational data of each Agent
-
-            // System.out.println("Agent ID " + i.AgentID + ": Xvel " + i.getXVelocity() +
-            // ", Yvel " + i.getYVelocity());
+        if (agent.getLocation().getY() > height - rectHeight && agent.getLocation().getY() + agent.getSize() * 2 < height) {
+            removeAgent(agent);
+            i--;
+            continue;
         }
-        debugCSV();
-        generateCSV(agents.size(), this);
+
+        if (agent.getLocation().getX() < -agent.getSize() * 2 || agent.getLocation().getY() < -agent.getSize() * 2 || agent.getLocation().getX() > width + agent.getSize() * 2 || agent.getLocation().getY() > height - rectHeight + agent.getSize() * 2) {
+            removeAgent(agent);
+            i--;
+        }
+
+        // TODO: Write to Excel sheet of locational data of each Agent
     }
+    debugCSV();
+    generateCSV(agents.size(), this);
+}
 
     /**
      * <p> Updates the GUI</p>
