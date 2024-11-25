@@ -29,7 +29,7 @@ public class Box extends Obstacle {
     public void checkCollision(Agent currentAgent, int frame) {
         Collision newCollision;
         if(width == 100 || width == 300)
-        System.out.println("FRAME: " + frame + ", AGENT X + SIZE" + this.location.getX()+currentAgent.getSize() + ", AGENT LOC" + currentAgent.getLocation().getX() + ", WITHY" + withinY(currentAgent.getLocation().getY()));
+        //System.out.println("FRAME: " + frame + ", AGENT X + SIZE" + this.location.getX()+currentAgent.getSize() + ", AGENT LOC" + currentAgent.getLocation().getX() + ", WITHY" + withinY(currentAgent.getLocation().getY()));
         if (currentAgent.getLocation().getX() <= location.getX()+width+currentAgent.getSize() &&
                 currentAgent.getLocation().getX() >= location.getX()+width-currentAgent.getSize() &&
                 withinY(currentAgent.getLocation().getY())) { // Right collision

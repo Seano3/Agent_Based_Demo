@@ -71,7 +71,7 @@ public class RunSimulation{
                     if (attributes[0].equals("walls")) {
                         System.out.println("Walls type map created");
                         Obstacle top = new Box(new Location(1, 1), sim.getWidth(), 1, 0);
-                        Obstacle bottom = new Box(new Location(1, sim.getHeight()-sim.getRectHeight()+1), sim.getWidth(), 1, 0);
+                        Obstacle bottom = new Box(new Location(1, sim.getHeight()-sim.getPanelHeight()+1), sim.getWidth(), 1, 0);
                         Obstacle left = new Box(new Location(1, 1), 1, sim.getHeight(), 0);
                         Obstacle right = new Box(new Location(sim.getWidth(), 1), 1, sim.getHeight(), 0);
 
