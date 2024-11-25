@@ -94,6 +94,11 @@ public class Agent {
 
         int[][] map = sim.vectorMap;
 
+        double newX = location.getX() + (xVelocity * TIME_STEP);
+        double newY = location.getY() + (yVelocity * TIME_STEP);
+        location.changePosition(newX, newY);
+        updateCSV();
+
         int yMeter = (int) location.getY() / 10; 
         int xMeter = (int) location.getX() / 10;
 
@@ -152,12 +157,6 @@ public class Agent {
             }
             
         }
-
-        double newX = location.getX() + (xVelocity * TIME_STEP);
-        double newY = location.getY() + (yVelocity * TIME_STEP);
-
-        location.changePosition(newX, newY);
-        updateCSV();
     }
 
     /**
