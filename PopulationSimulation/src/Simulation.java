@@ -14,7 +14,7 @@ public class Simulation extends JPanel {
     int width;
     int height;
     int upperBorderHeight;
-    int rectHeight;
+    int panelHeight;
     String csvName = "Debug.csv";
     private JLabel timeLabel;
     private JLabel agentCountLabel;
@@ -123,8 +123,8 @@ public class Simulation extends JPanel {
     timeLabel.setText("Time: " + formattedTime);
 }
 
-    public int getRectHeight() {
-        return rectHeight;
+    public int getPanelHeight() {
+        return panelHeight;
     }
 
     public void addAgent(Agent agent) {
@@ -160,7 +160,10 @@ public class Simulation extends JPanel {
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
 
-            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 || agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2) {
+            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 ||
+                    agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2 ||
+            agents.get(i).getLocation().getX() > width+agents.get(i).getSize() ||
+            agents.get(i).getLocation().getY() > height+agents.get(i).getSize()- panelHeight) {
                removeAgent(agents.get(i));
             }
 
@@ -206,18 +209,18 @@ public class Simulation extends JPanel {
         }
 
         g2d.setColor(Color.GRAY);
-        rectHeight = 200;
-        g2d.fillRect(0, height - rectHeight, width, rectHeight);
+        panelHeight = 200;
+        g2d.fillRect(0, height - panelHeight, width, panelHeight);
 
-        timeLabel.setBounds(10, height - rectHeight + 10, 100, 30);
-        pausePlayButton.setBounds(120, height - rectHeight + 10, 80, 30);
-        toggleGridButton.setBounds(210, height - rectHeight + 10, 120, 30);
-        frameStepButton.setBounds(340, height - rectHeight + 10, 120, 30);
-        agentCountLabel.setBounds(10, height - rectHeight + 21, 100, 30);
-        frameLabel.setBounds(10, height - rectHeight + 32, 100, 30);
+        timeLabel.setBounds(10, height - panelHeight + 10, 100, 30);
+        pausePlayButton.setBounds(120, height - panelHeight + 10, 80, 30);
+        toggleGridButton.setBounds(210, height - panelHeight + 10, 120, 30);
+        frameStepButton.setBounds(340, height - panelHeight + 10, 120, 30);
+        agentCountLabel.setBounds(10, height - panelHeight + 21, 100, 30);
+        frameLabel.setBounds(10, height - panelHeight + 32, 100, 30);
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
-            int gridHeight = height - rectHeight;
+            int gridHeight = height - panelHeight;
             for (int i = 0; i < width; i += 30) {
                 g2d.drawLine(i, 0, i, gridHeight);
             }
