@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Queue;
 
 public class vectorMapGen {
-    private final int LENGTH = 110;
-    private final int HEIGHT = 72;
+    private final int LENGTH = 111;
+    private final int HEIGHT = 73;
     private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // these set the {dx dy} for each possible jump in the BFS algo
     private int[][] results;
 
@@ -23,7 +23,7 @@ public class vectorMapGen {
 
         // door 1
         for (int x = 44; x <= 45; x++) {
-            map[x][71] = 0;
+            map[x][72] = 0;
         }
 
         // door 2
@@ -43,7 +43,7 @@ public class vectorMapGen {
 
         int[][] result = calculateDistances(map);
 
-        results = new int[72][110]; 
+        results = new int[73][111]; 
 
         for (int i = 0; i < result.length; i++){
             for (int j = 0; j < result[0].length; j++){

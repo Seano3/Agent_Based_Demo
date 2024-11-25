@@ -96,13 +96,13 @@ public class Agent {
 
         int yMeter = (int) location.getY() / 10; 
         int xMeter = (int) location.getX() / 10;
-/*
+
         if (xMeter > 0 && xMeter < map.length - 1 && yMeter > 0 && yMeter < map[0].length - 1) {
             int center = map[yMeter][xMeter];
             int north = map[yMeter - 1][xMeter];
             int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter - 1];
-            int west = map[yMeter][xMeter + 1];
+            int east = map[yMeter][xMeter + 1];
+            int west = map[yMeter][xMeter - 1];
             int northEast = map[yMeter - 1][xMeter + 1];
             int northWest = map[yMeter - 1 ][xMeter - 1];
             int southEast = map[yMeter + 1][xMeter + 1];
@@ -151,7 +151,7 @@ public class Agent {
                 xVelocity = -18.75;
             }
             
-        }*/
+        }
 
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
