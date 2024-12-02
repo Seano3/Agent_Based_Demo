@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public abstract class Obstacle {
     protected Location location;
     protected double xForce;
@@ -31,5 +33,8 @@ public abstract class Obstacle {
         this.fill = !this.fill;
         return this.fill;
     }
+
+    public abstract void checkCollision(Agent currentAgent, int frame);
+    public abstract void paint(Graphics g);
 
 }

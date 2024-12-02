@@ -1,12 +1,15 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 import javax.swing.*;
 //test
 public class RunSimulation{
 
-    private static final int PANNAL_HEIGHT = 200; 
-    
+    private static final int PANNAL_HEIGHT = 200;
+
     
     public static void main(String[] args) throws Exception {
         //Initialize Frame
@@ -86,7 +89,7 @@ public class RunSimulation{
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
 
 
-        
+
 
         try (BufferedReader br = new BufferedReader(new FileReader("obsticle-input.csv"))) {
 
@@ -107,9 +110,9 @@ public class RunSimulation{
 
                     Obstacle obj;
                     Location location = new Location(xCoord, yCoord);
-                    
-                    obj = new Box(location, with, height,0); 
-                    
+
+                    obj = new Box(location, with, height,0);
+
                     sim.addObjs(obj);
                     System.out.println("Created Obsticle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {

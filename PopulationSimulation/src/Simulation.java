@@ -8,13 +8,13 @@ import javax.swing.*;
 public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
     private LinkedList<Exit> exits;
-    private LinkedList<Obstacle> obstacle;
+    private LinkedList<Obstacle> obstacles;
     private Timer timer;
     int frame;
     int width;
     int height;
     int upperBorderHeight;
-    int rectHeight;
+    int panelHeight;
     String csvName = "Debug.csv";
     private JLabel timeLabel;
     private JLabel agentCountLabel;
@@ -32,7 +32,7 @@ public class Simulation extends JPanel {
     private double initialKE = 0;
     private int totalAgents = 0;
     private int totalExits = 0;
-    int[][] vectorMap; 
+    int[][] vectorMap;
 
     public Simulation(int width, int height) {
         vectorMapGen map = new vectorMapGen();
@@ -46,7 +46,7 @@ public class Simulation extends JPanel {
 
         agents = new LinkedList<>();
         exits = new LinkedList<>();
-        obstacle = new LinkedList<>(); 
+        obstacles = new LinkedList<>();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -144,8 +144,8 @@ public class Simulation extends JPanel {
     timeLabel.setText("Time: " + formattedTime);
 }
 
-    public int getRectHeight() {
-        return rectHeight;
+    public int getPanelHeight() {
+        return panelHeight;
     }
 
 
@@ -177,6 +177,10 @@ public class Simulation extends JPanel {
         obstacle.add(obj);
     }
 
+    public void addObstacle(Obstacle obstacle) {
+        obstacles.add(obstacle);
+    }
+
     public void removeAgent(Agent agent) {
         agents.remove(agent);
         totalAgents--;
@@ -186,27 +190,21 @@ public class Simulation extends JPanel {
     /**
      * <p>Updates the simulation each frame </p>
      */
-    // Simulation.java
+    public void update() {
+        frame++;
+        frameLabel.setText("Frame: " + frame);
+        for (int i = 0; i < agents.size(); i++) {
+            // System.out.println(i.xAcceleration);
+            agents.get(i).checkCollisions(agents, frame, exits, obstacles);
+            agents.get(i).updateLocation();
+            agents.get(i).updateCollisionsStorage();
 
-private void update() {
-    frame++;
-    frameLabel.setText("Frame: " + frame);
-    for (int i = 0; i < agents.size(); i++) {
-        Agent agent = agents.get(i);
-        agent.checkCollisions(agents, frame, width, height, exits, obstacle);
-        agent.updateLocation();
-        agent.updateCollisionsStorage();
-
-        if (agent.getLocation().getY() > height - rectHeight && agent.getLocation().getY() + agent.getSize() * 2 < height) {
-            removeAgent(agent);
-            i--;
-            continue;
-        }
-
-        if (agent.getLocation().getX() < -agent.getSize() * 2 || agent.getLocation().getY() < -agent.getSize() * 2 || agent.getLocation().getX() > width + agent.getSize() * 2 || agent.getLocation().getY() > height - rectHeight + agent.getSize() * 2) {
-            removeAgent(agent);
-            i--;
-        }
+            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 ||
+                    agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2 ||
+            agents.get(i).getLocation().getX() > width+agents.get(i).getSize() ||
+            agents.get(i).getLocation().getY() > height+agents.get(i).getSize()- panelHeight) {
+               removeAgent(agents.get(i));
+            }
 
         // TODO: Write to Excel sheet of locational data of each Agent
     }
@@ -237,33 +235,32 @@ private void update() {
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if(i.getAlignment() == Exit.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), i.getSize(), 10);
+                g2d.fillRect((int) i.getLocation().getX(), (int)i.getLocation().getY()-5, i.getSize(), 10);
             } else {
-                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 10, i.getSize());
+                g2d.fillRect((int) i.getLocation().getX()-5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
         }
 
-        for (Obstacle i : obstacle){
-            //Draw all obsticles 
-            g2d.setColor(Color.BLACK);
-            g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY(), 200, 250); //TODO: Replace with box height/width
+        for (Obstacle i : obstacles) {
+            i.paint(g2d);
         }
-        g2d.setColor(Color.GRAY);
-        rectHeight = 200;
-        g2d.fillRect(0, height - rectHeight, width, rectHeight);
 
-        timeLabel.setBounds(10, height - rectHeight + 10, 100, 30);
-        pausePlayButton.setBounds(120, height - rectHeight + 10, 80, 30);
-        toggleGridButton.setBounds(210, height - rectHeight + 10, 120, 30);
-        frameStepButton.setBounds(340, height - rectHeight + 10, 120, 30);
-        agentCountLabel.setBounds(10, height - rectHeight + 21, 100, 30);
-        frameLabel.setBounds(10, height - rectHeight + 32, 100, 30);
-        toggleAgentNumbersButton.setBounds(470, height - rectHeight + 10, 150, 30);
+        g2d.setColor(Color.GRAY);
+        panelHeight = 200;
+        g2d.fillRect(0, height - panelHeight, width, panelHeight);
+
+        timeLabel.setBounds(10, height - panelHeight + 10, 100, 30);
+        pausePlayButton.setBounds(120, height - panelHeight + 10, 80, 30);
+        toggleGridButton.setBounds(210, height - panelHeight + 10, 120, 30);
+        frameStepButton.setBounds(340, height - panelHeight + 10, 120, 30);
+        agentCountLabel.setBounds(10, height - panelHeight + 21, 100, 30);
+        frameLabel.setBounds(10, height - panelHeight + 32, 100, 30);
+        toggleAgentNumbersButton.setBounds(470, height - panelHeight + 10, 150, 30);
 
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
-            int gridHeight = height - rectHeight;
+            int gridHeight = height - panelHeight;
             for (int i = 0; i < width; i += 10) {
                 g2d.drawLine(i, 0, i, gridHeight);
             }
@@ -279,12 +276,16 @@ private void update() {
         }
     }
 
+    public LinkedList<Agent> getAgents() {
+        return agents;
+    }
+
     public LinkedList<Exit> getExits() {
         return exits;
     }
 
-    public LinkedList<Agent> getAgents() {
-        return agents;
+    public LinkedList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     /**
