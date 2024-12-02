@@ -174,7 +174,7 @@ public class Simulation extends JPanel {
     }
 
     public void addObjs(Obstacle obj){
-        obstacle.add(obj);
+        obstacles.add(obj);
     }
 
     public void addObstacle(Obstacle obstacle) {
