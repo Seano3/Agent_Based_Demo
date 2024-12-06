@@ -1,26 +1,23 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 import javax.swing.*;
 //test
 public class RunSimulation{
 
-    private static final int PANNAL_HEIGHT = 200;
+    private static final int PANEL_HEIGHT = 200;
 
     
     public static void main(String[] args) throws Exception {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(1100, 720 + PANNAL_HEIGHT);
+        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT);
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
 
-
+        //Exit input
         try (BufferedReader br = new BufferedReader(new FileReader("exit-input.csv"))) {
 
             String line;
@@ -55,7 +52,7 @@ public class RunSimulation{
             System.err.println("Error reading file: " + e.getMessage());
         }
 
-
+        //Agent input
         try (BufferedReader br = new BufferedReader(new FileReader("agent-input.csv"))) {
 
             String line;
@@ -88,10 +85,8 @@ public class RunSimulation{
     
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
 
-
-
-
-        try (BufferedReader br = new BufferedReader(new FileReader("obsticle-input.csv"))) {
+        //Obstacle input
+        try (BufferedReader br = new BufferedReader(new FileReader("obstacle-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -106,15 +101,15 @@ public class RunSimulation{
                     int xCoord = Integer.parseInt(attributes[0]);
                     double yCoord = Double.parseDouble(attributes[1]);
                     double height = Double.parseDouble(attributes[2]);
-                    double with = Double.parseDouble(attributes[3]);
+                    double width = Double.parseDouble(attributes[3]);
 
                     Obstacle obj;
                     Location location = new Location(xCoord, yCoord);
 
-                    obj = new Box(location, with, height,0);
+                    obj = new Box(location, width, height,0);
 
                     sim.addObjs(obj);
-                    System.out.println("Created Obsticle: " + obj.getLocation().toString());
+                    System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }
@@ -122,6 +117,10 @@ public class RunSimulation{
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
+
+        // Simulation walls
+        //TODO: make this a toggle in one of the files (probably obstacles)
+        sim.addObstacle(new Box(new Location(0,0), sim.width, sim.height, 0));
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){

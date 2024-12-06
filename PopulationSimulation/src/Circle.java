@@ -1,5 +1,6 @@
 import java.awt.*;
 
+//TODO: Determine whether we need to implement this or if we can just delete it
 public class Circle extends Obstacle {
     private double radius;
 

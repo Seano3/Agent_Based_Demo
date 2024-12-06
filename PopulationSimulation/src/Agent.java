@@ -163,8 +163,8 @@ public class Agent {
      * <p> Checks the location of the agent to see if it is colliding with anything and updates the velocity accordingly</p>
      * @param otherAgents List of all other agents in the simulation
      * @param frame the current frame
-     * @param width width of the simulation
-     * @param height height of the simulation
+     * @param exits list of all exits in the simulation
+     * @param obstacles list of all obstacles in the simulation
      */
     public void checkCollisions(LinkedList<Agent> otherAgents, int frame, LinkedList<Exit> exits, LinkedList<Obstacle> obstacles) {
         checkObstacles(obstacles, frame, exits);
@@ -231,9 +231,9 @@ public class Agent {
 
     /**
      * <p>Checks the collision with each Obstacle and changes the velocity accordingly</p>
+     * @param obstacles list of all obstacles in the simulation
      * @param frame The current frame
-     * @param width width of the simulation
-     * @param height height of the simulation
+     * @param exits list of all exits in the simulation
      */
     private void checkObstacles(LinkedList<Obstacle> obstacles, int frame, LinkedList<Exit> exits) {
         //If we are inside an exit, modify collision checks
