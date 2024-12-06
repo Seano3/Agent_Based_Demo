@@ -19,6 +19,7 @@ public class Agent {
     private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
+    private boolean useVectorMap = true;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -131,36 +132,37 @@ public class Agent {
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
-            if (smallest == north) {
-                System.out.println("Going North");
-                yVelocity -= transferedVel;
-            } else if (smallest == south) {
-                System.out.println("Going South");
-                yVelocity += transferedVel;
-            } else if (smallest == west) {
-                System.out.println("Going West");
-                xVelocity -= transferedVel;
-            } else if (smallest == east) {
-                System.out.println("Going East");
-                xVelocity += transferedVel;
-            } else if (smallest == northEast) {
-                System.out.println("Going North East");
-                yVelocity -= transferedVel / 2;
-                xVelocity += transferedVel / 2;
-            } else if (smallest == northWest) {
-                System.out.println("Going North West");
-                yVelocity -= transferedVel / 2;
-                xVelocity -= transferedVel / 2;
-            } else if (smallest == southEast) {
-                System.out.println("Going South East");
-                yVelocity += transferedVel / 2;
-                xVelocity += transferedVel / 2;
-            } else if (smallest == southWest) {
-                System.out.println("Going South West");
-                yVelocity += transferedVel / 2;
-                xVelocity -= transferedVel / 2;
+            if (useVectorMap) {
+                if (smallest == north) {
+                    System.out.println("Going North");
+                    yVelocity -= transferedVel;
+                } else if (smallest == south) {
+                    System.out.println("Going South");
+                    yVelocity += transferedVel;
+                } else if (smallest == west) {
+                    System.out.println("Going West");
+                    xVelocity -= transferedVel;
+                } else if (smallest == east) {
+                    System.out.println("Going East");
+                    xVelocity += transferedVel;
+                } else if (smallest == northEast) {
+                    System.out.println("Going North East");
+                    yVelocity -= transferedVel / 2;
+                    xVelocity += transferedVel / 2;
+                } else if (smallest == northWest) {
+                    System.out.println("Going North West");
+                    yVelocity -= transferedVel / 2;
+                    xVelocity -= transferedVel / 2;
+                } else if (smallest == southEast) {
+                    System.out.println("Going South East");
+                    yVelocity += transferedVel / 2;
+                    xVelocity += transferedVel / 2;
+                } else if (smallest == southWest) {
+                    System.out.println("Going South West");
+                    yVelocity += transferedVel / 2;
+                    xVelocity -= transferedVel / 2;
+                }
             }
-
         }
     }
 

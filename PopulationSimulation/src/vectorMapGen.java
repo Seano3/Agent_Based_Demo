@@ -1,3 +1,4 @@
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,9 +8,10 @@ import java.util.List;
 import java.util.Queue;
 
 public class vectorMapGen {
+
     private final int LENGTH = 111;
     private final int HEIGHT = 73;
-    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // these set the {dx dy} for each possible jump in the BFS algo
+    private static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // these set the {dx dy} for each possible jump in the BFS algo
     private int[][] results;
 
     public vectorMapGen() {
@@ -32,7 +34,7 @@ public class vectorMapGen {
         }
 
         // door 4
-        for (int x = 18; x <= 19; x++) {
+        for (int x = 18; x <= 18; x++) {
             map[x][0] = 0;
         }
 
@@ -41,21 +43,21 @@ public class vectorMapGen {
             map[x][0] = 0;
         }
 
-        for (int x = 30; x < 60; x++){
-            for (int y = 30; y < 60; y++){
-                map[x][y] = -1; 
+        for (int x = 30; x < 60; x++) {
+            for (int y = 30; y < 60; y++) {
+                map[x][y] = -1;
             }
         }
 
         int[][] result = calculateDistances(map);
 
-        results = new int[73][111]; 
+        results = new int[73][111];
 
-        for (int i = 0; i < result.length; i++){
-            for (int j = 0; j < result[0].length; j++){
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
                 results[j][i] = result[i][j];
             }
-        }  
+        }
 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
@@ -64,9 +66,7 @@ public class vectorMapGen {
         //     }
         //     System.out.println();
         // }
-
         //System.out.println("MAP: " + results[10][10]);
-
         try {
             exportToCSV(results, "debug_vector_map.csv");
         } catch (IOException e) {
@@ -110,7 +110,7 @@ public class vectorMapGen {
 
                     if (isValidPosition(grid, newRow, newCol) && !visited[newRow][newCol]) {
                         distances[newRow][newCol] = distances[currentPosition[0]][currentPosition[1]] + 1;
-                        queue.offer(new int[] { newRow, newCol });
+                        queue.offer(new int[]{newRow, newCol});
                         visited[newRow][newCol] = true;
                     }
                 }
@@ -124,7 +124,7 @@ public class vectorMapGen {
         for (int r = 0; r < grid.length; r++) {
             for (int c = 0; c < grid[0].length; c++) {
                 if (grid[r][c] == 0) {
-                    positions.add(new int[] { r, c });
+                    positions.add(new int[]{r, c});
                 }
             }
         }
