@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,8 +19,10 @@ public class Agent {
     private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
+
     /**
      * This is the main class we use to create agents in the simulation
+     *
      * @param name The Integer ID of the agent
      * @param size The radius of the agent, also acts as the mass
      * @param xCord The x coordinate of the agent
@@ -36,17 +39,17 @@ public class Agent {
         location = new Location(xCord, yCord);
         collisions = new LinkedList<Collision>();
         this.sim = sim;
-        this.color = new Color((int)(Math.random() * 0x1000000));
+        this.color = new Color((int) (Math.random() * 0x1000000));
 
         csvName = "src/AgentCSVs/Agent-" + AgentID + ".csv";
 
         try (FileWriter writer = new FileWriter(csvName)) {
-            writer.write(AgentID + "," +
-                    size + "," +
-                    location.getX() + "," +
-                    location.getY() + "," +
-                    xVelocity + "," +
-                    yVelocity);
+            writer.write(AgentID + ","
+                    + size + ","
+                    + location.getX() + ","
+                    + location.getY() + ","
+                    + xVelocity + ","
+                    + yVelocity);
             writer.write("\n");
         } catch (IOException e) {
             //System.err.println("Error writing to CSV file: " + e.getMessage());
@@ -81,9 +84,10 @@ public class Agent {
         return color;
     }
 
-
     /**
-     * <p>Call to update the location of the agent using its velocity and any acceleration it may have</p>
+     * <p>
+     * Call to update the location of the agent using its velocity and any
+     * acceleration it may have</p>
      */
     public void updateLocation() {
         xVelocity += xAcceleration;
@@ -109,7 +113,7 @@ public class Agent {
             int east = map[yMeter][xMeter + 1];
             int west = map[yMeter][xMeter - 1];
             int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1 ][xMeter - 1];
+            int northWest = map[yMeter - 1][xMeter - 1];
             int southEast = map[yMeter + 1][xMeter + 1];
             int southWest = map[yMeter + 1][xMeter - 1];
 
@@ -118,49 +122,53 @@ public class Agent {
             System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             System.out.println("X " + xMeter + " Y " + yMeter);
 
+            final int DEVISOR = 2;
+
+            double transferedVel = (Math.abs(xVelocity) + Math.abs(yVelocity)) / DEVISOR;
+
+            xVelocity = xVelocity / DEVISOR;
+            yVelocity = yVelocity / DEVISOR;
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
-
             if (smallest == north) {
                 System.out.println("Going North");
-                yVelocity = -37.5;
-                xVelocity = 0;
+                yVelocity -= transferedVel;
             } else if (smallest == south) {
                 System.out.println("Going South");
-                yVelocity = 37.5;
-                xVelocity = 0;
+                yVelocity += transferedVel;
             } else if (smallest == west) {
                 System.out.println("Going West");
-                yVelocity = 0;
-                xVelocity = -37.5;
+                xVelocity -= transferedVel;
             } else if (smallest == east) {
                 System.out.println("Going East");
-                yVelocity = 0;
-                xVelocity = 37.5;
-            }else if (smallest == northEast) {
+                xVelocity += transferedVel;
+            } else if (smallest == northEast) {
                 System.out.println("Going North East");
-                yVelocity = -18.75;
-                xVelocity = 18.75;
+                yVelocity -= transferedVel / 2;
+                xVelocity += transferedVel / 2;
             } else if (smallest == northWest) {
                 System.out.println("Going North West");
-                yVelocity = -18.75;
-                xVelocity = -18.75;
+                yVelocity -= transferedVel / 2;
+                xVelocity -= transferedVel / 2;
             } else if (smallest == southEast) {
                 System.out.println("Going South East");
-                yVelocity = 18.75;
-                xVelocity = 18.75;
+                yVelocity += transferedVel / 2;
+                xVelocity += transferedVel / 2;
             } else if (smallest == southWest) {
                 System.out.println("Going South West");
-                yVelocity = 18.75;
-                xVelocity = -18.75;
+                yVelocity += transferedVel / 2;
+                xVelocity -= transferedVel / 2;
             }
 
         }
     }
 
     /**
-     * <p> Checks the location of the agent to see if it is colliding with anything and updates the velocity accordingly</p>
+     * <p>
+     * Checks the location of the agent to see if it is colliding with anything
+     * and updates the velocity accordingly</p>
+     *
      * @param otherAgents List of all other agents in the simulation
      * @param frame the current frame
      * @param exits list of all exits in the simulation
@@ -175,7 +183,8 @@ public class Agent {
      *
      * @param collision the collision that needs to be checked
      * @param otherAgent the other agent involved in the collision
-     * @return Returns a boolean to see of the collision has happened in the last 5 frames, false = already collided
+     * @return Returns a boolean to see of the collision has happened in the
+     * last 5 frames, false = already collided
      */
     private boolean checkPreviousAgentCollisions(Collision collision, Agent otherAgent) {
         for (Collision i : collisions) {
@@ -194,7 +203,8 @@ public class Agent {
     /**
      *
      * @param collision the collision with the wall
-     * @return returns false if the agent had already collided with the wall withing 5 frames
+     * @return returns false if the agent had already collided with the wall
+     * withing 5 frames
      */
     public boolean checkOtherObstacleCollisions(Collision collision) {
         for (Collision i : collisions) {
@@ -209,7 +219,9 @@ public class Agent {
     }
 
     /**
-     * <p> Checks to see if the collision should be removed from the buffer and does so if need be </p>
+     * <p>
+     * Checks to see if the collision should be removed from the buffer and does
+     * so if need be </p>
      */
     public void updateCollisionsStorage() {
         for (int i = 0; i < collisions.size(); i++) {
@@ -222,7 +234,7 @@ public class Agent {
 
     private Exit inExit(LinkedList<Exit> exits) {
         for (Exit i : exits) {
-            if(i.inExit(this)) {
+            if (i.inExit(this)) {
                 return i;
             }
         }
@@ -230,7 +242,10 @@ public class Agent {
     }
 
     /**
-     * <p>Checks the collision with each Obstacle and changes the velocity accordingly</p>
+     * <p>
+     * Checks the collision with each Obstacle and changes the velocity
+     * accordingly</p>
+     *
      * @param obstacles list of all obstacles in the simulation
      * @param frame The current frame
      * @param exits list of all exits in the simulation
@@ -239,7 +254,7 @@ public class Agent {
         //If we are inside an exit, modify collision checks
         Exit currentExit = inExit(exits);
         if (currentExit != null) {
-            if(currentExit.getAlignment() == Exit.alignment.VERTICAL) {
+            if (currentExit.getAlignment() == Exit.alignment.VERTICAL) {
 
                 if (getLocation().getY() - getSize() < currentExit.getLocation().getY()) { // Top of exit
 
@@ -256,7 +271,6 @@ public class Agent {
                         this.yVelocity = -Math.abs(yVelocity);
                     }
                 }
-
 
             } else { //alignment.horizontal
                 if (getLocation().getX() + getSize() > currentExit.getLocation().getX() + currentExit.getSize()) { // Right of exit
@@ -284,7 +298,10 @@ public class Agent {
     }
 
     /**
-     * <p>Checks the collision with each other agent and changes the velocity accordingly</p>
+     * <p>
+     * Checks the collision with each other agent and changes the velocity
+     * accordingly</p>
+     *
      * @param otherAgents an array of all other agents in the simulation
      * @param frame the current frame
      */
@@ -317,31 +334,29 @@ public class Agent {
         }
     }
 
-
     @Override
     public String toString() {
-        return "Agent{" +
-                "name=" + AgentID +
-                ", size=" + size +
-                ", xCoord=" + location.getX() +
-                ", yCoord=" + location.getY() +
-                ", xVel=" + xVelocity +
-                ", yVel=" + yVelocity +
-                '}';
+        return "Agent{"
+                + "name=" + AgentID
+                + ", size=" + size
+                + ", xCoord=" + location.getX()
+                + ", yCoord=" + location.getY()
+                + ", xVel=" + xVelocity
+                + ", yVel=" + yVelocity
+                + '}';
     }
 
     private void updateCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
-            writer.write(AgentID + "," +
-                    size + "," +
-                    location.getX() + "," +
-                    location.getY() + "," +
-                    xVelocity + "," +
-                    yVelocity);
+            writer.write(AgentID + ","
+                    + size + ","
+                    + location.getX() + ","
+                    + location.getY() + ","
+                    + xVelocity + ","
+                    + yVelocity);
             writer.write("\n");
         } catch (IOException e) {
             //System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
 }
-
