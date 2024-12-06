@@ -19,7 +19,8 @@ public class Agent {
     private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
-    private boolean useVectorMap = true;
+    private int wallBuffer = 50;
+    private int timeSinceLastWallCollision = wallBuffer;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -91,6 +92,7 @@ public class Agent {
      * acceleration it may have</p>
      */
     public void updateLocation() {
+        timeSinceLastWallCollision++;
         xVelocity += xAcceleration;
         yVelocity += yAcceleration;
 
@@ -132,7 +134,7 @@ public class Agent {
 
             int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
-            if (useVectorMap) {
+            if (timeSinceLastWallCollision > 50) {
                 if (smallest == north) {
                     System.out.println("Going North");
                     yVelocity -= transferedVel;
@@ -297,6 +299,10 @@ public class Agent {
             i.checkCollision(this, frame);
         }
 
+    }
+
+    public void deactivateVectorMap() {
+        timeSinceLastWallCollision = 0;
     }
 
     /**
