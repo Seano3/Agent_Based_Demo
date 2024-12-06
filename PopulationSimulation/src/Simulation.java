@@ -16,6 +16,7 @@ public class Simulation extends JPanel {
     int upperBorderHeight;
     int panelHeight;
     String csvName = "Debug.csv";
+    private double elapsedTime;
     private JLabel timeLabel;
     private JLabel agentCountLabel;
     private JLabel frameLabel;
@@ -26,9 +27,7 @@ public class Simulation extends JPanel {
     private boolean isPaused;
     private boolean isGridEnabled;
     private boolean isAgentNumbersEnabled;
-    private long startTime;
-    private long pausedTime = 0;
-    private long totalPausedDuration;
+    private double startTime;
     private double initialKE = 0;
     private int totalAgents = 0;
     private int totalExits = 0;
@@ -63,20 +62,17 @@ public class Simulation extends JPanel {
 
         isPaused = true;
         isGridEnabled = false;
-        totalPausedDuration = 0;
-        startTime = System.currentTimeMillis();
-        pausedTime = System.currentTimeMillis();
+        startTime = 0.0;
+        elapsedTime = 0.0;
 
         pausePlayButton.addActionListener(e -> {
             if (isPaused) {
                 pausePlayButton.setText("Pause");
                 timer.start();
-                totalPausedDuration += System.currentTimeMillis() - pausedTime;
                 frameStepButton.setForeground(Color.gray);
             } else {
                 pausePlayButton.setText("Play");
                 timer.stop();
-                pausedTime = System.currentTimeMillis();
                 frameStepButton.setForeground(Color.black);
             }
             isPaused = !isPaused;
@@ -135,12 +131,12 @@ public class Simulation extends JPanel {
 
     }
 
+    //TODO: fix this
     private void updateTimerLabel() {
-    long elapsedTime = System.currentTimeMillis() - startTime - totalPausedDuration;
-    long hours = (elapsedTime / 3600000) % 24;
-    long minutes = (elapsedTime / 60000) % 60;
-    long seconds = (elapsedTime / 1000) % 60;
-    String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    double hours = (elapsedTime / 3600000) % 24;
+    double minutes = (elapsedTime / 60000) % 60;
+    double seconds = (elapsedTime / 1000) % 60;
+    String formattedTime = String.format("%02f", elapsedTime);
     timeLabel.setText("Time: " + formattedTime);
 }
 
@@ -192,6 +188,7 @@ public class Simulation extends JPanel {
      */
     public void update() {
         frame++;
+        elapsedTime+=0.01;
         frameLabel.setText("Frame: " + frame);
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
