@@ -72,7 +72,7 @@ public class RunSimulation{
                     double xVel = Double.parseDouble(attributes[4]);
                     double yVel = Double.parseDouble(attributes[5]);
 
-                    Agent agent = new Agent(name, size, xCoord, yCoord, xVel, yVel, sim);
+                    Agent agent = new Agent(name, size, xCoord-size, yCoord-size, xVel, yVel, sim);
                     sim.addAgent(agent);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
