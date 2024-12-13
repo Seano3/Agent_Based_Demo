@@ -8,6 +8,7 @@ import javax.swing.*;
 public class Simulation extends JPanel {
     private LinkedList<Agent> agents;
     private LinkedList<Exit> exits;
+    private LinkedList<Spawn> spawns;
     private LinkedList<Obstacle> obstacles;
     private Timer timer;
     int frame;
@@ -31,6 +32,7 @@ public class Simulation extends JPanel {
     private double initialKE = 0;
     private int totalAgents = 0;
     private int totalExits = 0;
+    private int totalSpawns = 0;
     int[][] vectorMap;
 
     public Simulation(int width, int height) {
@@ -46,6 +48,7 @@ public class Simulation extends JPanel {
         agents = new LinkedList<>();
         exits = new LinkedList<>();
         obstacles = new LinkedList<>();
+        spawns = new LinkedList<>();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -151,6 +154,11 @@ public class Simulation extends JPanel {
         totalExits++;
     }
 
+    public void addSpawn(Spawn spawn) {
+        spawns.add(spawn);
+        totalSpawns++;
+    }
+
     public void addAgent(Agent agent) {
         Exit closestExit = findClosestExit(agent.getLocation());
 
@@ -239,6 +247,17 @@ public class Simulation extends JPanel {
 
         }
 
+        for (Spawn i : spawns) {
+            // Draw all spawns
+            g2d.setColor(Color.RED);
+            if(i.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                g2d.fillRect((int) i.getLocation().getX(), (int)i.getLocation().getY()-5, i.getSize(), 10);
+            } else {
+                g2d.fillRect((int) i.getLocation().getX()-5, (int) i.getLocation().getY(), 10, i.getSize());
+            }
+
+        }
+
         for (Obstacle i : obstacles) {
             i.paint(g2d);
         }
@@ -280,6 +299,8 @@ public class Simulation extends JPanel {
     public LinkedList<Exit> getExits() {
         return exits;
     }
+
+    public LinkedList<Spawn> getSpawns() { return spawns; }
 
     public LinkedList<Obstacle> getObstacles() {
         return obstacles;
