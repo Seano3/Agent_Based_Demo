@@ -39,7 +39,7 @@ public class vectorMapGen {
         }
 
         // door 5
-        for (int x = 92; x <= 93; x++) {
+        for (int x = 92; x <= 92; x++) {
             map[x][0] = 0;
         }
 
