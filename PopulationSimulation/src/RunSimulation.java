@@ -52,6 +52,42 @@ public class RunSimulation{
             System.err.println("Error reading file: " + e.getMessage());
         }
 
+        //Spawn input
+        try (BufferedReader br = new BufferedReader(new FileReader("spawn-input.csv"))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] attributes = line.split(",");
+
+                if (attributes.length != 4) {
+                    System.err.println("Invalid number of attributes in line: " + line);
+                    continue;
+                }
+
+                try {
+                    int size = Integer.parseInt(attributes[0]);
+                    double xCoord = Double.parseDouble(attributes[1]);
+                    double yCoord = Double.parseDouble(attributes[2]);
+                    double alignmentNum = Double.parseDouble(attributes[3]);
+                    int spawnRateInterval = Integer.parseInt(attributes[4]);
+                    Spawn spawn;
+                    Location location = new Location(xCoord, yCoord);
+                    if (alignmentNum == 0){
+                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval);
+                    } else {
+                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval);
+                    }
+
+                    sim.addSpawn(spawn);
+                    System.out.println("Created Spawn: " + spawn.getLocation().toString() + " " + spawn.getSize());
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format in line: " + line);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+
         //Agent input
         try (BufferedReader br = new BufferedReader(new FileReader("agent-input.csv"))) {
 

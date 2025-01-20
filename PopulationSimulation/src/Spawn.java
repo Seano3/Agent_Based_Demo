@@ -4,15 +4,23 @@ public class Spawn {
     private int size;
     private Spawn.alignment alignment;
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
+    private int spawnRateInterval;
+    private int lastSpawnFrame;
 
-    public Spawn(int size, Location location, Spawn.alignment alignment) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
+        this.spawnRateInterval = spawnRateInterval;
+        this.lastSpawnFrame = 0;
     }
 
     public int getSize() {
         return size;
+    }
+
+    public int getSpawnRateInterval() {
+        return spawnRateInterval;
     }
 
     public Spawn.alignment getAlignment() {
@@ -23,7 +31,15 @@ public class Spawn {
         return location;
     }
 
-    public boolean inExit(Agent agent) {
+    public int getLastSpawnFrame() {
+        return lastSpawnFrame;
+    }
+
+    public void setLastSpawnFrame(int lastSpawnFrame) {
+        this.lastSpawnFrame = lastSpawnFrame;
+    }
+
+    /*public boolean inExit(Agent agent) {
         if(alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();
             double upperBound = location.getY() + size;
@@ -39,6 +55,6 @@ public class Spawn {
                     agent.getLocation().getY() < location.getY() + agent.getSize()+5 &&
                     agent.getLocation().getY() > location.getY() - agent.getSize()-5;
         }
-    }
+    }*/
 
 }

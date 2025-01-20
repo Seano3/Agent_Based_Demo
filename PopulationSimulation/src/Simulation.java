@@ -198,6 +198,16 @@ public class Simulation extends JPanel {
         frame++;
         elapsedTime+=0.01;
         frameLabel.setText("Frame: " + frame);
+
+        for (Spawn spawn : spawns) {
+            if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval()) {
+                // Spawn a new agent
+                Agent newAgent = new Agent(totalAgents, spawn.getSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), 0, 0, this);
+                addAgent(newAgent);
+                spawn.setLastSpawnFrame(frame);
+            }
+        }
+
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
