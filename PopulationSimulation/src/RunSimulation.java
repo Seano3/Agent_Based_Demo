@@ -108,7 +108,7 @@ public class RunSimulation {
                     Location location = new Location(xCoord, yCoord);
 
                     obj = new Box(location, width, height, 0);
-
+                    sim.addBoxVM((Box) obj);
                     sim.addObjs(obj);
                     System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {

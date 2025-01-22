@@ -146,10 +146,14 @@ public class Simulation extends JPanel {
 
     public void addExit(Exit exit) { // no need to remove exits
         if (exit.buildingExit) {
-            map.addExit(exit);
+            map.addExitVM(exit);
         }
         exits.add(exit);
         totalExits++;
+    }
+
+    public void addBoxVM(Box box) {
+        obstacles.add(box);
     }
 
     public void addAgent(Agent agent) {

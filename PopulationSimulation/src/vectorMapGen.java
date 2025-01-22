@@ -130,7 +130,7 @@ public class vectorMapGen {
         }
     }
 
-    public void addExit(Exit exit) {
+    public void addExitVM(Exit exit) {
         int x = (int) exit.getLocation().getX() / 10;
         int y = (int) exit.getLocation().getY() / 10;
         int size = exit.getSize() / 10;
@@ -143,6 +143,22 @@ public class vectorMapGen {
                 map[x + i][y] = 0;
             }
         }
+    }
+
+    public void addBoxObsticle(Box box) {
+        int x = (int) box.getLocation().getX() / 10;
+        int y = (int) box.getLocation().getY() / 10;
+        int width = (int) box.getWidth() / 10;
+        int height = (int) box.getHeight() / 10;
+        for (int i = 0; i < width; i++) {
+            map[x + i][y] = -1;
+            map[x + i][y + height] = -1;
+        }
+        for (int i = 0; i < height; i++) {
+            map[x][y + i] = -1;
+            map[x + width][y + i] = -1;
+        }
+
     }
 
     public void addObsitcle() {
