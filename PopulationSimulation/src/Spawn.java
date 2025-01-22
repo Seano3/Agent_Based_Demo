@@ -6,13 +6,19 @@ public class Spawn {
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
     private int spawnRateInterval;
     private int lastSpawnFrame;
+    private double spawnAgentSize;
+    private double spawnAgentXVelocity;
+    private double spawnAgentYVelocity;
 
-    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
         this.spawnRateInterval = spawnRateInterval;
         this.lastSpawnFrame = 0;
+        this.spawnAgentSize = spawnAgentSize;
+        this.spawnAgentXVelocity = spawnAgentXVelocity;
+        this.spawnAgentYVelocity = spawnAgentYVelocity;
     }
 
     public int getSize() {
@@ -35,11 +41,23 @@ public class Spawn {
         return lastSpawnFrame;
     }
 
+    public double getSpawnAgentSize() {
+        return spawnAgentSize;
+    }
+
+    public double getSpawnAgentXVelocity() {
+        return spawnAgentXVelocity;
+    }
+
+    public double getSpawnAgentYVelocity() {
+        return spawnAgentYVelocity;
+    }
+
     public void setLastSpawnFrame(int lastSpawnFrame) {
         this.lastSpawnFrame = lastSpawnFrame;
     }
 
-    /*public boolean inExit(Agent agent) {
+    public boolean inSpawn(Agent agent) {
         if(alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();
             double upperBound = location.getY() + size;
@@ -55,6 +73,6 @@ public class Spawn {
                     agent.getLocation().getY() < location.getY() + agent.getSize()+5 &&
                     agent.getLocation().getY() > location.getY() - agent.getSize()-5;
         }
-    }*/
+    }
 
 }

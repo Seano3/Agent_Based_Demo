@@ -202,7 +202,7 @@ public class Simulation extends JPanel {
         for (Spawn spawn : spawns) {
             if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval()) {
                 // Spawn a new agent
-                Agent newAgent = new Agent(totalAgents, spawn.getSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), 0, 0, this);
+                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(),spawn.getSpawnAgentYVelocity(), this);
                 addAgent(newAgent);
                 spawn.setLastSpawnFrame(frame);
             }

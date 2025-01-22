@@ -250,6 +250,15 @@ public class Agent {
         return null;
     }
 
+    private Spawn inSpawn(LinkedList<Spawn> spawns) {
+        for (Spawn i : spawns) {
+            if (i.inSpawn(this)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
     /**
      * <p>
      * Checks the collision with each Obstacle and changes the velocity

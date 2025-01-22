@@ -59,7 +59,7 @@ public class RunSimulation{
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                if (attributes.length != 4) {
+                if (attributes.length != 8) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
                 }
@@ -70,12 +70,15 @@ public class RunSimulation{
                     double yCoord = Double.parseDouble(attributes[2]);
                     double alignmentNum = Double.parseDouble(attributes[3]);
                     int spawnRateInterval = Integer.parseInt(attributes[4]);
+                    double spawnAgentSize = Double.parseDouble(attributes[5]);
+                    double spawnAgentXVelocity = Double.parseDouble(attributes[6]);
+                    double spawnAgentYVelocity = Double.parseDouble(attributes[7]);
                     Spawn spawn;
                     Location location = new Location(xCoord, yCoord);
                     if (alignmentNum == 0){
-                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval);
+                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity);
                     } else {
-                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval);
+                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity);
                     }
 
                     sim.addSpawn(spawn);
