@@ -112,7 +112,7 @@ public class RunSimulation{
                     double yVel = Double.parseDouble(attributes[5]);
 
                     Agent agent = new Agent(name, size, xCoord-size, yCoord-size, xVel, yVel, sim);
-                    sim.addAgent(agent);
+                    sim.addAgent(agent, false);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
