@@ -21,6 +21,8 @@ public class Agent {
     private Color color;
     private int wallBuffer = 50;
     private int timeSinceLastWallCollision = wallBuffer;
+    private boolean blocked;
+    private int choiceMove;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -34,6 +36,8 @@ public class Agent {
      * @param sim Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
+        blocked = false;
+        choiceMove = 0;
         AgentID = name;
         this.size = size;
         xVelocity = xVel;
@@ -86,28 +90,11 @@ public class Agent {
         return color;
     }
 
-    /**
-     * <p>
-     * Call to update the location of the agent using its velocity and any
-     * acceleration it may have</p>
-     */
-    public void updateLocation() {
-        timeSinceLastWallCollision++;
-        xVelocity += xAcceleration;
-        yVelocity += yAcceleration;
-
-        xAcceleration = 0;
-        yAcceleration = 0;
-
-        int[][] map = sim.vectorMap;
-
-        double newX = location.getX() + (xVelocity * TIME_STEP);
-        double newY = location.getY() + (yVelocity * TIME_STEP);
-        location.changePosition(newX, newY);
-        updateCSV();
-
+    private void updateVeolcity(int choice) {
+        //Change to find the choice lowest that is both unoccupied
         int yMeter = (int) location.getY() / 10;
         int xMeter = (int) location.getX() / 10;
+        int[][] map = sim.vectorMap;
 
         if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
             int center = map[yMeter][xMeter];
@@ -136,9 +123,12 @@ public class Agent {
             yVelocity = reduceMagnitude(yVelocity, transferedVely);
             //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
 
-            int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
+            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
+            Collections.sort(values);
 
-            if (timeSinceLastWallCollision > 50) {
+            int smallest = values.get(choice);
+
+            if (timeSinceLastWallCollision > DEVISOR) {
                 if (smallest == north) {
                     // System.out.println("Going North");
                     yVelocity -= transferedVel;
@@ -175,6 +165,28 @@ public class Agent {
 
     /**
      * <p>
+     * Call to update the location of the agent using its velocity and any
+     * acceleration it may have</p>
+     */
+    public void updateLocation(int choice) {
+        timeSinceLastWallCollision++;
+        xVelocity += xAcceleration;
+        yVelocity += yAcceleration;
+
+        xAcceleration = 0;
+        yAcceleration = 0;
+
+        if (!blocked) {
+            double newX = location.getX() + (xVelocity * TIME_STEP);
+            double newY = location.getY() + (yVelocity * TIME_STEP);
+            location.changePosition(newX, newY);
+        }
+        updateCSV();
+
+    }
+
+    /**
+     * <p>
      * Checks the location of the agent to see if it is colliding with anything
      * and updates the velocity accordingly</p>
      *
@@ -184,6 +196,8 @@ public class Agent {
      * @param obstacles list of all obstacles in the simulation
      */
     public void checkCollisions(LinkedList<Agent> otherAgents, int frame, LinkedList<Exit> exits, LinkedList<Obstacle> obstacles) {
+        choiceMove = 0;
+        //System.err.println("Reseting choice move");
         checkObstacles(obstacles, frame, exits);
         checkAgents(otherAgents, frame);
     }
@@ -329,28 +343,25 @@ public class Agent {
      * @param frame the current frame
      */
     private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
+        blocked = false;
         for (Agent that : otherAgents) {
             if (!(that.location.equals(this.location))) {
-                double dx = this.location.getX() - that.location.getX();
-                double dy = this.location.getY() - that.location.getY();
+                double dx = (this.location.getX() + (this.xVelocity * TIME_STEP)) - that.location.getX();
+                double dy = (this.location.getY() + (this.yVelocity * TIME_STEP)) - that.location.getY();
                 double distanceSquared = dx * dx + dy * dy;
                 double dist = Math.sqrt(distanceSquared);
                 double minDist = this.size + that.getSize();
 
-                if (dist <= minDist) {
-                    Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) { //I think this is the issue why agents keep overlaping. Its dosnt change the velocity until theyre alreay overlaping and it dosnt chnage it fast enough. I tried to increase the push force multiplyer but will somtimes kill all the momentum on an agent 
-                        double overlap = minDist - dist;// What if we change it to see if in the next space we move we see if well overlap somthing, then if we do we just dont move unitl its free, Simmular to how spawning in agents would work 
-                        double pushForce = 0.1 * overlap;
-
-                        double pushX = (dx / dist) * pushForce;
-                        double pushY = (dy / dist) * pushForce;
-
-                        this.xVelocity += pushX / this.size;
-                        this.yVelocity += pushY / this.size;
-
-                        that.xVelocity -= pushX / that.size;
-                        that.yVelocity -= pushY / that.size;
+                if (dist <= minDist - 1) {
+                    if (choiceMove <= 2) {
+                        choiceMove++;
+                        System.out.println("Agent " + this.AgentID + " Checking choice " + choiceMove + " at " + dx + ", " + dy);
+                        updateVeolcity(choiceMove);
+                        checkAgents(otherAgents, frame);
+                    } else {
+                        blocked = true;
+                        System.out.println("Agent " + this.AgentID + " Blocked");
+                        break; // If we are blocked, we don't need to check the rest of the agents
                     }
                 }
             }

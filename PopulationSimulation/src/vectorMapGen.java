@@ -23,6 +23,16 @@ public class vectorMapGen {
             }
         }
 
+        for (int x = 0; x < LENGTH; x++) {
+            map[x][0] = -1;
+            map[x][HEIGHT - 1] = -1;
+        }
+
+        for (int y = 0; y < HEIGHT; y++) {
+            map[0][y] = -1;
+            map[LENGTH - 1][y] = -1;
+        }
+
         // door 1
         for (int x = 44; x <= 45; x++) {
             map[x][72] = 0;
@@ -41,12 +51,6 @@ public class vectorMapGen {
         // door 5
         for (int x = 92; x <= 92; x++) {
             map[x][0] = 0;
-        }
-
-        for (int x = 30; x < 60; x++) {
-            for (int y = 30; y < 60; y++) {
-                map[x][y] = -1;
-            }
         }
 
         int[][] result = calculateDistances(map);
