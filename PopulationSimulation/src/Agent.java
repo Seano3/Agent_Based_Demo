@@ -111,7 +111,7 @@ public class Agent {
             // System.out.println("[" + east + "][" + center + "][" + west + "]");
             // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 50;
+            final int DEVISOR = 100;
 
             double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
             double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -176,9 +176,16 @@ public class Agent {
         xAcceleration = 0;
         yAcceleration = 0;
 
+        double newX = 0;
+        double newY = 0;
+
         if (!blocked) {
-            double newX = location.getX() + (xVelocity * TIME_STEP);
-            double newY = location.getY() + (yVelocity * TIME_STEP);
+            if (location.getX() + (xVelocity * TIME_STEP) > 0) {
+                newX = location.getX() + (xVelocity * TIME_STEP);
+            }
+            if (location.getY() + (yVelocity * TIME_STEP) > 0) {
+                newY = location.getY() + (yVelocity * TIME_STEP);
+            }
             location.changePosition(newX, newY);
         }
         updateCSV();
