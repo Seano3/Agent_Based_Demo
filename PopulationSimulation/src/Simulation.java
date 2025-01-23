@@ -228,11 +228,12 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             g2d.setColor(i.getColor());
-            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY()-i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
             if (isAgentNumbersEnabled) {
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
             }
+            g2d.drawLine((int)i.getLocation().getX(), (int)i.getLocation().getY(), (int)i.getLocation().getX(), (int)i.getLocation().getY());
         }
 
 

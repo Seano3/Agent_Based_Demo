@@ -30,7 +30,10 @@ public class Line extends Obstacle {
 
         // find distance of agent to obstacle
         double Da = Dl / Math.sin(Tl);
-        return (Da <= currentAgent.getSize());
+
+//        if (Da <= currentAgent.getSize() *2 )
+//            System.out.println(Dl + " " + De + " " + Tl);
+        return (Da <= currentAgent.getSize() * 2);
     }
 
 
