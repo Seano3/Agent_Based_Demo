@@ -12,7 +12,9 @@ public class RunSimulation{
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT);
+        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, false);
+        if(!sim.vectorMapEnabled())
+            System.out.println("******Vector map is not enabled********");
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
@@ -72,7 +74,7 @@ public class RunSimulation{
                     double xVel = Double.parseDouble(attributes[4]);
                     double yVel = Double.parseDouble(attributes[5]);
 
-                    Agent agent = new Agent(name, size, xCoord-size, yCoord-size, xVel, yVel, sim);
+                    Agent agent = new Agent(name, size, xCoord, yCoord, xVel, yVel, sim);
                     sim.addAgent(agent);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
@@ -121,7 +123,7 @@ public class RunSimulation{
         // Simulation walls
         //TODO: make this a toggle in one of the files (probably obstacles)
         sim.addObstacle(new Box(new Location(0,0), sim.width, sim.height, 0));
-        sim.addObstacle(new Line(new Location(100, 100), new Location(200,200), 0));
+        sim.addObstacle(new Line(new Location(100, 100), new Location(200,100), 0));
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){

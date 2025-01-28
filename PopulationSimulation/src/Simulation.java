@@ -34,10 +34,12 @@ public class Simulation extends JPanel {
     private int totalExits = 0;
     private int totalSpawns = 0;
     int[][] vectorMap;
+    private boolean useVectorMap;
 
-    public Simulation(int width, int height) {
+    public Simulation(int width, int height, boolean vectorMapEnabled) {
         vectorMapGen map = new vectorMapGen();
         vectorMap = map.getResults();
+        this.useVectorMap = vectorMapEnabled;
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
@@ -147,7 +149,13 @@ public class Simulation extends JPanel {
         return panelHeight;
     }
 
+    public boolean vectorMapEnabled() {
+        return useVectorMap;
+    }
 
+    public void toggleVectorMap() {
+        useVectorMap = !useVectorMap;
+    }
 
     public void addExit(Exit exit) { // no need to remove exits
         exits.add(exit);

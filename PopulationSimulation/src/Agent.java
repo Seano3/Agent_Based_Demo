@@ -108,61 +108,62 @@ public class Agent {
 
         int yMeter = (int) location.getY() / 10;
         int xMeter = (int) location.getX() / 10;
+        if(sim.vectorMapEnabled()) {
+            if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+                int center = map[yMeter][xMeter];
+                int north = map[yMeter - 1][xMeter];
+                int south = map[yMeter + 1][xMeter];
+                int east = map[yMeter][xMeter + 1];
+                int west = map[yMeter][xMeter - 1];
+                int northEast = map[yMeter - 1][xMeter + 1];
+                int northWest = map[yMeter - 1][xMeter - 1];
+                int southEast = map[yMeter + 1][xMeter + 1];
+                int southWest = map[yMeter + 1][xMeter - 1];
 
-        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-            int center = map[yMeter][xMeter];
-            int north = map[yMeter - 1][xMeter];
-            int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter + 1];
-            int west = map[yMeter][xMeter - 1];
-            int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1][xMeter - 1];
-            int southEast = map[yMeter + 1][xMeter + 1];
-            int southWest = map[yMeter + 1][xMeter - 1];
+                System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
+                System.out.println("[" + east + "][" + center + "][" + west + "]");
+                System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+                System.out.println("X " + xMeter + " Y " + yMeter);
 
-            System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
-            System.out.println("[" + east + "][" + center + "][" + west + "]");
-            System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            System.out.println("X " + xMeter + " Y " + yMeter);
+                final int DEVISOR = 2;
 
-            final int DEVISOR = 2;
+                double transferedVel = (Math.abs(xVelocity) + Math.abs(yVelocity)) / DEVISOR;
 
-            double transferedVel = (Math.abs(xVelocity) + Math.abs(yVelocity)) / DEVISOR;
+                xVelocity = xVelocity / DEVISOR;
+                yVelocity = yVelocity / DEVISOR;
 
-            xVelocity = xVelocity / DEVISOR;
-            yVelocity = yVelocity / DEVISOR;
+                int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
 
-            int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
-
-            if (timeSinceLastWallCollision > 50) {
-                if (smallest == north) {
-                    System.out.println("Going North");
-                    yVelocity -= transferedVel;
-                } else if (smallest == south) {
-                    System.out.println("Going South");
-                    yVelocity += transferedVel;
-                } else if (smallest == west) {
-                    System.out.println("Going West");
-                    xVelocity -= transferedVel;
-                } else if (smallest == east) {
-                    System.out.println("Going East");
-                    xVelocity += transferedVel;
-                } else if (smallest == northEast) {
-                    System.out.println("Going North East");
-                    yVelocity -= transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                } else if (smallest == northWest) {
-                    System.out.println("Going North West");
-                    yVelocity -= transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
-                } else if (smallest == southEast) {
-                    System.out.println("Going South East");
-                    yVelocity += transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                } else if (smallest == southWest) {
-                    System.out.println("Going South West");
-                    yVelocity += transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
+                if (timeSinceLastWallCollision > 50) {
+                    if (smallest == north) {
+                        System.out.println("Going North");
+                        yVelocity -= transferedVel;
+                    } else if (smallest == south) {
+                        System.out.println("Going South");
+                        yVelocity += transferedVel;
+                    } else if (smallest == west) {
+                        System.out.println("Going West");
+                        xVelocity -= transferedVel;
+                    } else if (smallest == east) {
+                        System.out.println("Going East");
+                        xVelocity += transferedVel;
+                    } else if (smallest == northEast) {
+                        System.out.println("Going North East");
+                        yVelocity -= transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                    } else if (smallest == northWest) {
+                        System.out.println("Going North West");
+                        yVelocity -= transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                    } else if (smallest == southEast) {
+                        System.out.println("Going South East");
+                        yVelocity += transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                    } else if (smallest == southWest) {
+                        System.out.println("Going South West");
+                        yVelocity += transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                    }
                 }
             }
         }

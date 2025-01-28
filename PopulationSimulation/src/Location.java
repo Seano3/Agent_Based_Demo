@@ -22,8 +22,8 @@ public class Location {
     }
 
     public double getDistance(Location loc){
-        double xComponent = Math.abs(loc.getX() - xCord);
-        double yComponent = Math.abs(loc.getY() - yCord);
+        double xComponent = loc.getX() - xCord;
+        double yComponent = loc.getY() - yCord;
         return Math.sqrt(xComponent * xComponent + yComponent * yComponent);
     }
 
