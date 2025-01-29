@@ -18,4 +18,4 @@ Agent-2.csv
 Agent-3.csv
 Debug.csv
 PopulationSimulation/bin/
-PopulationSimulation/AgentCSVs/
+PopulationSimulation/src/AgentCSVs/

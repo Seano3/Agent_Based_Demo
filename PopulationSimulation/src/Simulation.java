@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -6,6 +7,7 @@ import java.util.LinkedList;
 import javax.swing.*;
 
 public class Simulation extends JPanel {
+
     private LinkedList<Agent> agents;
     private LinkedList<Exit> exits;
     private LinkedList<Spawn> spawns;
@@ -34,10 +36,10 @@ public class Simulation extends JPanel {
     private int totalExits = 0;
     private int totalSpawns = 0;
     int[][] vectorMap;
+    vectorMapGen map;
 
     public Simulation(int width, int height) {
-        vectorMapGen map = new vectorMapGen();
-        vectorMap = map.getResults();
+        map = new vectorMapGen(width / 10, (height - 200) / 10);
         frame = 0;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
@@ -115,8 +117,6 @@ public class Simulation extends JPanel {
 
         add(toggleAgentNumbersButton);
 
-
-
         setLayout(null);
         add(timeLabel);
         add(pausePlayButton);
@@ -136,22 +136,27 @@ public class Simulation extends JPanel {
 
     //TODO: fix this
     private void updateTimerLabel() {
-    double hours = (elapsedTime / 3600000) % 24;
-    double minutes = (elapsedTime / 60000) % 60;
-    double seconds = (elapsedTime / 1000) % 60;
-    String formattedTime = String.format("%02f", elapsedTime);
-    timeLabel.setText("Time: " + formattedTime);
-}
+        double hours = (elapsedTime / 3600000) % 24;
+        double minutes = (elapsedTime / 60000) % 60;
+        double seconds = (elapsedTime / 1000) % 60;
+        String formattedTime = String.format("%02f", elapsedTime);
+        timeLabel.setText("Time: " + formattedTime);
+    }
 
     public int getPanelHeight() {
         return panelHeight;
     }
 
-
-
     public void addExit(Exit exit) { // no need to remove exits
+        if (exit.buildingExit) {
+            map.addExitVM(exit);
+        }
         exits.add(exit);
         totalExits++;
+    }
+
+    public void addBoxVM(Box box) {
+        obstacles.add(box);
     }
 
     public void addSpawn(Spawn spawn) {
@@ -177,7 +182,7 @@ public class Simulation extends JPanel {
         agentCountLabel.setText("Agents: " + totalAgents);
     }
 
-    public void addObjs(Obstacle obj){
+    public void addObjs(Obstacle obj) {
         obstacles.add(obj);
     }
 
@@ -192,17 +197,21 @@ public class Simulation extends JPanel {
     }
 
     /**
-     * <p>Updates the simulation each frame </p>
+     * <p>
+     * Updates the simulation each frame </p>
      */
     public void update() {
+        if (frame == 0) { //create the vector map once the first time the simulation is updated
+            VectorMapGeneration();
+        }
         frame++;
-        elapsedTime+=0.01;
+        elapsedTime += 0.01;
         frameLabel.setText("Frame: " + frame);
 
         for (Spawn spawn : spawns) {
             if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval()) {
                 // Spawn a new agent
-                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(),spawn.getSpawnAgentYVelocity(), this);
+                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
                 addAgent(newAgent);
                 spawn.setLastSpawnFrame(frame);
             }
@@ -214,21 +223,22 @@ public class Simulation extends JPanel {
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
 
-            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize()*2 ||
-                    agents.get(i).getLocation().getY() < -agents.get(i).getSize()*2 ||
-            agents.get(i).getLocation().getX() > width+agents.get(i).getSize() ||
-            agents.get(i).getLocation().getY() > height+agents.get(i).getSize()- panelHeight) {
-               removeAgent(agents.get(i));
+            if (agents.get(i).getLocation().getX() < -agents.get(i).getSize() * 2
+                    || agents.get(i).getLocation().getY() < -agents.get(i).getSize() * 2
+                    || agents.get(i).getLocation().getX() > width + agents.get(i).getSize()
+                    || agents.get(i).getLocation().getY() > height + agents.get(i).getSize() - panelHeight) {
+                removeAgent(agents.get(i));
             }
 
-        // TODO: Write to Excel sheet of locational data of each Agent
+            // TODO: Write to Excel sheet of locational data of each Agent
+        }
+        debugCSV();
+        generateCSV(agents.size(), this);
     }
-    debugCSV();
-    generateCSV(agents.size(), this);
-}
 
     /**
-     * <p> Updates the GUI</p>
+     * <p>
+     * Updates the GUI</p>
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -245,14 +255,13 @@ public class Simulation extends JPanel {
             }
         }
 
-
         for (Exit i : exits) {
             // Draw all exits
             g2d.setColor(Color.BLUE);
-            if(i.getAlignment() == Exit.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), (int)i.getLocation().getY()-5, i.getSize(), 10);
+            if (i.getAlignment() == Exit.alignment.HORIZONTAL) {
+                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
             } else {
-                g2d.fillRect((int) i.getLocation().getX()-5, (int) i.getLocation().getY(), 10, i.getSize());
+                g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
         }
@@ -260,10 +269,21 @@ public class Simulation extends JPanel {
         for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);
-            if(i.getAlignment() == Spawn.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), (int)i.getLocation().getY()-5, i.getSize(), 10);
+            if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
             } else {
-                g2d.fillRect((int) i.getLocation().getX()-5, (int) i.getLocation().getY(), 10, i.getSize());
+                g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
+            }
+
+        }
+
+        for (Spawn i : spawns) {
+            // Draw all spawns
+            g2d.setColor(Color.RED);
+            if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
+            } else {
+                g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
         }
@@ -310,22 +330,26 @@ public class Simulation extends JPanel {
         return exits;
     }
 
-    public LinkedList<Spawn> getSpawns() { return spawns; }
+    public LinkedList<Spawn> getSpawns() {
+        return spawns;
+    }
 
     public LinkedList<Obstacle> getObstacles() {
         return obstacles;
     }
 
     /**
-     * <p> Generates the final positions CSV file </p>
+     * <p>
+     * Generates the final positions CSV file </p>
+     *
      * @param numAgents number of agents in the sim
-     * @param sim Passthrough the simulation 
+     * @param sim Passthrough the simulation
      */
-    public static void generateCSV(int numAgents, Simulation sim) { 
+    public static void generateCSV(int numAgents, Simulation sim) {
         String csvFile = "agent-output.csv"; // Name of the CSV file 
         String[][] data = new String[numAgents][6]; // Data to write to CSV file
         LinkedList<Agent> agents = sim.getAgents();
-        for(int i = 0; i < numAgents; i++){
+        for (int i = 0; i < numAgents; i++) {
             data[i][0] = Integer.toString(agents.get(i).AgentID);
             data[i][1] = Double.toString(agents.get(i).getSize());
             data[i][2] = Double.toString(agents.get(i).getLocation().getX());
@@ -333,27 +357,29 @@ public class Simulation extends JPanel {
             data[i][4] = Double.toString(agents.get(i).getXVelocity());
             data[i][5] = Double.toString(agents.get(i).getYVelocity());
         }
- 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) { 
-            writer.newLine(); 
-  
-            for (String[] row : data) { 
-                writer.write(String.join(",", row)); 
-                writer.newLine(); 
-            } 
- 
-        } catch (IOException e) { 
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+            writer.newLine();
+
+            for (String[] row : data) {
+                writer.write(String.join(",", row));
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
-        } 
-    } 
+        }
+    }
 
     /**
-     * <p>Generates a CSV that has the total KE for every frame of the simulation </p>
+     * <p>
+     * Generates a CSV that has the total KE for every frame of the simulation
+     * </p>
      */
     private void debugCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
             writer.write(getKE() + ","
-                        );
+            );
             writer.write("\n");
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
@@ -361,20 +387,20 @@ public class Simulation extends JPanel {
     }
 
     /**
-     * 
-     * @return The total KE of every agent in the Simulation 
+     *
+     * @return The total KE of every agent in the Simulation
      */
     private double getKE() {
         double totalKE = 0;
 
-        for(Agent i : agents){
+        for (Agent i : agents) {
             double velocity = Math.sqrt(Math.pow(i.getXVelocity(), 2) + Math.pow(i.getYVelocity(), 2));
 
             double KE = 0.5 * i.getSize() * Math.pow(velocity, 2);
 
             totalKE += KE;
         }
-        if  (frame == 4) {
+        if (frame == 4) {
             initialKE = totalKE;
         }
         if (frame != 0 && initialKE != totalKE) {
@@ -412,5 +438,9 @@ public class Simulation extends JPanel {
         double dy = exitLocation.getY() - agentLocation.getY();
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
+    }
+
+    public void VectorMapGeneration() {
+        vectorMap = map.calculateMap();
     }
 }

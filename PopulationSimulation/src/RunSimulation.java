@@ -1,13 +1,14 @@
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.*;
 //test
-public class RunSimulation{
+
+public class RunSimulation {
 
     private static final int PANEL_HEIGHT = 200;
 
-    
     public static void main(String[] args) throws Exception {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
@@ -36,13 +37,14 @@ public class RunSimulation{
                     double alignmentNum = Double.parseDouble(attributes[3]);
                     Exit exit;
                     Location location = new Location(xCoord, yCoord);
-                    if (alignmentNum == 0){
+                    if (alignmentNum == 0) {
                         exit = new Exit(size, location, Exit.alignment.VERTICAL);
                     } else {
                         exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
                     }
 
                     sim.addExit(exit);
+
                     System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
@@ -97,7 +99,7 @@ public class RunSimulation{
             String line;
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
-                
+
                 if (attributes.length != 6) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
@@ -111,7 +113,7 @@ public class RunSimulation{
                     double xVel = Double.parseDouble(attributes[4]);
                     double yVel = Double.parseDouble(attributes[5]);
 
-                    Agent agent = new Agent(name, size, xCoord-size, yCoord-size, xVel, yVel, sim);
+                    Agent agent = new Agent(name, size, xCoord - size, yCoord - size, xVel, yVel, sim);
                     sim.addAgent(agent);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
@@ -121,16 +123,15 @@ public class RunSimulation{
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-    
-        //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
 
+        //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
         //Obstacle input
         try (BufferedReader br = new BufferedReader(new FileReader("obstacle-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
-                
+
                 if (attributes.length != 4) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
@@ -145,8 +146,8 @@ public class RunSimulation{
                     Obstacle obj;
                     Location location = new Location(xCoord, yCoord);
 
-                    obj = new Box(location, width, height,0);
-
+                    obj = new Box(location, width, height, 0);
+                    sim.addBoxVM((Box) obj);
                     sim.addObjs(obj);
                     System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
@@ -159,23 +160,18 @@ public class RunSimulation{
 
         // Simulation walls
         //TODO: make this a toggle in one of the files (probably obstacles)
-        sim.addObstacle(new Box(new Location(0,0), sim.width, sim.height, 0));
+        sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height, 0));
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
         //     sim.addAgent(new Agent(i + 3, 20, i *2 * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
-            
         // } 
         // generateCSV(6, sim); 
-               
-        
         frame.pack();
         frame.setVisible(true);
 
         //TimeUnit.SECONDS.sleep(1);
         //test.applyForce(50, 0);      
-        
-        
     }
 }

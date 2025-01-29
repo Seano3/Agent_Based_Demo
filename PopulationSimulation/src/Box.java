@@ -120,6 +120,14 @@ public class Box extends Obstacle {
         }
     }
 
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
     /**
      * <p>
      * Draws the obstacle for a given component </p>
