@@ -77,7 +77,7 @@ public class RunSimulation {
                     double spawnAgentYVelocity = Double.parseDouble(attributes[7]);
                     Spawn spawn;
                     Location location = new Location(xCoord, yCoord);
-                    if (alignmentNum == 0){
+                    if (alignmentNum == 0) {
                         spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity);
                     } else {
                         spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity);
@@ -114,7 +114,7 @@ public class RunSimulation {
                     double yVel = Double.parseDouble(attributes[5]);
 
                     Agent agent = new Agent(name, size, xCoord - size, yCoord - size, xVel, yVel, sim);
-                    sim.addAgent(agent);
+                    sim.addAgent(agent, false);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);

@@ -21,6 +21,7 @@ public class Agent {
     private Color color;
     private int wallBuffer = 50;
     private int timeSinceLastWallCollision = wallBuffer;
+    private boolean inSpawn = false;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -86,6 +87,14 @@ public class Agent {
         return color;
     }
 
+    public void setInSpawn(boolean inSpawn) {
+        this.inSpawn = inSpawn;
+    }
+
+    public boolean getInSpawn() {
+        return inSpawn;
+    }
+
     /**
      * <p>
      * Call to update the location of the agent using its velocity and any
@@ -105,6 +114,10 @@ public class Agent {
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
         updateCSV();
+
+        if (inSpawn){
+            return;
+        }
 
         int yMeter = (int) location.getY() / 10;
         int xMeter = (int) location.getX() / 10;

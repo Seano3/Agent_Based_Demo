@@ -164,17 +164,40 @@ public class Simulation extends JPanel {
         totalSpawns++;
     }
 
-    public void addAgent(Agent agent) {
+    public void addAgent(Agent agent, boolean isSpawned) {
         Exit closestExit = findClosestExit(agent.getLocation());
+        Spawn closestSpawn = findClosestSpawn(agent.getLocation());
+
+        //determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
+
+        if (closestSpawn.inSpawn(agent)){
+            agent.setInSpawn(true);
+        }
+        else {
+            agent.setInSpawn(false);
+        }
 
         if (closestExit != null) {
-            System.out.println("i work");
-            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
-            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
-            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
-            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
-            agent.setXVelocity(directionVector[0] * magnitude);
-            agent.setYVelocity(directionVector[1] * magnitude);
+            //if(!isSpawned) {
+                System.out.println("i work");
+                double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
+                double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+                double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+                double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+                agent.setXVelocity(directionVector[0] * magnitude);
+                agent.setYVelocity(directionVector[1] * magnitude);
+                /*Code below will determine if the agent is from a spawner or not so the initial velocity
+                will be calculated differently as to navigate agents straight out the spawn before the vector map takes over
+                 */
+            //}
+            //else{
+                /*double[] directionVector = calculateDirectionVector(closestSpawn.getLocation(), agent.getLocation());
+                double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+                double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+                double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+                agent.setXVelocity(directionVector[0] * magnitude);
+                agent.setYVelocity(directionVector[1] * magnitude);*/
+            //}
         }
 
         agents.add(agent);
@@ -211,8 +234,13 @@ public class Simulation extends JPanel {
         for (Spawn spawn : spawns) {
             if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval()) {
                 // Spawn a new agent
+<<<<<<< HEAD
                 Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
                 addAgent(newAgent);
+=======
+                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(),spawn.getSpawnAgentYVelocity(), this);
+                addAgent(newAgent, true);
+>>>>>>> 28d158b7e155d1a335d49e3baf7a0fa6b051b812
                 spawn.setLastSpawnFrame(frame);
             }
         }
@@ -425,6 +453,22 @@ public class Simulation extends JPanel {
         }
 
         return closestExit;
+    }
+
+    private Spawn findClosestSpawn(Location location) {
+        Spawn closestSpawn = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Spawn spawn : spawns) {
+            System.out.println("Spawn works");
+            double distance = distanceTo(location, spawn.getLocation());
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSpawn = spawn;
+            }
+        }
+
+        return closestSpawn;
     }
 
     private double distanceTo(Location start, Location finish) {
