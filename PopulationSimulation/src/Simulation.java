@@ -168,34 +168,33 @@ public class Simulation extends JPanel {
         Exit closestExit = findClosestExit(agent.getLocation());
         Spawn closestSpawn = findClosestSpawn(agent.getLocation());
 
-        //determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
+        // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
         if (closestSpawn.inSpawn(agent)) {
             agent.setInSpawn(true);
         } else {
             agent.setInSpawn(false);
         }
 
-        if (closestExit != null) {
-            //if(!isSpawned) {
-            System.out.println("i work");
+        if (isSpawned && closestSpawn != null) {
+            double centerX = width / 2.0;
+            double centerY = height / 2.0;
+
+            double dx = centerX - closestSpawn.getLocation().getX();
+            double dy = centerY - closestSpawn.getLocation().getY();
+            double magnitude = Math.sqrt(dx * dx + dy * dy);
+            double directionX = dx / magnitude;
+            double directionY = dy / magnitude;
+
+            double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
+            agent.setXVelocity(directionX * initialVelocityMagnitude);
+            agent.setYVelocity(directionY * initialVelocityMagnitude);
+        } else if (closestExit != null) {
             double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
             double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
             double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
             double magnitude = Math.sqrt(xMagnitude + yMagnitude);
             agent.setXVelocity(directionVector[0] * magnitude);
             agent.setYVelocity(directionVector[1] * magnitude);
-            /*Code below will determine if the agent is from a spawner or not so the initial velocity
-                will be calculated differently as to navigate agents straight out the spawn before the vector map takes over
-             */
-            //}
-            //else{
-            /*double[] directionVector = calculateDirectionVector(closestSpawn.getLocation(), agent.getLocation());
-                double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
-                double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
-                double magnitude = Math.sqrt(xMagnitude + yMagnitude);
-                agent.setXVelocity(directionVector[0] * magnitude);
-                agent.setYVelocity(directionVector[1] * magnitude);*/
-            //}
         }
 
         agents.add(agent);
