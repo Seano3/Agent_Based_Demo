@@ -237,11 +237,14 @@ public class Simulation extends JPanel {
             }
         }
 
+
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
+
+
 
             if (agents.get(i).getLocation().getX() < -agents.get(i).getSize() * 2
                     || agents.get(i).getLocation().getY() < -agents.get(i).getSize() * 2
@@ -304,6 +307,14 @@ public class Simulation extends JPanel {
                 g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
             } else {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
+            }
+            for(Agent j : agents){
+                if(i.inSpawn(j)){
+                    j.setInSpawn(true);
+                }
+                else {
+                    j.setInSpawn(false);
+                }
             }
 
         }
