@@ -9,6 +9,7 @@ public class Spawn {
     private double spawnAgentSize;
     private double spawnAgentXVelocity;
     private double spawnAgentYVelocity;
+    private boolean isActivelySpawning;
 
     public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity) {
         this.size = size;
@@ -19,6 +20,7 @@ public class Spawn {
         this.spawnAgentSize = spawnAgentSize;
         this.spawnAgentXVelocity = spawnAgentXVelocity;
         this.spawnAgentYVelocity = spawnAgentYVelocity;
+        this.isActivelySpawning = true;
     }
 
     public int getSize() {
@@ -55,6 +57,14 @@ public class Spawn {
 
     public void setLastSpawnFrame(int lastSpawnFrame) {
         this.lastSpawnFrame = lastSpawnFrame;
+    }
+
+    public boolean getIsActivelySpawning() {
+        return isActivelySpawning;
+    }
+
+    public void setIsActivelySpawning(boolean isActivelySpawning) {
+        this.isActivelySpawning = isActivelySpawning;
     }
 
     public boolean inSpawn(Agent agent) {
