@@ -252,7 +252,7 @@ public class Simulation extends JPanel {
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
-            agents.get(i).updateLocation();
+            agents.get(i).updateLocation(0);
             agents.get(i).updateCollisionsStorage();
 
             if(agents.get(i).getInSpawn()){
@@ -504,9 +504,5 @@ public class Simulation extends JPanel {
         double dy = exitLocation.getY() - agentLocation.getY();
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
-    }
-
-    public void VectorMapGeneration() {
-        vectorMap = map.calculateMap();
     }
 }

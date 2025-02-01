@@ -22,6 +22,8 @@ public class Agent {
     private int wallBuffer = 50;
     private int timeSinceLastWallCollision = wallBuffer;
     private boolean inSpawn = false;
+    private boolean blocked;
+    private int choiceMove;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -35,6 +37,8 @@ public class Agent {
      * @param sim   Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
+        blocked = false;
+        choiceMove = 0;
         AgentID = name;
         this.size = size;
         xVelocity = xVel;
@@ -119,25 +123,28 @@ public class Agent {
             return;
         }
 
+    private void updateVeolcity(int choice) {
+        //Change to find the choice lowest that is both unoccupied
         int yMeter = (int) location.getY() / 10;
         int xMeter = (int) location.getX() / 10;
-        if (sim.vectorMapEnabled()) {
-            if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-                int center = map[yMeter][xMeter];
-                int north = map[yMeter - 1][xMeter];
-                int south = map[yMeter + 1][xMeter];
-                int east = map[yMeter][xMeter + 1];
-                int west = map[yMeter][xMeter - 1];
-                int northEast = map[yMeter - 1][xMeter + 1];
-                int northWest = map[yMeter - 1][xMeter - 1];
-                int southEast = map[yMeter + 1][xMeter + 1];
-                int southWest = map[yMeter + 1][xMeter - 1];
+        int[][] map = sim.vectorMap;
 
-                // System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
-                // System.out.println("[" + east + "][" + center + "][" + west + "]");
-                // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-                // System.out.println("X " + xMeter + " Y " + yMeter);
-                final int DEVISOR = 50;
+        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+            int center = map[yMeter][xMeter];
+            int north = map[yMeter - 1][xMeter];
+            int south = map[yMeter + 1][xMeter];
+            int east = map[yMeter][xMeter + 1];
+            int west = map[yMeter][xMeter - 1];
+            int northEast = map[yMeter - 1][xMeter + 1];
+            int northWest = map[yMeter - 1][xMeter - 1];
+            int southEast = map[yMeter + 1][xMeter + 1];
+            int southWest = map[yMeter + 1][xMeter - 1];
+
+            // System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
+            // System.out.println("[" + east + "][" + center + "][" + west + "]");
+            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+            // System.out.println("X " + xMeter + " Y " + yMeter);
+            final int DEVISOR = 100;
 
                 double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
                 double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -149,44 +156,92 @@ public class Agent {
                 yVelocity = reduceMagnitude(yVelocity, transferedVely);
                 //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
 
-                int smallest = Math.min(Math.min(Math.min(northEast, northWest), Math.min(southEast, southWest)), Math.min(Math.min(north, south), Math.min(east, west)));
+            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
+            Collections.sort(values);
 
-                if (timeSinceLastWallCollision > 50) {
-                    if (smallest == north) {
-                        // System.out.println("Going North");
-                        yVelocity -= transferedVel;
-                    } else if (smallest == south) {
-                        // System.out.println("Going South");
-                        yVelocity += transferedVel;
-                    } else if (smallest == west) {
-                        // System.out.println("Going West");
-                        xVelocity -= transferedVel;
-                    } else if (smallest == east) {
-                        // System.out.println("Going East");
-                        xVelocity += transferedVel;
-                    } else if (smallest == northEast) {
-                        // System.out.println("Going North East");
-                        yVelocity -= transferedVel / 2;
-                        xVelocity += transferedVel / 2;
-                    } else if (smallest == northWest) {
-                        // System.out.println("Going North West");
-                        yVelocity -= transferedVel / 2;
-                        xVelocity -= transferedVel / 2;
-                    } else if (smallest == southEast) {
-                        // System.out.println("Going South East");
-                        yVelocity += transferedVel / 2;
-                        xVelocity += transferedVel / 2;
-                    } else if (smallest == southWest) {
-                        // System.out.println("Going South West");
-                        yVelocity += transferedVel / 2;
-                        xVelocity -= transferedVel / 2;
-                    }
+            int smallest = values.get(choice);
+
+            if (timeSinceLastWallCollision > DEVISOR) {
+                if (smallest == north) {
+                    // System.out.println("Going North");
+                    yVelocity -= transferedVel;
+                } else if (smallest == south) {
+                    // System.out.println("Going South");
+                    yVelocity += transferedVel;
+                } else if (smallest == west) {
+                    // System.out.println("Going West");
+                    xVelocity -= transferedVel;
+                } else if (smallest == east) {
+                    // System.out.println("Going East");
+                    xVelocity += transferedVel;
+                } else if (smallest == northEast) {
+                    // System.out.println("Going North East");
+                    yVelocity -= transferedVel / 2;
+                    xVelocity += transferedVel / 2;
+                } else if (smallest == northWest) {
+                    // System.out.println("Going North West");
+                    yVelocity -= transferedVel / 2;
+                    xVelocity -= transferedVel / 2;
+                } else if (smallest == southEast) {
+                    // System.out.println("Going South East");
+                    yVelocity += transferedVel / 2;
+                    xVelocity += transferedVel / 2;
+                } else if (smallest == southWest) {
+                    // System.out.println("Going South West");
+                    yVelocity += transferedVel / 2;
+                    xVelocity -= transferedVel / 2;
                 }
+            }
 
             }
         }
     }
 
+    /**
+     * <p>
+     * Call to update the location of the agent using its velocity and any
+     * acceleration it may have</p>
+     */
+    public void updateLocation(int choice) {
+        timeSinceLastWallCollision++;
+        xVelocity += xAcceleration;
+        yVelocity += yAcceleration;
+
+        xAcceleration = 0;
+        yAcceleration = 0;
+
+        double newX = 0;
+        double newY = 0;
+
+        if (!blocked) {
+            if (location.getX() + (xVelocity * TIME_STEP) > 0) {
+                newX = location.getX() + (xVelocity * TIME_STEP);
+            }
+            if (location.getY() + (yVelocity * TIME_STEP) > 0) {
+                newY = location.getY() + (yVelocity * TIME_STEP);
+            }
+            location.changePosition(newX, newY);
+        }
+        updateCSV();
+
+    }
+
+    /**
+     * <p>
+     * Checks the location of the agent to see if it is colliding with anything
+     * and updates the velocity accordingly</p>
+     *
+     * @param otherAgents List of all other agents in the simulation
+     * @param frame the current frame
+     * @param exits list of all exits in the simulation
+     * @param obstacles list of all obstacles in the simulation
+     */
+    public void checkCollisions(LinkedList<Agent> otherAgents, int frame, LinkedList<Exit> exits, LinkedList<Obstacle> obstacles) {
+        choiceMove = 0;
+        //System.err.println("Reseting choice move");
+        checkObstacles(obstacles, frame, exits);
+        checkAgents(otherAgents, frame);
+    }
         /**
          * <p>
          * Checks the location of the agent to see if it is colliding with anything
@@ -335,42 +390,39 @@ public class Agent {
             timeSinceLastWallCollision = 0;
         }
 
-        /**
-         * <p>
-         * Checks the collision with each other agent and changes the velocity
-         * accordingly</p>
-         *
-         * @param otherAgents an array of all other agents in the simulation
-         * @param frame the current frame
-         */
-        private void checkAgents (LinkedList < Agent > otherAgents,int frame){
-            for (Agent that : otherAgents) {
-                if (!(that.location.equals(this.location))) {
-                    double dx = this.location.getX() - that.location.getX();
-                    double dy = this.location.getY() - that.location.getY();
-                    double distanceSquared = dx * dx + dy * dy;
-                    double dist = Math.sqrt(distanceSquared);
-                    double minDist = this.size + that.getSize();
+    /**
+     * <p>
+     * Checks the collision with each other agent and changes the velocity
+     * accordingly</p>
+     *
+     * @param otherAgents an array of all other agents in the simulation
+     * @param frame the current frame
+     */
+    private void checkAgents(LinkedList<Agent> otherAgents, int frame) {
+        blocked = false;
+        for (Agent that : otherAgents) {
+            if (!(that.location.equals(this.location))) {
+                double dx = (this.location.getX() + (this.xVelocity * TIME_STEP)) - that.location.getX();
+                double dy = (this.location.getY() + (this.yVelocity * TIME_STEP)) - that.location.getY();
+                double distanceSquared = dx * dx + dy * dy;
+                double dist = Math.sqrt(distanceSquared);
+                double minDist = this.size + that.getSize();
 
-                    if (dist <= minDist) {
-                        Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                        if (checkPreviousAgentCollisions(collision, that)) { //I think this is the issue why agents keep overlaping. Its dosnt change the velocity until theyre alreay overlaping and it dosnt chnage it fast enough. I tried to increase the push force multiplyer but will somtimes kill all the momentum on an agent
-                            double overlap = minDist - dist;// What if we change it to see if in the next space we move we see if well overlap somthing, then if we do we just dont move unitl its free, Simmular to how spawning in agents would work
-                            double pushForce = 0.1 * overlap;
-
-                            double pushX = (dx / dist) * pushForce;
-                            double pushY = (dy / dist) * pushForce;
-
-                            this.xVelocity += pushX / this.size;
-                            this.yVelocity += pushY / this.size;
-
-                            that.xVelocity -= pushX / that.size;
-                            that.yVelocity -= pushY / that.size;
-                        }
+                if (dist <= minDist - 1) {
+                    if (choiceMove <= 2) {
+                        choiceMove++;
+                        System.out.println("Agent " + this.AgentID + " Checking choice " + choiceMove + " at " + dx + ", " + dy);
+                        updateVeolcity(choiceMove);
+                        checkAgents(otherAgents, frame);
+                    } else {
+                        blocked = true;
+                        System.out.println("Agent " + this.AgentID + " Blocked");
+                        break; // If we are blocked, we don't need to check the rest of the agents
                     }
                 }
             }
         }
+    }
 
         @Override
         public String toString () {
