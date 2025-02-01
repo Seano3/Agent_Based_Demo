@@ -45,9 +45,14 @@ public class Line extends Obstacle {
     @Override
     public void checkCollision(Agent currentAgent, int frame) {
         // double theta = Math.atan2(endpoint.getX()-location.getX(), endpoint.getY()-location.getY()); // angle of obstacle based on X axis
+        Collision newCollision;
         if (withinRange(currentAgent)) {
-            currentAgent.setYVelocity(-currentAgent.getYVelocity());
-            currentAgent.setXVelocity(-currentAgent.getXVelocity());
+            newCollision = new Collision(currentAgent.AgentID, -5, frame);
+            if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
+                currentAgent.deactivateVectorMap();
+                currentAgent.setYVelocity(-currentAgent.getYVelocity());
+                currentAgent.setXVelocity(-currentAgent.getXVelocity());
+            }
         }
     }
 
