@@ -121,17 +121,17 @@ public class Agent {
 
         int yMeter = (int) location.getY() / 10;
         int xMeter = (int) location.getX() / 10;
-
-        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-            int center = map[yMeter][xMeter];
-            int north = map[yMeter - 1][xMeter];
-            int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter + 1];
-            int west = map[yMeter][xMeter - 1];
-            int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1][xMeter - 1];
-            int southEast = map[yMeter + 1][xMeter + 1];
-            int southWest = map[yMeter + 1][xMeter - 1];
+        if(sim.vectorMapEnabled()) {
+            if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+                int center = map[yMeter][xMeter];
+                int north = map[yMeter - 1][xMeter];
+                int south = map[yMeter + 1][xMeter];
+                int east = map[yMeter][xMeter + 1];
+                int west = map[yMeter][xMeter - 1];
+                int northEast = map[yMeter - 1][xMeter + 1];
+                int northWest = map[yMeter - 1][xMeter - 1];
+                int southEast = map[yMeter + 1][xMeter + 1];
+                int southWest = map[yMeter + 1][xMeter - 1];
 
             // System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
             // System.out.println("[" + east + "][" + center + "][" + west + "]");
@@ -352,8 +352,8 @@ public class Agent {
 
                 if (dist <= minDist) {
                     Collision collision = new Collision(this.AgentID, that.AgentID, frame);
-                    if (checkPreviousAgentCollisions(collision, that)) { //I think this is the issue why agents keep overlaping. Its dosnt change the velocity until theyre alreay overlaping and it dosnt chnage it fast enough. I tried to increase the push force multiplyer but will somtimes kill all the momentum on an agent 
-                        double overlap = minDist - dist;// What if we change it to see if in the next space we move we see if well overlap somthing, then if we do we just dont move unitl its free, Simmular to how spawning in agents would work 
+                    if (checkPreviousAgentCollisions(collision, that)) { //I think this is the issue why agents keep overlaping. Its dosnt change the velocity until theyre alreay overlaping and it dosnt chnage it fast enough. I tried to increase the push force multiplyer but will somtimes kill all the momentum on an agent
+                        double overlap = minDist - dist;// What if we change it to see if in the next space we move we see if well overlap somthing, then if we do we just dont move unitl its free, Simmular to how spawning in agents would work
                         double pushForce = 0.1 * overlap;
 
                         double pushX = (dx / dist) * pushForce;

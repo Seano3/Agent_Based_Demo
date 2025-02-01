@@ -37,10 +37,12 @@ public class Simulation extends JPanel {
     private int totalSpawns = 0;
     int[][] vectorMap;
     vectorMapGen map;
+    private boolean useVectorMap;
 
-    public Simulation(int width, int height) {
+    public Simulation(int width, int height, boolean vectorMapEnabled) {
         map = new vectorMapGen(width / 10, (height - 200) / 10);
         frame = 0;
+        this.useVectorMap = vectorMapEnabled;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
 
@@ -145,6 +147,14 @@ public class Simulation extends JPanel {
 
     public int getPanelHeight() {
         return panelHeight;
+    }
+
+    public boolean vectorMapEnabled() {
+        return useVectorMap;
+    }
+
+    public void toggleVectorMap() {
+        useVectorMap = !useVectorMap;
     }
 
     public void addExit(Exit exit) { // no need to remove exits
@@ -279,11 +289,12 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             g2d.setColor(i.getColor());
-            g2d.fillOval((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY()-i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
             if (isAgentNumbersEnabled) {
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
             }
+            g2d.drawLine((int)i.getLocation().getX(), (int)i.getLocation().getY(), (int)i.getLocation().getX(), (int)i.getLocation().getY());
         }
 
         for (Exit i : exits) {
@@ -493,9 +504,5 @@ public class Simulation extends JPanel {
         double dy = exitLocation.getY() - agentLocation.getY();
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
-    }
-
-    public void VectorMapGeneration() {
-        vectorMap = map.calculateMap();
     }
 }

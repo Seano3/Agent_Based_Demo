@@ -13,7 +13,9 @@ public class RunSimulation {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT);
+        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, false);
+        if(!sim.vectorMapEnabled())
+            System.out.println("******Vector map is not enabled********");
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
@@ -113,7 +115,7 @@ public class RunSimulation {
                     double xVel = Double.parseDouble(attributes[4]);
                     double yVel = Double.parseDouble(attributes[5]);
 
-                    Agent agent = new Agent(name, size, xCoord - size, yCoord - size, xVel, yVel, sim);
+                    Agent agent = new Agent(name, size, xCoord, yCoord, xVel, yVel, sim);
                     sim.addAgent(agent, false);
                     System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
@@ -167,11 +169,11 @@ public class RunSimulation {
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
         //     sim.addAgent(new Agent(i + 3, 20, i *2 * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
         // } 
-        // generateCSV(6, sim); 
+        // generateCSV(6, sim);
         frame.pack();
         frame.setVisible(true);
 
         //TimeUnit.SECONDS.sleep(1);
-        //test.applyForce(50, 0);      
+        //test.applyForce(50, 0);
     }
 }
