@@ -505,4 +505,8 @@ public class Simulation extends JPanel {
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
     }
+
+    public void VectorMapGeneration() {
+        vectorMap = map.calculateMap();
+    }
 }
