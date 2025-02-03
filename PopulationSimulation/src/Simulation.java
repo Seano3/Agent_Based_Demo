@@ -180,7 +180,7 @@ public class Simulation extends JPanel {
 
 
         // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
-        if (closestSpawn.inSpawn(agent)) {
+        if (closestSpawn != null &&closestSpawn.inSpawn(agent)) {
             agent.setInSpawn(true);
         } else {
             agent.setInSpawn(false);
@@ -254,12 +254,12 @@ public class Simulation extends JPanel {
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
             agents.get(i).updateLocation(0);
             agents.get(i).updateCollisionsStorage();
-
-            if(agents.get(i).getInSpawn()){
-                spawns.get(0).setIsActivelySpawning(false);
-            }
-            else{
-                spawns.get(0).setIsActivelySpawning(true);
+            if(spawns.size() > 0) {
+                if (agents.get(i).getInSpawn()) {
+                    spawns.get(i).setIsActivelySpawning(false);
+                } else {
+                    spawns.get(i).setIsActivelySpawning(true);
+                }
             }
 
 
@@ -308,7 +308,7 @@ public class Simulation extends JPanel {
 
         }
 
-        for (Spawn i : spawns) {
+        /*for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);
             if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
@@ -317,7 +317,7 @@ public class Simulation extends JPanel {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
-        }
+        }*/
 
         for (Spawn i : spawns) {
             // Draw all spawns
@@ -504,5 +504,9 @@ public class Simulation extends JPanel {
         double dy = exitLocation.getY() - agentLocation.getY();
         double magnitude = Math.sqrt(dx * dx + dy * dy);
         return new double[]{dx / magnitude, dy / magnitude};
+    }
+
+    public void VectorMapGeneration() {
+        vectorMap = map.calculateMap();
     }
 }

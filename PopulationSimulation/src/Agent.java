@@ -122,29 +122,30 @@ public class Agent {
         if (inSpawn) {
             return;
         }
+    }
 
-    private void updateVeolcity(int choice) {
-        //Change to find the choice lowest that is both unoccupied
-        int yMeter = (int) location.getY() / 10;
-        int xMeter = (int) location.getX() / 10;
-        int[][] map = sim.vectorMap;
+        private void updateVeolcity ( int choice){
+            //Change to find the choice lowest that is both unoccupied
+            int yMeter = (int) location.getY() / 10;
+            int xMeter = (int) location.getX() / 10;
+            int[][] map = sim.vectorMap;
 
-        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-            int center = map[yMeter][xMeter];
-            int north = map[yMeter - 1][xMeter];
-            int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter + 1];
-            int west = map[yMeter][xMeter - 1];
-            int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1][xMeter - 1];
-            int southEast = map[yMeter + 1][xMeter + 1];
-            int southWest = map[yMeter + 1][xMeter - 1];
+            if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+                int center = map[yMeter][xMeter];
+                int north = map[yMeter - 1][xMeter];
+                int south = map[yMeter + 1][xMeter];
+                int east = map[yMeter][xMeter + 1];
+                int west = map[yMeter][xMeter - 1];
+                int northEast = map[yMeter - 1][xMeter + 1];
+                int northWest = map[yMeter - 1][xMeter - 1];
+                int southEast = map[yMeter + 1][xMeter + 1];
+                int southWest = map[yMeter + 1][xMeter - 1];
 
-            // System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
-            // System.out.println("[" + east + "][" + center + "][" + west + "]");
-            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 100;
+                // System.out.println("\n[" + northWest + "][" + north + "][" + northEast + "]");
+                // System.out.println("[" + east + "][" + center + "][" + west + "]");
+                // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+                // System.out.println("X " + xMeter + " Y " + yMeter);
+                final int DEVISOR = 100;
 
                 double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
                 double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -156,46 +157,47 @@ public class Agent {
                 yVelocity = reduceMagnitude(yVelocity, transferedVely);
                 //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
 
-            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
-            Collections.sort(values);
+                List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
+                Collections.sort(values);
 
-            int smallest = values.get(choice);
+                int smallest = values.get(choice);
 
-            if (timeSinceLastWallCollision > DEVISOR) {
-                if (smallest == north) {
-                    // System.out.println("Going North");
-                    yVelocity -= transferedVel;
-                } else if (smallest == south) {
-                    // System.out.println("Going South");
-                    yVelocity += transferedVel;
-                } else if (smallest == west) {
-                    // System.out.println("Going West");
-                    xVelocity -= transferedVel;
-                } else if (smallest == east) {
-                    // System.out.println("Going East");
-                    xVelocity += transferedVel;
-                } else if (smallest == northEast) {
-                    // System.out.println("Going North East");
-                    yVelocity -= transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                } else if (smallest == northWest) {
-                    // System.out.println("Going North West");
-                    yVelocity -= transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
-                } else if (smallest == southEast) {
-                    // System.out.println("Going South East");
-                    yVelocity += transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                } else if (smallest == southWest) {
-                    // System.out.println("Going South West");
-                    yVelocity += transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
+                if (timeSinceLastWallCollision > DEVISOR) {
+                    if (smallest == north) {
+                        // System.out.println("Going North");
+                        yVelocity -= transferedVel;
+                    } else if (smallest == south) {
+                        // System.out.println("Going South");
+                        yVelocity += transferedVel;
+                    } else if (smallest == west) {
+                        // System.out.println("Going West");
+                        xVelocity -= transferedVel;
+                    } else if (smallest == east) {
+                        // System.out.println("Going East");
+                        xVelocity += transferedVel;
+                    } else if (smallest == northEast) {
+                        // System.out.println("Going North East");
+                        yVelocity -= transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                    } else if (smallest == northWest) {
+                        // System.out.println("Going North West");
+                        yVelocity -= transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                    } else if (smallest == southEast) {
+                        // System.out.println("Going South East");
+                        yVelocity += transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                    } else if (smallest == southWest) {
+                        // System.out.println("Going South West");
+                        yVelocity += transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                    }
                 }
-            }
 
             }
         }
-    }
+
+
 
     /**
      * <p>
@@ -214,12 +216,12 @@ public class Agent {
         double newY = 0;
 
         if (!blocked) {
-            if (location.getX() + (xVelocity * TIME_STEP) > 0) {
+            //if (location.getX() + (xVelocity * TIME_STEP) > 0) {
                 newX = location.getX() + (xVelocity * TIME_STEP);
-            }
-            if (location.getY() + (yVelocity * TIME_STEP) > 0) {
+            //}
+            //if (location.getY() + (yVelocity * TIME_STEP) > 0) {
                 newY = location.getY() + (yVelocity * TIME_STEP);
-            }
+            //}
             location.changePosition(newX, newY);
         }
         updateCSV();
@@ -252,11 +254,7 @@ public class Agent {
          * @param exits list of all exits in the simulation
          * @param obstacles list of all obstacles in the simulation
          */
-        public void checkCollisions (LinkedList < Agent > otherAgents,int frame, LinkedList<
-        Exit > exits, LinkedList < Obstacle > obstacles){
-            checkObstacles(obstacles, frame, exits);
-            checkAgents(otherAgents, frame);
-        }
+
 
         /**
          *
@@ -424,41 +422,41 @@ public class Agent {
         }
     }
 
-        @Override
-        public String toString () {
-            return "Agent{"
-                    + "name=" + AgentID
-                    + ", size=" + size
-                    + ", xCoord=" + location.getX()
-                    + ", yCoord=" + location.getY()
-                    + ", xVel=" + xVelocity
-                    + ", yVel=" + yVelocity
-                    + '}';
-        }
+    @Override
+    public String toString() {
+        return "Agent{"
+                + "name=" + AgentID
+                + ", size=" + size
+                + ", xCoord=" + location.getX()
+                + ", yCoord=" + location.getY()
+                + ", xVel=" + xVelocity
+                + ", yVel=" + yVelocity
+                + '}';
+    }
 
-        private void updateCSV () {
-            try (FileWriter writer = new FileWriter(csvName, true)) {
-                writer.write(AgentID + ","
-                        + size + ","
-                        + location.getX() + ","
-                        + location.getY() + ","
-                        + xVelocity + ","
-                        + yVelocity);
-                writer.write("\n");
-            } catch (IOException e) {
-                //System.err.println("Error writing to CSV file: " + e.getMessage());
-            }
-        }
-
-        public double reduceMagnitude ( double value, double reduction){
-            double valueModified = value;
-            if (value > 0) {
-                valueModified -= reduction;
-                // System.out.println("Reducing " + value + " by " + reduction + " to " + valueModified);
-            } else if (value < 0) {
-                valueModified += reduction;
-                // System.out.println("Increasing " + value + " by " + reduction + " to " + valueModified);
-            }
-            return valueModified;
+    private void updateCSV() {
+        try (FileWriter writer = new FileWriter(csvName, true)) {
+            writer.write(AgentID + ","
+                    + size + ","
+                    + location.getX() + ","
+                    + location.getY() + ","
+                    + xVelocity + ","
+                    + yVelocity);
+            writer.write("\n");
+        } catch (IOException e) {
+            //System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
+
+    public double reduceMagnitude(double value, double reduction) {
+        double valueModified = value;
+        if (value > 0) {
+            valueModified -= reduction;
+            // System.out.println("Reducing " + value + " by " + reduction + " to " + valueModified);
+        } else if (value < 0) {
+            valueModified += reduction;
+            // System.out.println("Increasing " + value + " by " + reduction + " to " + valueModified);
+        }
+        return valueModified;
+    }
+}
