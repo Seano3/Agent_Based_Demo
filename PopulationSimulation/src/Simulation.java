@@ -180,10 +180,8 @@ public class Simulation extends JPanel {
 
 
         // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
-        if (closestSpawn.inSpawn(agent)) {
-            agent.setInSpawn(true);
-        } else {
-            agent.setInSpawn(false);
+        if (closestSpawn != null) {
+            agent.setInSpawn(closestSpawn.inSpawn(agent));
         }
 
         if (isSpawned && closestSpawn != null) {
@@ -254,12 +252,8 @@ public class Simulation extends JPanel {
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
             agents.get(i).updateLocation();
             agents.get(i).updateCollisionsStorage();
-
-            if(agents.get(i).getInSpawn()){
-                spawns.get(0).setIsActivelySpawning(false);
-            }
-            else{
-                spawns.get(0).setIsActivelySpawning(true);
+            if(!spawns.isEmpty()) {
+                spawns.getFirst().setIsActivelySpawning(!agents.get(i).getInSpawn());
             }
 
 
