@@ -254,11 +254,11 @@ public class Simulation extends JPanel {
             agents.get(i).checkCollisions(agents, frame, exits, obstacles);
             agents.get(i).updateLocation(0);
             agents.get(i).updateCollisionsStorage();
-            if(spawns.size() > 0) {
+            if(!spawns.isEmpty()) {
                 if (agents.get(i).getInSpawn()) {
-                    spawns.get(i).setIsActivelySpawning(false);
+                    spawns.get(0).setIsActivelySpawning(false);
                 } else {
-                    spawns.get(i).setIsActivelySpawning(true);
+                    spawns.get(0).setIsActivelySpawning(true);
                 }
             }
 
@@ -275,6 +275,7 @@ public class Simulation extends JPanel {
         }
         debugCSV();
         generateCSV(agents.size(), this);
+        generateEscapeRateCSV(agents.size(), this);
     }
 
     /**
@@ -418,6 +419,18 @@ public class Simulation extends JPanel {
 
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+    public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
+        String csvFile = "escape-rate.csv";
+        int frame = sim.frame;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
+            writer.write(numAgents + "," + frame);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to Escape Rate CSV file: " + e.getMessage());
         }
     }
 
