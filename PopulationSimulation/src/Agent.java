@@ -137,7 +137,7 @@ public class Agent {
                 System.out.println("[" + east + "][" + center + "][" + west + "]");
                 System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
                 System.out.println("X " + xMeter + " Y " + yMeter);
-                final int DEVISOR = 50;
+                final int DEVISOR = 4;
 
                 double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
                 double transferedVely = ((Math.abs(yVelocity) / DEVISOR));

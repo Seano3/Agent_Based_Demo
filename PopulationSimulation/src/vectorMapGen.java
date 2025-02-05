@@ -30,11 +30,11 @@ public class vectorMapGen {
         for (int i = 0; i < HEIGHT; i++) {
             map[55][i] = -1;
         }
-        for (int i = 36; i < 40; i++) {
+        for (int i = 37; i < 40; i++) {
             map[55][i] = Integer.MAX_VALUE;
         }
 
-        map[10][0] = 0;
+        map[5][0] = 0;
 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
