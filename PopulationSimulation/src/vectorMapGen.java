@@ -26,6 +26,11 @@ public class vectorMapGen {
             }
         }
 
+        //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
+        for (int i = 0; i < HEIGHT; i++) {
+            map[LENGTH / 2][i] = -1;
+        }
+
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
         //     for (int y = 0; y < result[0].length; y++) {
