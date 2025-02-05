@@ -28,8 +28,13 @@ public class vectorMapGen {
 
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
         for (int i = 0; i < HEIGHT; i++) {
-            map[LENGTH / 2][i] = -1;
+            map[55][i] = -1;
         }
+        for (int i = 36; i < 40; i++) {
+            map[55][i] = Integer.MAX_VALUE;
+        }
+
+        map[10][0] = 0;
 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
@@ -44,6 +49,11 @@ public class vectorMapGen {
     public int[][] calculateMap() {
 
         int[][] result = calculateDistances(map);
+        try {
+            exportToCSV(map, "JDJDJD.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         results = new int[HEIGHT][LENGTH];
 
@@ -141,11 +151,19 @@ public class vectorMapGen {
         int size = exit.getSize() / 10;
         if (exit.getAlignment() == Exit.alignment.VERTICAL) {
             for (int i = 0; i < size; i++) {
-                map[x][y + i] = 0;
+                if (exit.buildingExit) {
+                    map[x][y + i] = 0;
+                } else {
+                    map[x][y + i] = Integer.MAX_VALUE;
+                }
             }
         } else {
             for (int i = 0; i < size; i++) {
-                map[x + i][y] = 0;
+                if (exit.buildingExit) {
+                    map[x + i][y] = 0;
+                } else {
+                    map[x + i][y] = Integer.MAX_VALUE;
+                }
             }
         }
     }

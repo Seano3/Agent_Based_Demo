@@ -14,8 +14,9 @@ public class RunSimulation {
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, true);
-        if(!sim.vectorMapEnabled())
+        if (!sim.vectorMapEnabled()) {
             System.out.println("******Vector map is not enabled********");
+        }
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
@@ -27,7 +28,7 @@ public class RunSimulation {
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                if (attributes.length != 4) {
+                if (attributes.length != 5) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
                 }
@@ -37,12 +38,13 @@ public class RunSimulation {
                     double xCoord = Double.parseDouble(attributes[1]);
                     double yCoord = Double.parseDouble(attributes[2]);
                     double alignmentNum = Double.parseDouble(attributes[3]);
+                    boolean buildingExit = Boolean.parseBoolean(attributes[4]);
                     Exit exit;
                     Location location = new Location(xCoord, yCoord);
                     if (alignmentNum == 0) {
-                        exit = new Exit(size, location, Exit.alignment.VERTICAL);
+                        exit = new Exit(size, location, Exit.alignment.VERTICAL, buildingExit);
                     } else {
-                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL);
+                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL, buildingExit);
                     }
 
                     sim.addExit(exit);
