@@ -1,8 +1,10 @@
 public class Spawn {
-    public enum alignment {VERTICAL, HORIZONTAL}; // will need to be reworked to support angled exits
+    public enum alignment {VERTICAL, HORIZONTAL}; // will need to be reworked to support angled spawns
+    public enum direction {LEFT, RIGHT}
 
     private int size;
     private Spawn.alignment alignment;
+    private Spawn.direction spawnDirection;
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
     private int spawnRateInterval;
     private int lastSpawnFrame;
@@ -34,6 +36,8 @@ public class Spawn {
     public Spawn.alignment getAlignment() {
         return alignment;
     }
+
+    public Spawn.direction getSpawnDirection() { return spawnDirection; }
 
     public Location getLocation() {
         return location;

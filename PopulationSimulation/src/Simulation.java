@@ -196,9 +196,12 @@ public class Simulation extends JPanel {
             double directionX = dx / magnitude;
             double directionY = dy / magnitude;
 
+            double perpendicularDirectionX = -directionY;
+            double perpendicularDirectionY = directionX;
+
             double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
-            agent.setXVelocity(directionX * initialVelocityMagnitude);
-            agent.setYVelocity(directionY * initialVelocityMagnitude);
+            agent.setXVelocity(perpendicularDirectionX * initialVelocityMagnitude);
+            agent.setYVelocity(perpendicularDirectionY * initialVelocityMagnitude);
         } else if (closestExit != null) {
             double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
             double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
