@@ -18,4 +18,7 @@ Agent-2.csv
 Agent-3.csv
 Debug.csv
 PopulationSimulation/bin/
+PopulationSimulation\src\AgentCSVs\
 PopulationSimulation/src/AgentCSVs/
+PopulationSimulation/src/debug_vector_map.csv
+PopulationSimulation/src/JDJDJD.csv

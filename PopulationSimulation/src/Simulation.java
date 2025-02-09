@@ -40,7 +40,7 @@ public class Simulation extends JPanel {
     private boolean useVectorMap;
 
     public Simulation(int width, int height, boolean vectorMapEnabled) {
-        map = new vectorMapGen(width / 10, (height - 200) / 10);
+        map = new vectorMapGen(width, (height - 200));
         frame = 0;
         this.useVectorMap = vectorMapEnabled;
         setPreferredSize(new Dimension(width, height));
@@ -178,7 +178,6 @@ public class Simulation extends JPanel {
         Exit closestExit = findClosestExit(agent.getLocation());
         Spawn closestSpawn = findClosestSpawn(agent.getLocation());
 
-
         // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
         if (closestSpawn != null) {
             agent.setInSpawn(closestSpawn.inSpawn(agent));
@@ -246,17 +245,13 @@ public class Simulation extends JPanel {
             }
         }
 
-
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
-            agents.get(i).checkCollisions(agents, frame, exits, obstacles);
-            agents.get(i).updateLocation();
+            agents.get(i).updateAgent(agents, frame, exits, obstacles);
             agents.get(i).updateCollisionsStorage();
-            if(!spawns.isEmpty()) {
+            if (!spawns.isEmpty()) {
                 spawns.getFirst().setIsActivelySpawning(!agents.get(i).getInSpawn());
             }
-
-
 
             if (agents.get(i).getLocation().getX() < -agents.get(i).getSize() * 2
                     || agents.get(i).getLocation().getY() < -agents.get(i).getSize() * 2
@@ -283,12 +278,12 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             g2d.setColor(i.getColor());
-            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY()-i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
             if (isAgentNumbersEnabled) {
                 g2d.setColor(Color.BLACK);
                 g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
             }
-            g2d.drawLine((int)i.getLocation().getX(), (int)i.getLocation().getY(), (int)i.getLocation().getX(), (int)i.getLocation().getY());
+            g2d.drawLine((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getLocation().getX(), (int) i.getLocation().getY());
         }
 
         for (Exit i : exits) {
@@ -321,11 +316,10 @@ public class Simulation extends JPanel {
             } else {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
-            for(Agent j : agents){
-                if(i.inSpawn(j)){
+            for (Agent j : agents) {
+                if (i.inSpawn(j)) {
                     j.setInSpawn(true);
-                }
-                else {
+                } else {
                     j.setInSpawn(false);
                 }
             }

@@ -28,13 +28,17 @@ public class vectorMapGen {
 
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
         for (int i = 0; i < HEIGHT; i++) {
-            map[55][i] = -1;
+            for (int j = 540; j < 560; j++) {
+                map[j][i] = -1;
+            }
         }
-        for (int i = 37; i < 40; i++) {
-            map[55][i] = Integer.MAX_VALUE;
+        for (int i = 370; i < 400; i++) {
+            for (int j = 540; j < 560; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
         }
 
-        map[5][0] = 0;
+        map[50][0] = 0;
 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
