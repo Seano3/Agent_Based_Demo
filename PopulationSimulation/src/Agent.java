@@ -276,7 +276,7 @@ public class Agent {
         }
     }
 
-    private Exit inExit(LinkedList< Exit> exits) {
+    public Exit inExit(LinkedList< Exit> exits) {
         for (Exit i : exits) {
             if (i.inExit(this)) {
                 return i;

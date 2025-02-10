@@ -45,16 +45,37 @@ public class vectorMapGen {
             }
         }
 
-        //DOOR IN MIDDLE OF LINE 
-        for (int i = 370; i < 400; i++) {
+        // line across middle
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 350; j < 370; j++) {
+                map[i][j] = -1; // note that this one is switched!!!
+            }
+        }
+
+        //DOOR IN TOP MIDDLE OF LINE
+        for (int i = 165; i < 195; i++) {
+            for (int j = 540; j < 560; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
+        }
+
+        // horizontal door
+        for (int i = 350; i < 370; i++) {
+            for (int j = 210; j < 240; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
+        }
+
+        //bottom vertical door
+        for (int i = 525; i < 555; i++) {
             for (int j = 540; j < 560; j++) {
                 map[j][i] = Integer.MAX_VALUE;
             }
         }
 
         //BUILDING EXIT
-        for (int i = 50; i < 100; i++) {
-            map[i][0] = 0;
+        for (int i = 515; i < 565; i++) {
+            map[LENGTH - 1][i] = 0;
         }
 
         //END OF HARD CODED 
