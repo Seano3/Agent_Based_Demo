@@ -184,19 +184,33 @@ public class Simulation extends JPanel {
         }
 
         if (isSpawned && closestSpawn != null) {
-            double centerX = width / 2.0;
-            double centerY = height / 2.0;
+            /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
+            double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
-            double dx = centerX - closestSpawn.getLocation().getX();
-            double dy = centerY - closestSpawn.getLocation().getY();
-            double magnitude = Math.sqrt(dx * dx + dy * dy);
-            double directionX = dx / magnitude;
-            double directionY = dy / magnitude;
-
+            agent.setLocation(new Location(centerX, centerY));*/
             double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
-            agent.setXVelocity(directionX * initialVelocityMagnitude);
-            agent.setYVelocity(directionY * initialVelocityMagnitude);
+
+            if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(-initialVelocityMagnitude);
+                } else {
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(initialVelocityMagnitude);
+                }
+            } else {
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                    agent.setXVelocity(-initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                    System.out.println("Left");
+                } else {
+                    agent.setXVelocity(initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                    System.out.println("Right");
+                }
+            }
         } else if (closestExit != null) {
+            System.out.println("Normal");
             double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
             double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
             double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
@@ -264,6 +278,7 @@ public class Simulation extends JPanel {
         }
         debugCSV();
         generateCSV(agents.size(), this);
+        generateEscapeRateCSV(agents.size(), this);
     }
 
     /**
@@ -297,7 +312,7 @@ public class Simulation extends JPanel {
 
         }
 
-        for (Spawn i : spawns) {
+        /*for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);
             if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
@@ -306,7 +321,7 @@ public class Simulation extends JPanel {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
 
-        }
+        }*/
 
         for (Spawn i : spawns) {
             // Draw all spawns
@@ -321,6 +336,7 @@ public class Simulation extends JPanel {
                     j.setInSpawn(true);
                 } else {
                     j.setInSpawn(false);
+                    System.out.println("Agent " + j.AgentID + " is not in spawn");
                 }
             }
 
@@ -406,6 +422,27 @@ public class Simulation extends JPanel {
 
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+    private void clearEscapeRateCSV() {
+        String csvFile = "escape-rate.csv";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+
+        } catch (IOException e) {
+            System.err.println("Error clearing Escape Rate CSV file: " + e.getMessage());
+        }
+    }
+
+    public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
+        String csvFile = "escape-rate.csv";
+        int frame = sim.frame;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
+            writer.write(numAgents + "," + frame);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to Escape Rate CSV file: " + e.getMessage());
         }
     }
 

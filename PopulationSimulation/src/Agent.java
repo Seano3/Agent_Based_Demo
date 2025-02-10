@@ -85,6 +85,8 @@ public class Agent {
         return location;
     }
 
+    public void setLocation(Location location) { this.location = location; }
+
     public Color getColor() {
         return color;
     }
