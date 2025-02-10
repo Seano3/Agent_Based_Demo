@@ -26,6 +26,16 @@ public class vectorMapGen {
             }
         }
 
+        for (int i = 0; i < LENGTH; i++) {
+            map[i][0] = -1;
+            map[i][HEIGHT - 1] = -1;
+        }
+
+        for (int i = 0; i < HEIGHT; i++) {
+            map[0][i] = -1;
+            map[LENGTH - 1][i] = -1;
+        }
+
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 540; j < 560; j++) {
@@ -38,7 +48,9 @@ public class vectorMapGen {
             }
         }
 
-        map[50][0] = 0;
+        for (int i = 50; i < 100; i++) {
+            map[i][0] = 0;
+        }
 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
