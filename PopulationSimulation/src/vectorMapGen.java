@@ -20,6 +20,7 @@ public class vectorMapGen {
         HEIGHT = height;
         map = new int[LENGTH][HEIGHT];
 
+        //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
         for (int x = 0; x < LENGTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 map[x][y] = Integer.MAX_VALUE;
@@ -37,21 +38,26 @@ public class vectorMapGen {
         }
 
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
+        //LINE DOWN MIDDLE
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 540; j < 560; j++) {
                 map[j][i] = -1;
             }
         }
+
+        //DOOR IN MIDDLE OF LINE 
         for (int i = 370; i < 400; i++) {
             for (int j = 540; j < 560; j++) {
                 map[j][i] = Integer.MAX_VALUE;
             }
         }
 
+        //BUILDING EXIT
         for (int i = 50; i < 100; i++) {
             map[i][0] = 0;
         }
 
+        //END OF HARD CODED 
         // System.out.println("Results Grid: \n");
         // for (int x = 0; x < result.length; x++) {
         //     for (int y = 0; y < result[0].length; y++) {
