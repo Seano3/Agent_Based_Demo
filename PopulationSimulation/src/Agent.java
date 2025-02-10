@@ -120,7 +120,7 @@ public class Agent {
             System.out.println("[" + east + "][" + center + "][" + west + "]");
             System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 1;
+            final int DEVISOR = 3;
 
             double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
             double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -378,9 +378,10 @@ public class Agent {
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < (i.getSize() + this.getSize())) {
-                    if (choiceMove <= 3) {
+                    if (choiceMove <= 2) {
                         choiceMove++;
                         checkAgents(otherAgents, frame);
+                        return;
                     } else {
                         System.out.println("Blocked");
                         return;
