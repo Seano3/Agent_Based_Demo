@@ -158,9 +158,7 @@ public class Simulation extends JPanel {
     }
 
     public void addExit(Exit exit) { // no need to remove exits
-        if (exit.buildingExit) {
-            map.addExitVM(exit);
-        }
+        map.addExitVM(exit);
         exits.add(exit);
         totalExits++;
     }
@@ -454,7 +452,7 @@ public class Simulation extends JPanel {
         double minDistance = Double.MAX_VALUE;
 
         for (Exit exit : exits) {
-            System.out.println("Exit works");
+            //System.out.println("Exit works");
             double distance = distanceTo(location, exit.getLocation());
             if (distance < minDistance) {
                 minDistance = distance;

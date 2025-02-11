@@ -19,8 +19,7 @@ public class Agent {
     private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
-    private int wallBuffer = 50;
-    private int timeSinceLastWallCollision = wallBuffer;
+    private int timeSinceLastWallCollision = 50;
     private boolean inSpawn = false;
     private int choiceMove;
 
@@ -115,12 +114,12 @@ public class Agent {
             int southEast = map[yMeter + 1][xMeter + 1];
             int southWest = map[yMeter + 1][xMeter - 1];
 
-            System.out.println("\nAgent ID: " + AgentID);
-            System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
-            System.out.println("[" + east + "][" + center + "][" + west + "]");
-            System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 3;
+            // System.out.println("\nAgent ID: " + AgentID);
+            // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
+            // System.out.println("[" + east + "][" + center + "][" + west + "]");
+            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+            // System.out.println("X " + xMeter + " Y " + yMeter);
+            final int DEVISOR = 10;
 
             double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
             double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -143,7 +142,7 @@ public class Agent {
                 return;
             }
 
-            if (timeSinceLastWallCollision > DEVISOR) {
+            if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
                     // System.out.println("Going North");
                     yVelocity -= transferedVel;
