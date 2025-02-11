@@ -285,17 +285,15 @@ public class Simulation extends JPanel {
 
         }
 
-        for (Spawn i : spawns) {
-            // Draw all spawns
-            g2d.setColor(Color.RED);
-            if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
-            } else {
-                g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
-            }
-
-        }
-
+        // for (Spawn i : spawns) {
+        //     // Draw all spawns
+        //     g2d.setColor(Color.RED);
+        //     if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
+        //         g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
+        //     } else {
+        //         g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
+        //     }
+        // }
         for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);

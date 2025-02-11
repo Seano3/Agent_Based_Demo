@@ -35,8 +35,10 @@ public class vectorMapGen {
         }
 
         for (int i = 0; i < HEIGHT; i++) { //Short Borders
-            map[0][i] = -1;
-            map[LENGTH - 1][i] = -1;
+            for (int j = 0; j < 10; j++) {
+                map[0 + j][i] = -1;
+                map[LENGTH - 1 - j][i] = -1;
+            }
         }
 
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
@@ -46,7 +48,6 @@ public class vectorMapGen {
                 map[j][i] = -1;
             }
         }
-
         //END OF HARD CODED 
     }
 
@@ -202,11 +203,25 @@ public class vectorMapGen {
         }
     }
 
+    public void addLineVM(Line line) {
+        int x1 = (int) line.getLocation().getX();
+        int y1 = (int) line.getLocation().getY();
+
+        int x2 = (int) line.getEndpoint().getX();
+        int y2 = (int) line.getEndpoint().getY();
+
+        for (int i = x1; i < x2; i++) {
+            for (int j = y1; j < y2; j++) {
+                map[i][j] = -1;
+            }
+        }
+    }
+
     public void addBoxObsticle(Box box) {
-        int x = (int) box.getLocation().getX() / 10;
-        int y = (int) box.getLocation().getY() / 10;
-        int width = (int) box.getWidth() / 10;
-        int height = (int) box.getHeight() / 10;
+        int x = (int) box.getLocation().getX();
+        int y = (int) box.getLocation().getY();
+        int width = (int) box.getWidth();
+        int height = (int) box.getHeight();
         for (int i = 0; i < width; i++) {
             map[x + i][y] = -1;
             map[x + i][y + height] = -1;
