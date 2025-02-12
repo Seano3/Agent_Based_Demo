@@ -38,18 +38,26 @@ public class RunSimulation {
                     double xCoord = Double.parseDouble(attributes[1]);
                     double yCoord = Double.parseDouble(attributes[2]);
                     double alignmentNum = Double.parseDouble(attributes[3]);
-                    boolean buildingExit = Boolean.parseBoolean(attributes[4]);
+                    int buildingExit = (int) Double.parseDouble(attributes[4]);
                     Exit exit;
                     Location location = new Location(xCoord, yCoord);
                     if (alignmentNum == 0) {
-                        exit = new Exit(size, location, Exit.alignment.VERTICAL, buildingExit);
+                        if (buildingExit == 0) {
+                            exit = new Exit(size, location, Exit.alignment.VERTICAL, false);
+                        } else {
+                            exit = new Exit(size, location, Exit.alignment.VERTICAL, true);
+                        }
                     } else {
-                        exit = new Exit(size, location, Exit.alignment.HORIZONTAL, buildingExit);
+                        if (buildingExit == 0) {
+                            exit = new Exit(size, location, Exit.alignment.HORIZONTAL, false);
+                        } else {
+                            exit = new Exit(size, location, Exit.alignment.HORIZONTAL, true);
+                        }
                     }
 
                     sim.addExit(exit);
 
-                    System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
+                    //System.out.println("Created Exit: " + exit.getLocation().toString() + " " + exit.getSize());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }
@@ -93,7 +101,7 @@ public class RunSimulation {
                     }
 
                     sim.addSpawn(spawn);
-                    System.out.println("Created Spawn: " + spawn.getLocation().toString() + " " + spawn.getSize());
+                    //System.out.println("Created Spawn: " + spawn.getLocation().toString() + " " + spawn.getSize());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }
@@ -124,7 +132,7 @@ public class RunSimulation {
 
                     Agent agent = new Agent(name, size, xCoord, yCoord, xVel, yVel, sim);
                     sim.addAgent(agent, false);
-                    System.out.println("Created Agent: " + agent);
+                    //System.out.println("Created Agent: " + agent);
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }
@@ -158,7 +166,7 @@ public class RunSimulation {
                     obj = new Box(location, width, height, 0);
                     sim.addBoxVM((Box) obj);
                     sim.addObjs(obj);
-                    System.out.println("Created Obstacle: " + obj.getLocation().toString());
+                    //System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
                 }

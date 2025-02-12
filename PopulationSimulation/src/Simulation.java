@@ -158,9 +158,7 @@ public class Simulation extends JPanel {
     }
 
     public void addExit(Exit exit) { // no need to remove exits
-        if (exit.buildingExit) {
-            map.addExitVM(exit);
-        }
+        map.addExitVM(exit);
         exits.add(exit);
         totalExits++;
     }
@@ -290,16 +288,6 @@ public class Simulation extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
-        for (Agent i : agents) {
-            // Draw all agents
-            g2d.setColor(i.getColor());
-            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
-            if (isAgentNumbersEnabled) {
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
-            }
-            g2d.drawLine((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getLocation().getX(), (int) i.getLocation().getY());
-        }
 
         for (Exit i : exits) {
             // Draw all exits
@@ -312,17 +300,15 @@ public class Simulation extends JPanel {
 
         }
 
-        /*for (Spawn i : spawns) {
-            // Draw all spawns
-            g2d.setColor(Color.RED);
-            if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
-                g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
-            } else {
-                g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
-            }
-
-        }*/
-
+        // for (Spawn i : spawns) {
+        //     // Draw all spawns
+        //     g2d.setColor(Color.RED);
+        //     if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
+        //         g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
+        //     } else {
+        //         g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
+        //     }
+        // }
         for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);
@@ -344,6 +330,17 @@ public class Simulation extends JPanel {
 
         for (Obstacle i : obstacles) {
             i.paint(g2d);
+        }
+
+        for (Agent i : agents) {
+            // Draw all agents
+            g2d.setColor(i.getColor());
+            g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
+            if (isAgentNumbersEnabled) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(String.valueOf(i.AgentID), (int) i.getLocation().getX(), (int) i.getLocation().getY());
+            }
+            g2d.drawLine((int) i.getLocation().getX(), (int) i.getLocation().getY(), (int) i.getLocation().getX(), (int) i.getLocation().getY());
         }
 
         g2d.setColor(Color.GRAY);
@@ -491,7 +488,7 @@ public class Simulation extends JPanel {
         double minDistance = Double.MAX_VALUE;
 
         for (Exit exit : exits) {
-            System.out.println("Exit works");
+            //System.out.println("Exit works");
             double distance = distanceTo(location, exit.getLocation());
             if (distance < minDistance) {
                 minDistance = distance;

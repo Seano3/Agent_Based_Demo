@@ -21,20 +21,24 @@ public class vectorMapGen {
         map = new int[LENGTH][HEIGHT];
 
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
-        for (int x = 0; x < LENGTH; x++) {
+        for (int x = 0; x < LENGTH; x++) { //INIT whole map
             for (int y = 0; y < HEIGHT; y++) {
                 map[x][y] = Integer.MAX_VALUE;
             }
         }
 
-        for (int i = 0; i < LENGTH; i++) {
-            map[i][0] = -1;
-            map[i][HEIGHT - 1] = -1;
+        for (int i = 0; i < LENGTH; i++) { //Long Borders
+            for (int j = 0; j < 10; j++) {
+                map[i][0 + j] = -1;
+                map[i][HEIGHT - 1 - j] = -1;
+            }
         }
 
-        for (int i = 0; i < HEIGHT; i++) {
-            map[0][i] = -1;
-            map[LENGTH - 1][i] = -1;
+        for (int i = 0; i < HEIGHT; i++) { //Short Borders
+            for (int j = 0; j < 10; j++) {
+                map[0 + j][i] = -1;
+                map[LENGTH - 1 - j][i] = -1;
+            }
         }
 
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
@@ -44,28 +48,7 @@ public class vectorMapGen {
                 map[j][i] = -1;
             }
         }
-
-        //DOOR IN MIDDLE OF LINE 
-        for (int i = 370; i < 400; i++) {
-            for (int j = 540; j < 560; j++) {
-                map[j][i] = Integer.MAX_VALUE;
-            }
-        }
-
-        //BUILDING EXIT
-        for (int i = 50; i < 100; i++) {
-            map[i][0] = 0;
-        }
-
         //END OF HARD CODED 
-        // System.out.println("Results Grid: \n");
-        // for (int x = 0; x < result.length; x++) {
-        //     for (int y = 0; y < result[0].length; y++) {
-        //         System.out.print("[" + result[x][y] + "]");
-        //     }
-        //     System.out.println();
-        // }
-        //System.out.println("MAP: " + results[10][10]);
     }
 
     public int[][] calculateMap() {
@@ -168,33 +151,77 @@ public class vectorMapGen {
     }
 
     public void addExitVM(Exit exit) {
-        int x = (int) exit.getLocation().getX() / 10;
-        int y = (int) exit.getLocation().getY() / 10;
-        int size = exit.getSize() / 10;
-        if (exit.getAlignment() == Exit.alignment.VERTICAL) {
+        int x = (int) exit.getLocation().getX();
+        int y = (int) exit.getLocation().getY();
+        int size = exit.getSize();
+        if (exit.getAlignment() == Exit.alignment.HORIZONTAL) {
+            System.out.println("Horizonal");
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
-                    map[x][y + i] = 0;
+                    for (int k = x; k < x + size; k++) {
+                        for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits. 
+                            if (y == 0) {
+                                map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
+                            } else {
+                                map[k][y - j] = Integer.MAX_VALUE; //Exits on bottom of map
+                            }
+                        }
+                        map[k][y] = 0;
+                    }
                 } else {
-                    map[x][y + i] = Integer.MAX_VALUE;
+                    System.out.println("Exit not building exit");
+                    for (int k = x; k < x + size; k++) {
+                        for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
+                            map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                        }
+                    }
+
                 }
             }
         } else {
-            for (int i = 0; i < size; i++) {
-                if (exit.buildingExit) {
-                    map[x + i][y] = 0;
-                } else {
-                    map[x + i][y] = Integer.MAX_VALUE;
+            System.out.println("Vertical");
+            if (exit.buildingExit) {
+                for (int k = y; k < y + size; k++) {
+                    for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits. 
+                        if (x == 0) {
+                            map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
+                        } else {
+                            map[x - j][k] = Integer.MAX_VALUE; //Exits on right of map
+                        }
+                    }
+                    map[x][k] = 0;
                 }
+            } else {
+                System.out.println("Exit not building exit");
+                for (int k = y; k < y + size; k++) {
+                    for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
+                        map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                    }
+                }
+            }
+
+        }
+    }
+
+    public void addLineVM(Line line) {
+        int x1 = (int) line.getLocation().getX();
+        int y1 = (int) line.getLocation().getY();
+
+        int x2 = (int) line.getEndpoint().getX();
+        int y2 = (int) line.getEndpoint().getY();
+
+        for (int i = x1; i < x2; i++) {
+            for (int j = y1; j < y2; j++) {
+                map[i][j] = -1;
             }
         }
     }
 
     public void addBoxObsticle(Box box) {
-        int x = (int) box.getLocation().getX() / 10;
-        int y = (int) box.getLocation().getY() / 10;
-        int width = (int) box.getWidth() / 10;
-        int height = (int) box.getHeight() / 10;
+        int x = (int) box.getLocation().getX();
+        int y = (int) box.getLocation().getY();
+        int width = (int) box.getWidth();
+        int height = (int) box.getHeight();
         for (int i = 0; i < width; i++) {
             map[x + i][y] = -1;
             map[x + i][y + height] = -1;
@@ -203,6 +230,10 @@ public class vectorMapGen {
             map[x][y + i] = -1;
             map[x + width][y + i] = -1;
         }
+
+    }
+
+    public void addLineObsiticle(Line line) {
 
     }
 
