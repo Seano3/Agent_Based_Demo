@@ -48,6 +48,7 @@ public class vectorMapGen {
                 map[j][i] = -1;
             }
         }
+
         //END OF HARD CODED 
     }
 
@@ -171,7 +172,7 @@ public class vectorMapGen {
                 } else {
                     System.out.println("Exit not building exit");
                     for (int k = x; k < x + size; k++) {
-                        for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
+                        for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                             map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                         }
                     }
@@ -194,7 +195,7 @@ public class vectorMapGen {
             } else {
                 System.out.println("Exit not building exit");
                 for (int k = y; k < y + size; k++) {
-                    for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
+                    for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                         map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                     }
                 }

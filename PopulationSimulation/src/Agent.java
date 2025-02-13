@@ -377,8 +377,9 @@ public class Agent {
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < (i.getSize() + this.getSize())) {
-                    if (choiceMove <= 2) {
+                    if (choiceMove <= 4) {
                         choiceMove++;
+                        System.out.println("Increacing Choice Move");
                         checkAgents(otherAgents, frame);
                         return;
                     } else {
