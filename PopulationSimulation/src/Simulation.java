@@ -26,6 +26,7 @@ public class Simulation extends JPanel {
     private JButton pausePlayButton;
     private JButton toggleGridButton;
     private JButton frameStepButton;
+    private JButton timeStepButton;
     private JButton toggleAgentNumbersButton;
     private boolean isPaused;
     private boolean isGridEnabled;
@@ -66,6 +67,7 @@ public class Simulation extends JPanel {
         pausePlayButton = new JButton("Play");
         toggleGridButton = new JButton("Enable Grid");
         frameStepButton = new JButton("Frame Step");
+        timeStepButton = new JButton("Time Step");
 
         isPaused = true;
         isGridEnabled = false;
@@ -77,10 +79,12 @@ public class Simulation extends JPanel {
                 pausePlayButton.setText("Pause");
                 timer.start();
                 frameStepButton.setForeground(Color.gray);
+                timeStepButton.setForeground(Color.gray);
             } else {
                 pausePlayButton.setText("Play");
                 timer.stop();
                 frameStepButton.setForeground(Color.black);
+                timeStepButton.setForeground(Color.black);
             }
             isPaused = !isPaused;
         });
@@ -102,6 +106,15 @@ public class Simulation extends JPanel {
                 update();
                 repaint();
             }
+        });
+
+        timeStepButton.addActionListener(e -> {
+            if(isPaused) {
+                for(int i=0; i < 100; i++) {
+                  update();
+                }
+            }
+            repaint();
         });
 
         isAgentNumbersEnabled = true;
@@ -126,12 +139,12 @@ public class Simulation extends JPanel {
         add(agentCountLabel);
         add(frameLabel);
         add(frameStepButton);
+        add(timeStepButton);
         add(toggleAgentNumbersButton);
 
         timer = new Timer(0, e -> {
             update();
             repaint();
-            updateTimerLabel();
         });
 
     }
@@ -182,19 +195,33 @@ public class Simulation extends JPanel {
         }
 
         if (isSpawned && closestSpawn != null) {
-            double centerX = width / 2.0;
-            double centerY = height / 2.0;
+            /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
+            double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
-            double dx = centerX - closestSpawn.getLocation().getX();
-            double dy = centerY - closestSpawn.getLocation().getY();
-            double magnitude = Math.sqrt(dx * dx + dy * dy);
-            double directionX = dx / magnitude;
-            double directionY = dy / magnitude;
-
+            agent.setLocation(new Location(centerX, centerY));*/
             double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
-            agent.setXVelocity(directionX * initialVelocityMagnitude);
-            agent.setYVelocity(directionY * initialVelocityMagnitude);
+
+            if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(-initialVelocityMagnitude);
+                } else {
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(initialVelocityMagnitude);
+                }
+            } else {
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                    agent.setXVelocity(-initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                    System.out.println("Left");
+                } else {
+                    agent.setXVelocity(initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                    System.out.println("Right");
+                }
+            }
         } else if (closestExit != null) {
+            System.out.println("Normal");
             double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
             double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
             double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
@@ -233,6 +260,7 @@ public class Simulation extends JPanel {
         frame++;
         elapsedTime += 0.01;
         frameLabel.setText("Frame: " + frame);
+        updateTimerLabel();
 
         for (Spawn spawn : spawns) {
             if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval() && spawn.getIsActivelySpawning()) {
@@ -262,6 +290,7 @@ public class Simulation extends JPanel {
         }
         debugCSV();
         generateCSV(agents.size(), this);
+        generateEscapeRateCSV(agents.size(), this);
     }
 
     /**
@@ -307,6 +336,7 @@ public class Simulation extends JPanel {
                     j.setInSpawn(true);
                 } else {
                     j.setInSpawn(false);
+                    System.out.println("Agent " + j.AgentID + " is not in spawn");
                 }
             }
 
@@ -318,7 +348,13 @@ public class Simulation extends JPanel {
 
         for (Agent i : agents) {
             // Draw all agents
-            g2d.setColor(i.getColor());
+            if (i.inExit(exits) != null) {
+                g2d.setColor(Color.RED);
+            } else if (i.getInSpawn()) {
+                g2d.setColor(Color.BLUE);
+            } else {
+                g2d.setColor(i.getColor());
+            }
             g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
             if (isAgentNumbersEnabled) {
                 g2d.setColor(Color.BLACK);
@@ -335,9 +371,10 @@ public class Simulation extends JPanel {
         pausePlayButton.setBounds(120, height - panelHeight + 10, 80, 30);
         toggleGridButton.setBounds(210, height - panelHeight + 10, 120, 30);
         frameStepButton.setBounds(340, height - panelHeight + 10, 120, 30);
+        timeStepButton.setBounds(470, height - panelHeight + 10, 120, 30);
         agentCountLabel.setBounds(10, height - panelHeight + 21, 100, 30);
         frameLabel.setBounds(10, height - panelHeight + 32, 100, 30);
-        toggleAgentNumbersButton.setBounds(470, height - panelHeight + 10, 150, 30);
+        toggleAgentNumbersButton.setBounds(600, height - panelHeight + 10, 150, 30);
 
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
@@ -403,6 +440,27 @@ public class Simulation extends JPanel {
 
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+
+    private void clearEscapeRateCSV() {
+        String csvFile = "escape-rate.csv";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+
+        } catch (IOException e) {
+            System.err.println("Error clearing Escape Rate CSV file: " + e.getMessage());
+        }
+    }
+
+    public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
+        String csvFile = "escape-rate.csv";
+        int frame = sim.frame;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
+            writer.write(numAgents + "," + frame);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to Escape Rate CSV file: " + e.getMessage());
         }
     }
 

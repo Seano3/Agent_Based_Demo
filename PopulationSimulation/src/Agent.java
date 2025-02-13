@@ -84,6 +84,8 @@ public class Agent {
         return location;
     }
 
+    public void setLocation(Location location) { this.location = location; }
+
     public Color getColor() {
         return color;
     }
@@ -275,7 +277,7 @@ public class Agent {
         }
     }
 
-    private Exit inExit(LinkedList< Exit> exits) {
+    public Exit inExit(LinkedList< Exit> exits) {
         for (Exit i : exits) {
             if (i.inExit(this)) {
                 return i;

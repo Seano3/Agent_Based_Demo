@@ -1,8 +1,10 @@
 public class Spawn {
     public enum alignment {VERTICAL, HORIZONTAL}; // will need to be reworked to support angled exits
+    public enum direction {LEFT, RIGHT};
 
     private int size;
     private Spawn.alignment alignment;
+    private Spawn.direction direction;
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
     private int spawnRateInterval;
     private int lastSpawnFrame;
@@ -11,7 +13,7 @@ public class Spawn {
     private double spawnAgentYVelocity;
     private boolean isActivelySpawning;
 
-    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity, Spawn.direction direction) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
@@ -21,6 +23,7 @@ public class Spawn {
         this.spawnAgentXVelocity = spawnAgentXVelocity;
         this.spawnAgentYVelocity = spawnAgentYVelocity;
         this.isActivelySpawning = true;
+        this.direction = direction;
     }
 
     public int getSize() {
@@ -34,6 +37,8 @@ public class Spawn {
     public Spawn.alignment getAlignment() {
         return alignment;
     }
+
+    public Spawn.direction getDirection() { return direction;}
 
     public Location getLocation() {
         return location;

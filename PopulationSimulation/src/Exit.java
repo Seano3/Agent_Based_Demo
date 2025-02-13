@@ -10,7 +10,7 @@ public class Exit {
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
     public boolean buildingExit;
 
-    public Exit(int size, Location location, alignment alignment, boolean buildingExit) {
+    public Exit(int size, Location location, Exit.alignment alignment, boolean buildingExit) {
         this.buildingExit = buildingExit;
         this.size = size;
         this.location = location;
