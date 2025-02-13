@@ -48,7 +48,41 @@ public class vectorMapGen {
                 map[j][i] = -1;
             }
         }
-        //END OF HARD CODED 
+
+        // line across middle
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 350; j < 370; j++) {
+                map[i][j] = -1; // note that this one is switched!!!
+            }
+        }
+
+        //DOOR IN TOP MIDDLE OF LINE
+        for (int i = 165; i < 195; i++) {
+            for (int j = 540; j < 560; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
+        }
+
+        // horizontal door
+        for (int i = 350; i < 370; i++) {
+            for (int j = 210; j < 240; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
+        }
+
+        //bottom vertical door
+        for (int i = 525; i < 555; i++) {
+            for (int j = 540; j < 560; j++) {
+                map[j][i] = Integer.MAX_VALUE;
+            }
+        }
+
+        //BUILDING EXIT
+        for (int i = 515; i < 565; i++) {
+            map[LENGTH - 1][i] = 0;
+        }
+
+        //END OF HARD CODED
     }
 
     public int[][] calculateMap() {
@@ -159,7 +193,7 @@ public class vectorMapGen {
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
                     for (int k = x; k < x + size; k++) {
-                        for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits. 
+                        for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
                             if (y == 0) {
                                 map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
                             } else {
@@ -171,8 +205,8 @@ public class vectorMapGen {
                 } else {
                     System.out.println("Exit not building exit");
                     for (int k = x; k < x + size; k++) {
-                        for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
-                            map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                        for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line.
+                            map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones
                         }
                     }
 
@@ -182,7 +216,7 @@ public class vectorMapGen {
             System.out.println("Vertical");
             if (exit.buildingExit) {
                 for (int k = y; k < y + size; k++) {
-                    for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits. 
+                    for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
                         if (x == 0) {
                             map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
                         } else {
@@ -194,8 +228,8 @@ public class vectorMapGen {
             } else {
                 System.out.println("Exit not building exit");
                 for (int k = y; k < y + size; k++) {
-                    for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line. 
-                        map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                    for (int j = -25; j < 25; j++) { //this for loop is the buffer zone on each side of the line.
+                        map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones
                     }
                 }
             }

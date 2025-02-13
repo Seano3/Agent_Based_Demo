@@ -179,6 +179,7 @@ public class RunSimulation {
         //TODO: make this a toggle in one of the files (probably obstacles)
         sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height, 0));
         sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height), 0));
+        sim.addObstacle(new Line(new Location(0, (double) (sim.height- PANEL_HEIGHT) / 2), new Location((double) sim.width, (double) (sim.height- PANEL_HEIGHT) / 2), 0));
 
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
