@@ -6,14 +6,17 @@ public class Spawn {
     private Spawn.alignment alignment;
     private Spawn.direction direction;
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
+    private Location centerLocation;
+    private int spawnNumber;
     private int spawnRateInterval;
+    private int spawnDelay;
     private int lastSpawnFrame;
     private double spawnAgentSize;
     private double spawnAgentXVelocity;
     private double spawnAgentYVelocity;
     private boolean isActivelySpawning;
 
-    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity, Spawn.direction direction) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity, Spawn.direction direction, int spawnDelay ,int spawnNumber) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
@@ -24,6 +27,13 @@ public class Spawn {
         this.spawnAgentYVelocity = spawnAgentYVelocity;
         this.isActivelySpawning = true;
         this.direction = direction;
+        this.spawnDelay = spawnDelay;
+        this.spawnNumber = spawnNumber;
+        if (alignment == alignment.VERTICAL) {
+            this.centerLocation = new Location(location.getX(), location.getY() + (double) size /2);
+        } else {
+            this.centerLocation = new Location(location.getX() + (double) size /2, location.getY());
+        }
     }
 
     public int getSize() {
@@ -38,11 +48,13 @@ public class Spawn {
         return alignment;
     }
 
-    public Spawn.direction getDirection() { return direction;}
+    public Spawn.direction getDirection() { return direction; }
 
     public Location getLocation() {
         return location;
     }
+
+    public Location getCenterLocation() { return centerLocation; }
 
     public int getLastSpawnFrame() {
         return lastSpawnFrame;
@@ -60,9 +72,15 @@ public class Spawn {
         return spawnAgentYVelocity;
     }
 
+    public int getSpawnNumber() { return spawnNumber; }
+
+    public int getSpawnDelay() { return spawnDelay; }
+
     public void setLastSpawnFrame(int lastSpawnFrame) {
         this.lastSpawnFrame = lastSpawnFrame;
     }
+
+    public void setSpawnNumber(int spawnNumber) { this.spawnNumber = spawnNumber; }
 
     public boolean getIsActivelySpawning() {
         return isActivelySpawning;

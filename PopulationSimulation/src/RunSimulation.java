@@ -73,7 +73,7 @@ public class RunSimulation {
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                if (attributes.length != 9) {
+                if (attributes.length != 11) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
                 }
@@ -88,6 +88,8 @@ public class RunSimulation {
                     double spawnAgentXVelocity = Double.parseDouble(attributes[6]);
                     double spawnAgentYVelocity = Double.parseDouble(attributes[7]);
                     double direction = Double.parseDouble(attributes[8]);
+                    int spawnDelay = Integer.parseInt(attributes[9]);
+                    int spawnNumber = Integer.parseInt(attributes[10]); //If spawnNumber is 0, then it will spawn indefinitely
                     Spawn spawn;
                     Location location = new Location(xCoord, yCoord);
                     Spawn.direction directionEnum = Spawn.direction.LEFT;
@@ -95,9 +97,9 @@ public class RunSimulation {
                         directionEnum = Spawn.direction.RIGHT;
                     }
                     if (alignmentNum == 0) {
-                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum);
+                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay ,spawnNumber);
                     } else {
-                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum);
+                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay,spawnNumber);
                     }
 
                     sim.addSpawn(spawn);

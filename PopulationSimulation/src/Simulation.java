@@ -54,6 +54,7 @@ public class Simulation extends JPanel {
         exits = new LinkedList<>();
         obstacles = new LinkedList<>();
         spawns = new LinkedList<>();
+        clearEscapeRateCSV();
 
         try (FileWriter writer = new FileWriter(csvName)) {
         } catch (IOException e) {
@@ -257,17 +258,19 @@ public class Simulation extends JPanel {
         if (frame == 0) { //create the vector map once the first time the simulation is updated
             VectorMapGeneration();
         }
+
         frame++;
         elapsedTime += 0.01;
         frameLabel.setText("Frame: " + frame);
         updateTimerLabel();
 
         for (Spawn spawn : spawns) {
-            if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval() && spawn.getIsActivelySpawning()) {
+            if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval() && spawn.getIsActivelySpawning() && (spawn.getSpawnNumber() != 0) && (spawn.getSpawnDelay() < frame)) {
                 // Spawn a new agent
-                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getLocation().getX(), spawn.getLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
+                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getCenterLocation().getX(), spawn.getCenterLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
                 addAgent(newAgent, true);
                 spawn.setLastSpawnFrame(frame);
+                spawn.setSpawnNumber(spawn.getSpawnNumber() - 1);
             }
         }
 
