@@ -121,7 +121,7 @@ public class Agent {
             // System.out.println("[" + east + "][" + center + "][" + west + "]");
             // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 10;
+            final int DEVISOR = 1;
 
             double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
             double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
@@ -203,7 +203,6 @@ public class Agent {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
-        updateCSV();
 
     }
 
@@ -222,6 +221,7 @@ public class Agent {
         checkObstacles(obstacles, frame, exits);
         choiceMove = 0;
         checkAgents(otherAgents, frame);
+        updateCSV();
     }
 
     /**
@@ -379,19 +379,18 @@ public class Agent {
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < (i.getSize() + this.getSize())) {
-                    if (choiceMove <= 4) {
+                    if (choiceMove <= 7) {
                         choiceMove++;
-                        System.out.println("Increacing Choice Move");
                         checkAgents(otherAgents, frame);
                         return;
                     } else {
-                        System.out.println("Blocked");
+                        System.out.println(AgentID + " is blocked");
                         return;
                     }
                 }
             }
         }
-        //System.out.println("Moving");
+        System.out.println("Moving " + AgentID);
         updateLocation();
     }
 
