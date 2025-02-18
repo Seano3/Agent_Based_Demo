@@ -1,16 +1,3 @@
-PopulationSimulation/Debug.csv
-agent-output.csv
-PopulationSimulation/agent-input.csv
-Agent-0.csv
-Agent-1.csv
-Agent-2.csv
-Agent-3.csv
 PopulationSimulation/bin/
-PopulationSimulation/src/AgentCSVs/
-PopulationSimulation/src/debug_vector_map.csv
-escape-rate.csv
-PopulationSimulation/escape-rate.csv
-JDJDJD.csv
-PopulationSimulation/JDJDJD.csv
 PopulationSimulation/outputfiles/*
 !PopulationSimulation/outputfiles/.gitkeep
