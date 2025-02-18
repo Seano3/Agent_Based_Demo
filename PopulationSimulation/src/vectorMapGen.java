@@ -14,10 +14,13 @@ public class vectorMapGen {
     private static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // these set the {dx dy} for each possible jump in the BFS algo
     private int[][] results;
     int[][] map;
+    private boolean inBounds (int x, int y) {
+        return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
+    }
 
-    public vectorMapGen(int length, int height) {
-        LENGTH = length;
-        HEIGHT = height;
+    public vectorMapGen(Simulation sim) {
+        LENGTH = sim.width;
+        HEIGHT = sim.height - sim.getPanelHeight();
         map = new int[LENGTH][HEIGHT];
 
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
@@ -56,33 +59,40 @@ public class vectorMapGen {
             }
         }
 
-        //DOOR IN TOP MIDDLE OF LINE
-        for (int i = 165; i < 195; i++) {
-            for (int j = 540; j < 560; j++) {
-                map[j][i] = Integer.MAX_VALUE;
-            }
-        }
-
-        // horizontal door
-        for (int i = 350; i < 370; i++) {
-            for (int j = 210; j < 240; j++) {
-                map[j][i] = Integer.MAX_VALUE;
-            }
-        }
-
-        //bottom vertical door
-        for (int i = 525; i < 555; i++) {
-            for (int j = 540; j < 560; j++) {
-                map[j][i] = Integer.MAX_VALUE;
-            }
-        }
-
-        //BUILDING EXIT
-        for (int i = 515; i < 565; i++) {
-            map[LENGTH - 1][i] = 0;
-        }
-
         //END OF HARD CODED
+
+        for (Exit exit : sim.getExits()) {
+            int xPos = (int) exit.getLocation().getX();
+            int yPos = (int) exit.getLocation().getY();
+            int agentScale = 25; // TEMP - should be sim specific
+
+            if (exit.getAlignment() == Exit.alignment.VERTICAL) {
+                for (int i = xPos - 10; i < xPos + 10; i++) {
+                    for (int j = yPos + agentScale; j < yPos + exit.getSize() - agentScale; j++) {
+                        if(inBounds(i, j)) {
+                            if(exit.buildingExit) {
+                                map[i][j] = 0;
+                            } else {
+                                map[i][j] = Integer.MAX_VALUE;
+                            }
+                        }
+
+                    }
+                }
+            } else { // horizontal
+                for (int i = yPos - 10; i < yPos + 10; i++) {
+                    for (int j = xPos + agentScale; j < xPos + exit.getSize() - agentScale; j++) {
+                        if(inBounds(j, i)) {
+                            if (exit.buildingExit) {
+                                map[j][i] = 0;
+                            } else {
+                                map[j][i] = Integer.MAX_VALUE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public int[][] calculateMap() {

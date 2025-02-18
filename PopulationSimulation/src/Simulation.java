@@ -45,11 +45,11 @@ public class Simulation extends JPanel {
     private static String outputPath;
 
     public Simulation(int width, int height, boolean vectorMapEnabled) {
-        map = new vectorMapGen(width, (height - 200));
         frame = 0;
         this.useVectorMap = vectorMapEnabled;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
+        panelHeight = 200;
 
         outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
 
@@ -192,10 +192,15 @@ public class Simulation extends JPanel {
 
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
+        if (useVectorMap) {
+            map = new vectorMapGen(this);
+            for (Exit i : exits) {
+                map.addExitVM(i);
+            }
+        }
     }
 
     public void addExit(Exit exit) { // no need to remove exits
-        map.addExitVM(exit);
         exits.add(exit);
         totalExits++;
     }
@@ -390,7 +395,6 @@ public class Simulation extends JPanel {
         }
 
         g2d.setColor(Color.GRAY);
-        panelHeight = 200;
         g2d.fillRect(0, height - panelHeight, width, panelHeight);
 
         timeLabel.setBounds(10, height - panelHeight + 10, 100, 30);

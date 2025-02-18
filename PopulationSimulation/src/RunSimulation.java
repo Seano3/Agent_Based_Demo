@@ -13,10 +13,7 @@ public class RunSimulation {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, true);
-        if (!sim.vectorMapEnabled()) {
-            System.out.println("******Vector map is not enabled********");
-        }
+        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, false);
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
@@ -178,9 +175,12 @@ public class RunSimulation {
             System.err.println("Error reading file: " + e.getMessage());
         }
 
+        sim.toggleVectorMap(); // enable and regen vector map
+
         // Simulation walls
         //TODO: make this a toggle in one of the files (probably obstacles)
         sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height, 0));
+
         sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height), 0));
         sim.addObstacle(new Line(new Location(0, (double) (sim.height- PANEL_HEIGHT) / 2), new Location((double) sim.width, (double) (sim.height- PANEL_HEIGHT) / 2), 0));
 
@@ -190,6 +190,9 @@ public class RunSimulation {
         //     sim.addAgent(new Agent(i + 3, 20, i *2 * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
         // } 
         // generateCSV(6, sim);
+        if (!sim.vectorMapEnabled()) {
+            System.out.println("******Vector map is not enabled********");
+        }
         frame.pack();
         frame.setVisible(true);
 

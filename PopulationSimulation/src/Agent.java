@@ -177,7 +177,8 @@ public class Agent {
             }
 
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-            double desiredMagnitude = 30.0; // Set your desired magnitude here
+            // TODO *********** IMPORTANT this needs to be changed whenever testing is done
+            double desiredMagnitude = 125.5; // Set your desired magnitude here
             double scaleFactor = desiredMagnitude / currentMagnitude;
 
             xVelocity *= scaleFactor;
@@ -326,6 +327,20 @@ public class Agent {
                     }
                 }
 
+                if(getLocation().getY() < currentExit.getLocation().getY() + size) { // can't fit through upper part of exit
+                    Collision collision = new Collision(this.AgentID, -5, frame);
+                    if (checkOtherObstacleCollisions(collision)) {
+                        this.xVelocity = -Math.abs(xVelocity);
+                    }
+                }
+
+                if(getLocation().getY() > currentExit.getLocation().getY() + currentExit.getSize() - size) { // can't fit through lower part of exit
+                    Collision collision = new Collision(this.AgentID, -6, frame);
+                    if (checkOtherObstacleCollisions(collision)) {
+                        this.xVelocity = -Math.abs(xVelocity);
+                    }
+                }
+
             } else { //alignment.horizontal
                 if (getLocation().getX() + getSize() > currentExit.getLocation().getX() + currentExit.getSize()) { // Right of exit
 
@@ -339,6 +354,20 @@ public class Agent {
                     Collision collision = new Collision(this.AgentID, -2, frame);
                     if (checkOtherObstacleCollisions(collision)) {
                         this.xVelocity = Math.abs(xVelocity);
+                    }
+                }
+
+                if(getLocation().getX() < currentExit.getLocation().getX() + size) { // can't fit through left part of exit
+                    Collision collision = new Collision(this.AgentID, -7, frame);
+                    if (checkOtherObstacleCollisions(collision)) {
+                        this.yVelocity = -Math.abs(yVelocity);
+                    }
+                }
+
+                if(getLocation().getX() > currentExit.getLocation().getX() + currentExit.getSize() - size) { // can't fit through right part of exit
+                    Collision collision = new Collision(this.AgentID, -8, frame);
+                    if (checkOtherObstacleCollisions(collision)) {
+                        this.yVelocity = -Math.abs(yVelocity);
                     }
                 }
             }
