@@ -28,6 +28,8 @@ public class Simulation extends JPanel {
     private JButton frameStepButton;
     private JButton timeStepButton;
     private JButton toggleAgentNumbersButton;
+    private JLabel timeStepInputLabel;
+    private JTextField timeStepInput;
     private boolean isPaused;
     private boolean isGridEnabled;
     private boolean isAgentNumbersEnabled;
@@ -36,6 +38,7 @@ public class Simulation extends JPanel {
     private int totalAgents = 0;
     private int totalExits = 0;
     private int totalSpawns = 0;
+    private int timeStep = 1;
     int[][] vectorMap;
     vectorMapGen map;
     private boolean useVectorMap;
@@ -63,11 +66,14 @@ public class Simulation extends JPanel {
         timeLabel = new JLabel("Time: 00:00:00");
         agentCountLabel = new JLabel("Agents: 0");
         frameLabel = new JLabel("Frame: 0");
+        timeStepInputLabel = new JLabel("TimeStep amount: ");
 
         pausePlayButton = new JButton("Play");
         toggleGridButton = new JButton("Enable Grid");
         frameStepButton = new JButton("Frame Step");
         timeStepButton = new JButton("Time Step");
+        timeStepInput = new JTextField("1", 1);
+        timeStepInput.setEditable(true);
 
         isPaused = true;
         isGridEnabled = false;
@@ -109,12 +115,24 @@ public class Simulation extends JPanel {
         });
 
         timeStepButton.addActionListener(e -> {
+            int timeStepFrames = timeStep * 100;
+            if(timeStepFrames == 0)
+                System.out.println("Time step 0 - no time skipped");
             if(isPaused) {
-                for(int i=0; i < 100; i++) {
+                for(int i=0; i < timeStepFrames; i++) {
                   update();
                 }
             }
             repaint();
+        });
+
+        timeStepButton.addActionListener(e -> {
+            String timeStepStr = timeStepInput.getText();
+            timeStep = Integer.parseInt(timeStepStr);
+            if (timeStep < 0) { // prevent negative time step
+                timeStep = 1;
+                timeStepInput.setText("1");
+            }
         });
 
         isAgentNumbersEnabled = true;
@@ -141,6 +159,8 @@ public class Simulation extends JPanel {
         add(frameStepButton);
         add(timeStepButton);
         add(toggleAgentNumbersButton);
+        add(timeStepInput);
+        add(timeStepInputLabel);
 
         timer = new Timer(0, e -> {
             update();
@@ -363,6 +383,9 @@ public class Simulation extends JPanel {
         agentCountLabel.setBounds(10, height - panelHeight + 21, 100, 30);
         frameLabel.setBounds(10, height - panelHeight + 32, 100, 30);
         toggleAgentNumbersButton.setBounds(600, height - panelHeight + 10, 150, 30);
+
+        timeStepInputLabel.setBounds(10, height - panelHeight + 50, 130, 30);
+        timeStepInput.setBounds(130, height - panelHeight + 50, 40, 30);
 
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
