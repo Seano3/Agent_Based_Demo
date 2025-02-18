@@ -90,7 +90,7 @@ public class RunSimulation {
                     double spawnAgentYVelocity = Double.parseDouble(attributes[7]);
                     double direction = Double.parseDouble(attributes[8]);
                     int spawnDelay = Integer.parseInt(attributes[9]);
-                    int spawnNumber = Integer.parseInt(attributes[10]); //If spawnNumber is 0, then it will spawn indefinitely
+                    int spawnNumber = Integer.parseInt(attributes[10]); //If spawnNumber is -1, then it will spawn indefinitely
                     Spawn spawn;
                     Location location = new Location(xCoord, yCoord);
                     Spawn.direction directionEnum = Spawn.direction.LEFT;
