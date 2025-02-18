@@ -8,8 +8,6 @@ public class Agent {
 
     public int AgentID;
     private double size;
-    public double xAcceleration;
-    private double yAcceleration;
     private double xVelocity;
     private double yVelocity;
     private Location location;
@@ -128,11 +126,6 @@ public class Agent {
 
             double transferedVel = (transferedVelx + transferedVely);
 
-            xVelocity = reduceMagnitude(xVelocity, transferedVelx);
-            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DEVISOR);
-            yVelocity = reduceMagnitude(yVelocity, transferedVely);
-            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
-
             List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
             Collections.sort(values);
 
@@ -143,6 +136,14 @@ public class Agent {
                 yVelocity = 0;
                 return;
             }
+
+            if (smallest == 0)
+                return;
+
+            xVelocity = reduceMagnitude(xVelocity, transferedVelx);
+            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DEVISOR);
+            yVelocity = reduceMagnitude(yVelocity, transferedVely);
+            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
@@ -178,11 +179,18 @@ public class Agent {
 
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
             // TODO *********** IMPORTANT this needs to be changed whenever testing is done
-            double desiredMagnitude = 125.5; // Set your desired magnitude here
-            double scaleFactor = desiredMagnitude / currentMagnitude;
+            double desiredMagnitude = 75; // Set your desired magnitude here
+            double scaleFactor;
+            if (currentMagnitude == 0) {
+                scaleFactor = 0.1;
+                xVelocity += scaleFactor;
+                yVelocity += scaleFactor;
+            } else {
+                scaleFactor = desiredMagnitude / currentMagnitude;
+                xVelocity *= scaleFactor;
+                yVelocity *= scaleFactor;
+            }
 
-            xVelocity *= scaleFactor;
-            yVelocity *= scaleFactor;
         }
     }
 
@@ -193,14 +201,6 @@ public class Agent {
      */
     public void updateLocation() {
         timeSinceLastWallCollision++;
-        xVelocity += xAcceleration;
-        yVelocity += yAcceleration;
-
-        xAcceleration = 0;
-        yAcceleration = 0;
-
-        int[][] map = sim.vectorMap;
-
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
@@ -221,7 +221,7 @@ public class Agent {
         Exit> exits, LinkedList< Obstacle> obstacles) {
         checkObstacles(obstacles, frame, exits);
         choiceMove = 0;
-        checkAgents(otherAgents, frame);
+        checkAgents(otherAgents);
         updateCSV();
     }
 
@@ -327,14 +327,14 @@ public class Agent {
                     }
                 }
 
-                if(getLocation().getY() < currentExit.getLocation().getY() + size) { // can't fit through upper part of exit
+                if (getLocation().getY() < currentExit.getLocation().getY() + size - 0.5) { // can't fit through upper part of exit
                     Collision collision = new Collision(this.AgentID, -5, frame);
                     if (checkOtherObstacleCollisions(collision)) {
                         this.xVelocity = -Math.abs(xVelocity);
                     }
                 }
 
-                if(getLocation().getY() > currentExit.getLocation().getY() + currentExit.getSize() - size) { // can't fit through lower part of exit
+                if (getLocation().getY() > currentExit.getLocation().getY() + currentExit.getSize() - size + 0.5) { // can't fit through lower part of exit
                     Collision collision = new Collision(this.AgentID, -6, frame);
                     if (checkOtherObstacleCollisions(collision)) {
                         this.xVelocity = -Math.abs(xVelocity);
@@ -357,14 +357,14 @@ public class Agent {
                     }
                 }
 
-                if(getLocation().getX() < currentExit.getLocation().getX() + size) { // can't fit through left part of exit
+                if(getLocation().getX() < currentExit.getLocation().getX() + size - 0.5) { // can't fit through left part of exit
                     Collision collision = new Collision(this.AgentID, -7, frame);
                     if (checkOtherObstacleCollisions(collision)) {
                         this.yVelocity = -Math.abs(yVelocity);
                     }
                 }
 
-                if(getLocation().getX() > currentExit.getLocation().getX() + currentExit.getSize() - size) { // can't fit through right part of exit
+                if(getLocation().getX() > currentExit.getLocation().getX() + currentExit.getSize() - size + 0.5) { // can't fit through right part of exit
                     Collision collision = new Collision(this.AgentID, -8, frame);
                     if (checkOtherObstacleCollisions(collision)) {
                         this.yVelocity = -Math.abs(yVelocity);
@@ -391,9 +391,8 @@ public class Agent {
      * accordingly</p>
      *
      * @param otherAgents an array of all other agents in the simulation
-     * @param frame the current frame
      */
-    private void checkAgents(LinkedList< Agent> otherAgents, int frame) {
+    private void checkAgents(LinkedList< Agent> otherAgents) {
         if (sim.vectorMapEnabled() && !inSpawn) {
             updateVelocity();
         }
@@ -410,7 +409,8 @@ public class Agent {
                 if (distance < (i.getSize() + this.getSize())) {
                     if (choiceMove <= 7) {
                         choiceMove++;
-                        checkAgents(otherAgents, frame);
+                        checkAgents(otherAgents);
+                        System.out.println(this.AgentID + " chose move " + choiceMove);
                         return;
                     } else {
                         System.out.println(AgentID + " is blocked");

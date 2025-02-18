@@ -21,6 +21,7 @@ public class vectorMapGen {
     public vectorMapGen(Simulation sim) {
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
+        int agentScale = 25; // TEMP - should be sim specific
         map = new int[LENGTH][HEIGHT];
 
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
@@ -47,14 +48,14 @@ public class vectorMapGen {
         //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
         //LINE DOWN MIDDLE
         for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 540; j < 560; j++) {
+            for (int j = 550 - agentScale; j < 550 + agentScale; j++) {
                 map[j][i] = -1;
             }
         }
 
         // line across middle
         for (int i = 0; i < LENGTH; i++) {
-            for (int j = 350; j < 370; j++) {
+            for (int j = 360 - agentScale; j < 360 + agentScale; j++) {
                 map[i][j] = -1; // note that this one is switched!!!
             }
         }
@@ -64,12 +65,12 @@ public class vectorMapGen {
         for (Exit exit : sim.getExits()) {
             int xPos = (int) exit.getLocation().getX();
             int yPos = (int) exit.getLocation().getY();
-            int agentScale = 25; // TEMP - should be sim specific
+
 
             if (exit.getAlignment() == Exit.alignment.VERTICAL) {
-                for (int i = xPos - 10; i < xPos + 10; i++) {
+                for (int i = xPos - agentScale; i < xPos + agentScale; i++) {
                     for (int j = yPos + agentScale; j < yPos + exit.getSize() - agentScale; j++) {
-                        if(inBounds(i, j)) {
+                        if (inBounds(i, j)) {
                             if(exit.buildingExit) {
                                 map[i][j] = 0;
                             } else {
@@ -80,7 +81,7 @@ public class vectorMapGen {
                     }
                 }
             } else { // horizontal
-                for (int i = yPos - 10; i < yPos + 10; i++) {
+                for (int i = yPos - agentScale; i < yPos + agentScale; i++) {
                     for (int j = xPos + agentScale; j < xPos + exit.getSize() - agentScale; j++) {
                         if(inBounds(j, i)) {
                             if (exit.buildingExit) {
