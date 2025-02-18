@@ -13,3 +13,4 @@ PopulationSimulation/escape-rate.csv
 JDJDJD.csv
 PopulationSimulation/JDJDJD.csv
 PopulationSimulation/outputfiles/*
+!PopulationSimulation/outputfiles/.gitkeep
