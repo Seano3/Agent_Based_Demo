@@ -42,6 +42,7 @@ public class Simulation extends JPanel {
     int[][] vectorMap;
     vectorMapGen map;
     private boolean useVectorMap;
+    private static String outputPath;
 
     public Simulation(int width, int height, boolean vectorMapEnabled) {
         map = new vectorMapGen(width, (height - 200));
@@ -49,6 +50,8 @@ public class Simulation extends JPanel {
         this.useVectorMap = vectorMapEnabled;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
+
+        outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
 
         this.width = width;
         this.height = height;
@@ -59,7 +62,7 @@ public class Simulation extends JPanel {
         spawns = new LinkedList<>();
         clearEscapeRateCSV();
 
-        try (FileWriter writer = new FileWriter(csvName)) {
+        try (FileWriter writer = new FileWriter(outputPath + csvName)) {
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
@@ -444,7 +447,9 @@ public class Simulation extends JPanel {
      * @param sim Passthrough the simulation
      */
     public static void generateCSV(int numAgents, Simulation sim) {
-        String csvFile = "agent-output.csv"; // Name of the CSV file 
+        String csvFile = "agent-output.csv"; // Name of the CSV file
+        outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
+
         String[][] data = new String[numAgents][6]; // Data to write to CSV file
         LinkedList<Agent> agents = sim.getAgents();
         for (int i = 0; i < numAgents; i++) {
@@ -456,7 +461,7 @@ public class Simulation extends JPanel {
             data[i][5] = Double.toString(agents.get(i).getYVelocity());
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile))) {
             writer.newLine();
 
             for (String[] row : data) {
@@ -471,7 +476,7 @@ public class Simulation extends JPanel {
 
     private void clearEscapeRateCSV() {
         String csvFile = "escape-rate.csv";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile))) {
 
         } catch (IOException e) {
             System.err.println("Error clearing Escape Rate CSV file: " + e.getMessage());
@@ -481,8 +486,9 @@ public class Simulation extends JPanel {
     public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
         String csvFile = "escape-rate.csv";
         int frame = sim.frame;
+        outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile, true))) {
             writer.write(numAgents + "," + frame);
             writer.newLine();
         } catch (IOException e) {
@@ -496,7 +502,7 @@ public class Simulation extends JPanel {
      * </p>
      */
     private void debugCSV() {
-        try (FileWriter writer = new FileWriter(csvName, true)) {
+        try (FileWriter writer = new FileWriter(outputPath + csvName, true)) {
             writer.write(getKE() + ","
             );
             writer.write("\n");

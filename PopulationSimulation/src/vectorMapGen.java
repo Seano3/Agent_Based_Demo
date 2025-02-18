@@ -173,7 +173,7 @@ public class vectorMapGen {
     }
 
     public static void exportToCSV(int[][] data, String fileName) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/" + fileName))) {
             for (int[] row : data) {
                 for (int cell : row) {
                     writer.write(String.valueOf(cell));

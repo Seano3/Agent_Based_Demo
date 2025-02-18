@@ -20,9 +20,10 @@ public class RunSimulation {
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));
+        String inputDir = System.getProperty("user.dir") + "/PopulationSimulation/inputfiles/";
 
         //Exit input
-        try (BufferedReader br = new BufferedReader(new FileReader("exit-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "exit-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -67,7 +68,7 @@ public class RunSimulation {
         }
 
         //Spawn input
-        try (BufferedReader br = new BufferedReader(new FileReader("spawn-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "spawn-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -113,7 +114,7 @@ public class RunSimulation {
         }
 
         //Agent input
-        try (BufferedReader br = new BufferedReader(new FileReader("agent-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "agent-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -145,7 +146,7 @@ public class RunSimulation {
 
         //Exit exit1 = new Exit(100, new Location(0,100),Exit.alignment.VERTICAL);
         //Obstacle input
-        try (BufferedReader br = new BufferedReader(new FileReader("obstacle-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "obstacle-input.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {
