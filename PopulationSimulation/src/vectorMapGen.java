@@ -17,11 +17,11 @@ public class vectorMapGen {
     private boolean inBounds (int x, int y) {
         return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
     }
+    int agentScale = 20;
 
     public vectorMapGen(Simulation sim) {
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
-        int agentScale = 20; // TEMP - should be sim specific
         map = new int[LENGTH][HEIGHT];
 
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
@@ -88,7 +88,6 @@ public class vectorMapGen {
                                 map[i][j] = Integer.MAX_VALUE;
                             }
                         }
-
                     }
                 }
             } else { // horizontal
@@ -214,19 +213,20 @@ public class vectorMapGen {
             //System.out.println("Horizonal");
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
-                    for (int k = x; k < x + size; k++) {
-                        for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
-                            if (y == 0) {
-                                map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
-                            } else {
-                                map[k][y - j] = Integer.MAX_VALUE; //Exits on bottom of map
-                            }
+                    for (int k = x + agentScale; k < x + size - agentScale; k++) {
+                        for (int j = -5; j < 5; j++) { //this for loop gets rid of the vector map buffer for each exits.
+                            if(inBounds(k,j))
+                                if (y == 0) {
+                                    map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
+                                } else {
+                                    map[k][y - j] = Integer.MAX_VALUE; //Exits on bottom of map
+                                }
                         }
                         map[k][y] = 0;
                     }
                 } else {
                    // System.out.println("Exit not building exit");
-                    for (int k = x; k < x + size; k++) {
+                        for (int k = x + agentScale; k < x + size - agentScale; k++) {
                         for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                             map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                         }
@@ -237,19 +237,20 @@ public class vectorMapGen {
         } else {
            // System.out.println("Vertical");
             if (exit.buildingExit) {
-                for (int k = y; k < y + size; k++) {
+                        for (int k = y + agentScale; k < y + size - agentScale; k++) {
                     for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
-                        if (x == 0) {
-                            map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
-                        } else {
-                            map[x - j][k] = Integer.MAX_VALUE; //Exits on right of map
-                        }
+                        if(inBounds(k,j))
+                            if (x == 0) {
+                                map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
+                            } else {
+                                map[x - j][k] = Integer.MAX_VALUE; //Exits on right of map
+                            }
                     }
                     map[x][k] = 0;
                 }
             } else {
               //  System.out.println("Exit not building exit");
-                for (int k = y; k < y + size; k++) {
+                for (int k = y + agentScale; k < y + size - agentScale; k++) {
                     for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                         map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                     }

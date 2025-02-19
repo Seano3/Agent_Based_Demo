@@ -332,6 +332,7 @@ public class Simulation extends JPanel {
         g2d.setColor(Color.GREEN);
 
         for (Exit i : exits) {
+
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if (i.getAlignment() == Exit.alignment.HORIZONTAL) {
@@ -339,7 +340,6 @@ public class Simulation extends JPanel {
             } else {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
-
         }
 
         // for (Spawn i : spawns) {
