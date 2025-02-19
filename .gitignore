@@ -1,3 +1,4 @@
 PopulationSimulation/bin/
 PopulationSimulation/outputfiles/*
 !PopulationSimulation/outputfiles/.gitkeep
+out
