@@ -5,14 +5,24 @@ public class Line extends Obstacle {
     private final Location endpoint;
     private final double length;
 
-    public Line(Location location, Location endpoint, double Force) {
-        super(location, Force);
+    public Line(Location location, Location endpoint) {
+        super(location);
         this.endpoint = endpoint;
+        length = location.getDistance(endpoint);
+    }
+
+    public Line(double x, double y, double endx, double endy) {
+        super(new Location(x, y));
+        endpoint = new Location(endx, endy);
         length = location.getDistance(endpoint);
     }
 
     public Location getEndpoint() {
         return endpoint;
+    }
+
+    public double getLength() {
+        return length;
     }
 
     //TODO: potential problems if agent is moving parallel to line and within Tl/Te range. may not be worth it to fix

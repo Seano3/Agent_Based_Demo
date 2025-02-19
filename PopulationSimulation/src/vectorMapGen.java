@@ -21,7 +21,7 @@ public class vectorMapGen {
     public vectorMapGen(Simulation sim) {
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
-        int agentScale = 25; // TEMP - should be sim specific
+        int agentScale = 20; // TEMP - should be sim specific
         map = new int[LENGTH][HEIGHT];
 
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
@@ -45,30 +45,41 @@ public class vectorMapGen {
             }
         }
 
-        //HARD CODED LINE IN MIDDLE OF SIM FOR SHAWN
-        //LINE DOWN MIDDLE
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 550 - agentScale; j < 550 + agentScale; j++) {
-                map[j][i] = -1;
+        // public Line(Location location, Location endpoint, double Force) {
+        // Line(sim.width / 2, 0), sim.width / 2, sim.height));
+
+        for (Obstacle OBS : sim.getObstacles()) {
+            if (Line.class.isAssignableFrom(OBS.getClass())) {
+                Line line = (Line) OBS;
+                double xSize = line.getEndpoint().getX() - line.getLocation().getX();
+                double ySize = line.getEndpoint().getY() - line.getLocation().getY();
+                double xIter =  line.getLocation().getX();
+                double yIter =  line.getLocation().getY();
+                int linePasses = 250;
+                int i = 0;
+                while (i < linePasses) {
+                    for(int j = (int)xIter - 5; j < (int)xIter + 5; j++)
+                        for (int k = (int)yIter - 5; k < (int)yIter + 5; k++)
+                            if(inBounds(j, k))
+                                map[j][k] = -1;
+                    xIter += xSize / linePasses;
+                    yIter += ySize / linePasses;
+                    i++;
+                    if(i == 250)
+                        System.out.println("Added obs to vector map");
+                }
+            } else if (Box.class.isAssignableFrom(OBS.getClass())) {
+                System.out.println("Missing box vector map calc!!!");
+            } else { // HOLY SHIT THIS IS BAD CAPTAIN THE SHIP IS GOING DOWN
+                System.exit(-1138);
             }
         }
-
-        // line across middle
-        for (int i = 0; i < LENGTH; i++) {
-            for (int j = 360 - agentScale; j < 360 + agentScale; j++) {
-                map[i][j] = -1; // note that this one is switched!!!
-            }
-        }
-
-        //END OF HARD CODED
 
         for (Exit exit : sim.getExits()) {
             int xPos = (int) exit.getLocation().getX();
             int yPos = (int) exit.getLocation().getY();
-
-
             if (exit.getAlignment() == Exit.alignment.VERTICAL) {
-                for (int i = xPos - agentScale; i < xPos + agentScale; i++) {
+                for (int i = xPos - 5; i < xPos + 5; i++) {
                     for (int j = yPos + agentScale; j < yPos + exit.getSize() - agentScale; j++) {
                         if (inBounds(i, j)) {
                             if(exit.buildingExit) {
@@ -81,7 +92,7 @@ public class vectorMapGen {
                     }
                 }
             } else { // horizontal
-                for (int i = yPos - agentScale; i < yPos + agentScale; i++) {
+                for (int i = yPos - 5; i < yPos + 5; i++) {
                     for (int j = xPos + agentScale; j < xPos + exit.getSize() - agentScale; j++) {
                         if(inBounds(j, i)) {
                             if (exit.buildingExit) {
@@ -200,7 +211,7 @@ public class vectorMapGen {
         int y = (int) exit.getLocation().getY();
         int size = exit.getSize();
         if (exit.getAlignment() == Exit.alignment.HORIZONTAL) {
-            System.out.println("Horizonal");
+            //System.out.println("Horizonal");
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
                     for (int k = x; k < x + size; k++) {
@@ -214,7 +225,7 @@ public class vectorMapGen {
                         map[k][y] = 0;
                     }
                 } else {
-                    System.out.println("Exit not building exit");
+                   // System.out.println("Exit not building exit");
                     for (int k = x; k < x + size; k++) {
                         for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                             map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
@@ -224,7 +235,7 @@ public class vectorMapGen {
                 }
             }
         } else {
-            System.out.println("Vertical");
+           // System.out.println("Vertical");
             if (exit.buildingExit) {
                 for (int k = y; k < y + size; k++) {
                     for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
@@ -237,7 +248,7 @@ public class vectorMapGen {
                     map[x][k] = 0;
                 }
             } else {
-                System.out.println("Exit not building exit");
+              //  System.out.println("Exit not building exit");
                 for (int k = y; k < y + size; k++) {
                     for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
                         map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 

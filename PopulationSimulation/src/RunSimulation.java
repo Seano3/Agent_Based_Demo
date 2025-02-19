@@ -163,8 +163,7 @@ public class RunSimulation {
                     Obstacle obj;
                     Location location = new Location(xCoord, yCoord);
 
-                    obj = new Box(location, width, height, 0);
-                    sim.addBoxVM((Box) obj);
+                    obj = new Box(location, width, height);
                     sim.addObjs(obj);
                     //System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
@@ -175,15 +174,15 @@ public class RunSimulation {
             System.err.println("Error reading file: " + e.getMessage());
         }
 
-        sim.toggleVectorMap(); // enable and regen vector map
+
 
         // Simulation walls
         //TODO: make this a toggle in one of the files (probably obstacles)
-        sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height - PANEL_HEIGHT, 0));
+        sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height - PANEL_HEIGHT));
+        sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height)));
+        sim.addObstacle(new Line(0,(double) (sim.height- PANEL_HEIGHT) / 2, sim.width, (double) (sim.height - PANEL_HEIGHT) / 2));
 
-        sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height), 0));
-        sim.addObstacle(new Line(new Location(0, (double) (sim.height- PANEL_HEIGHT) / 2), new Location((double) sim.width, (double) (sim.height- PANEL_HEIGHT) / 2), 0));
-
+        sim.toggleVectorMap(); // enable and regen vector map
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));

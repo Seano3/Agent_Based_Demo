@@ -114,15 +114,15 @@ public class Agent {
             int southEast = map[yMeter + 1][xMeter + 1];
             int southWest = map[yMeter + 1][xMeter - 1];
 
-            // System.out.println("\nAgent ID: " + AgentID);
-            // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
-            // System.out.println("[" + east + "][" + center + "][" + west + "]");
-            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+             System.out.println("\nAgent ID: " + AgentID);
+             System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
+             System.out.println("[" + east + "][" + center + "][" + west + "]");
+             System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int DEVISOR = 1;
+            final int Divisor = 16;
 
-            double transferedVelx = ((Math.abs(xVelocity) / DEVISOR));
-            double transferedVely = ((Math.abs(yVelocity) / DEVISOR));
+            double transferedVelx = ((Math.abs(xVelocity) / Divisor));
+            double transferedVely = ((Math.abs(yVelocity) / Divisor));
 
             double transferedVel = (transferedVelx + transferedVely);
 
@@ -410,16 +410,16 @@ public class Agent {
                     if (choiceMove <= 7) {
                         choiceMove++;
                         checkAgents(otherAgents);
-                        System.out.println(this.AgentID + " chose move " + choiceMove);
+                        //System.out.println(this.AgentID + " chose move " + choiceMove);
                         return;
                     } else {
-                        System.out.println(AgentID + " is blocked");
+                        //System.out.println(AgentID + " is blocked");
                         return;
                     }
                 }
             }
         }
-        System.out.println("Moving " + AgentID);
+        //System.out.println("Moving " + AgentID);
         updateLocation();
     }
 

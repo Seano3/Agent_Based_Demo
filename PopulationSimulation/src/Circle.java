@@ -5,12 +5,12 @@ public class Circle extends Obstacle {
     private double radius;
 
     public Circle(Location location, double radius, double Force) {
-        super(location, Force);
+        super(location);
         this.radius = radius;
     }
 
     public Circle(Location location, double radius, double xForce, double yForce) {
-        super(location, xForce, yForce);
+        super(location);
         this.radius = radius;
     }
 

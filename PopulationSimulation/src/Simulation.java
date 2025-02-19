@@ -206,10 +206,6 @@ public class Simulation extends JPanel {
         totalExits++;
     }
 
-    public void addBoxVM(Box box) {
-        obstacles.add(box);
-    }
-
     public void addSpawn(Spawn spawn) {
         spawns.add(spawn);
         totalSpawns++;
