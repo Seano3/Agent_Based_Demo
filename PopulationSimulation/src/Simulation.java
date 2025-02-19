@@ -43,8 +43,10 @@ public class Simulation extends JPanel {
     vectorMapGen map;
     private boolean useVectorMap;
     private static String outputPath;
+    private int NumberOfAgents;
 
     public Simulation(int width, int height, boolean vectorMapEnabled) {
+        NumberOfAgents = 0;
         map = new vectorMapGen(width, (height - 200));
         frame = 0;
         this.useVectorMap = vectorMapEnabled;
@@ -120,11 +122,12 @@ public class Simulation extends JPanel {
 
         timeStepButton.addActionListener(e -> {
             int timeStepFrames = timeStep * 100;
-            if(timeStepFrames == 0)
+            if (timeStepFrames == 0) {
                 System.out.println("Time step 0 - no time skipped");
-            if(isPaused) {
-                for(int i=0; i < timeStepFrames; i++) {
-                  update();
+            }
+            if (isPaused) {
+                for (int i = 0; i < timeStepFrames; i++) {
+                    update();
                 }
             }
             repaint();
@@ -210,6 +213,7 @@ public class Simulation extends JPanel {
     }
 
     public void addAgent(Agent agent, boolean isSpawned) {
+        NumberOfAgents++;
         Exit closestExit = findClosestExit(agent.getLocation());
         Spawn closestSpawn = findClosestSpawn(agent.getLocation());
 
@@ -312,11 +316,16 @@ public class Simulation extends JPanel {
                 removeAgent(agents.get(i));
             }
 
+            // if (agents.get(i).inExit(exits) != null) {
+            //     //removeAgent(agents.get(i));
+            //     NumberOfAgents--;
+            // }
             // TODO: Write to Excel sheet of locational data of each Agent
         }
         debugCSV();
         generateCSV(agents.size(), this);
         generateEscapeRateCSV(agents.size(), this);
+        System.out.println("Agents Remaingng: " + agents.size());
     }
 
     /**

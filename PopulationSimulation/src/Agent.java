@@ -22,6 +22,7 @@ public class Agent {
     private int timeSinceLastWallCollision = 50;
     private boolean inSpawn = false;
     private int choiceMove;
+    private double targetVelocity = 12.5;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -84,7 +85,9 @@ public class Agent {
         return location;
     }
 
-    public void setLocation(Location location) { this.location = location; }
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
     public Color getColor() {
         return color;
@@ -176,9 +179,8 @@ public class Agent {
                 }
             }
 
-            double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-            double desiredMagnitude = 30.0; // Set your desired magnitude here
-            double scaleFactor = desiredMagnitude / currentMagnitude;
+            double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude here
+            double scaleFactor = targetVelocity / currentMagnitude;
 
             xVelocity *= scaleFactor;
             yVelocity *= scaleFactor;
@@ -384,13 +386,13 @@ public class Agent {
                         checkAgents(otherAgents, frame);
                         return;
                     } else {
-                        System.out.println(AgentID + " is blocked");
+                        //System.out.println(AgentID + " is blocked");
                         return;
                     }
                 }
             }
         }
-        System.out.println("Moving " + AgentID);
+        //System.out.println("Moving " + AgentID);
         updateLocation();
     }
 

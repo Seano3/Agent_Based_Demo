@@ -98,9 +98,9 @@ public class RunSimulation {
                         directionEnum = Spawn.direction.RIGHT;
                     }
                     if (alignmentNum == 0) {
-                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay ,spawnNumber);
+                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay, spawnNumber);
                     } else {
-                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay,spawnNumber);
+                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay, spawnNumber);
                     }
 
                     sim.addSpawn(spawn);
@@ -181,9 +181,9 @@ public class RunSimulation {
         // Simulation walls
         //TODO: make this a toggle in one of the files (probably obstacles)
         sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height, 0));
-        sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height), 0));
-        sim.addObstacle(new Line(new Location(0, (double) (sim.height- PANEL_HEIGHT) / 2), new Location((double) sim.width, (double) (sim.height- PANEL_HEIGHT) / 2), 0));
 
+        // sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height), 0));
+        // sim.addObstacle(new Line(new Location(0, (double) (sim.height- PANEL_HEIGHT) / 2), new Location((double) sim.width, (double) (sim.height- PANEL_HEIGHT) / 2), 0));
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
