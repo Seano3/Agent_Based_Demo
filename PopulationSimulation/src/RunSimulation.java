@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.swing.*;
 //test
 
-public class RunSimulation {
+public class  RunSimulation {
 
     private static final int PANEL_HEIGHT = 200;
 
