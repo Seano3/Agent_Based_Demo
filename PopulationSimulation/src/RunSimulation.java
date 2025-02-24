@@ -13,7 +13,7 @@ public class RunSimulation {
         //Initialize Frame
         JFrame frame = new JFrame("Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT, false);
+        Simulation sim = new Simulation(1100, 720 + PANEL_HEIGHT);
         frame.add(sim);
 
         System.out.println("Current directory: " + System.getProperty("user.dir"));

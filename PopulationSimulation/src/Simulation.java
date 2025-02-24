@@ -45,11 +45,10 @@ public class Simulation extends JPanel {
     private static String outputPath;
     private int NumberOfAgents;
 
-    public Simulation(int width, int height, boolean vectorMapEnabled) {
+    public Simulation(int width, int height) {
         NumberOfAgents = 0;
-        map = new vectorMapGen(width, (height - 200));
         frame = 0;
-        this.useVectorMap = vectorMapEnabled;
+        this.useVectorMap = false;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
         panelHeight = 200;
@@ -169,7 +168,6 @@ public class Simulation extends JPanel {
         add(toggleAgentNumbersButton);
         add(timeStepInput);
         add(timeStepInputLabel);
-
         timer = new Timer(0, e -> {
             update();
             repaint();
@@ -196,6 +194,7 @@ public class Simulation extends JPanel {
 
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
+        map = new vectorMapGen(this);
         if (useVectorMap) {
             map = new vectorMapGen(this);
             for (Exit i : exits) {
