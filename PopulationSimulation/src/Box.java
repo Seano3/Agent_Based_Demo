@@ -12,27 +12,9 @@ public class Box extends Obstacle {
      * @param location - The position of the top left corner of the box
      * @param width - The width of the box
      * @param height - The height of the box
-     * @param Force - Anti-collision force exerted by the box on Agents. Not
-     * implemented
      */
-    public Box(Location location, double width, double height, double Force) {
-        super(location, Force);
-        this.width = width;
-        this.height = height;
-    }
-
-    /**
-     *
-     * @param location - The position of the top left corner of the box
-     * @param width - The width of the box
-     * @param height - The height of the box
-     * @param xForce - Horizontal Anti-collision force exerted by the box on
-     * Agents. Not implemented
-     * @param yForce - Vertical Anti-collision force exerted by the box on
-     * Agents. Not implemented
-     */
-    public Box(Location location, double width, double height, double xForce, double yForce) {
-        super(location, xForce, yForce);
+    public Box(Location location, double width, double height) {
+        super(location);
         this.width = width;
         this.height = height;
     }
@@ -72,25 +54,20 @@ public class Box extends Obstacle {
     @Override
     public void checkCollision(Agent currentAgent, int frame) {
         Collision newCollision;
-        if (width == 100 || width == 300) //System.out.println("FRAME: " + frame + ", AGENT X + SIZE" + this.location.getX()+currentAgent.getSize() + ", AGENT LOC" + currentAgent.getLocation().getX() + ", WITHY" + withinY(currentAgent.getLocation().getY()));
-        {
-            if (currentAgent.getLocation().getX() <= location.getX() + width + currentAgent.getSize()
-                    && currentAgent.getLocation().getX() >= location.getX() + width - currentAgent.getSize()
-                    && withinY(currentAgent.getLocation().getY())) { // Right side collision
-                newCollision = new Collision(currentAgent.AgentID, -4, frame);
-                if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
-                    currentAgent.deactivateVectorMap();
-                    currentAgent.setXVelocity(-currentAgent.getXVelocity());
-                }
+        if (currentAgent.getLocation().getX() <= location.getX() + width + currentAgent.getSize()
+                && currentAgent.getLocation().getX() >= location.getX() + width - currentAgent.getSize()
+                && withinY(currentAgent.getLocation().getY())) { // Right side collision
+            newCollision = new Collision(currentAgent.AgentID, -4, frame);
+            if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
+                currentAgent.setXVelocity(-currentAgent.getXVelocity());
+            }
 
             }
-        }
         if (currentAgent.getLocation().getX() >= location.getX() - currentAgent.getSize()
                 && currentAgent.getLocation().getX() <= location.getX() + currentAgent.getSize()
                 && withinY(currentAgent.getLocation().getY())) { // Left side collision
             newCollision = new Collision(currentAgent.AgentID, -2, frame);
             if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
-                currentAgent.deactivateVectorMap();
                 currentAgent.setXVelocity(-currentAgent.getXVelocity());
             }
 
@@ -102,7 +79,6 @@ public class Box extends Obstacle {
 
             newCollision = new Collision(currentAgent.AgentID, -3, frame);
             if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
-                currentAgent.deactivateVectorMap();
                 currentAgent.setYVelocity(-currentAgent.getYVelocity());
             }
 
@@ -114,7 +90,6 @@ public class Box extends Obstacle {
 
             newCollision = new Collision(currentAgent.AgentID, -1, frame);
             if (currentAgent.checkOtherObstacleCollisions(newCollision)) {
-                currentAgent.deactivateVectorMap();
                 currentAgent.setYVelocity(-currentAgent.getYVelocity());
             }
         }
