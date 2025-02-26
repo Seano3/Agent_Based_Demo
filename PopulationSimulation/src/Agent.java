@@ -20,7 +20,7 @@ public class Agent {
     private int timeSinceLastWallCollision = 50;
     private boolean inSpawn = false;
     private int choiceMove;
-    private double targetVelocity = 12.5;
+    private double targetVelocity;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -37,6 +37,7 @@ public class Agent {
         AgentID = name;
         choiceMove = 0;
         this.size = size;
+        targetVelocity = size * 1.25 / 0.255;
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
