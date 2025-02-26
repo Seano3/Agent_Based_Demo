@@ -23,6 +23,7 @@ public class Agent {
     private boolean inSpawn = false;
     private int choiceMove;
     private double targetVelocity;
+    private int Divisor = 1;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -125,8 +126,7 @@ public class Agent {
             // System.out.println("[" + east + "][" + center + "][" + west + "]");
             // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int Divisor = 8;
-
+            //final int Divisor = 4;
             double transferedVelx = ((Math.abs(xVelocity) / Divisor));
             double transferedVely = ((Math.abs(yVelocity) / Divisor));
 
@@ -138,8 +138,7 @@ public class Agent {
             int smallest = values.get(choice);
 
             if (smallest == Integer.MAX_VALUE) {
-                xVelocity = 0;
-                yVelocity = 0;
+                choiceMove = 8;
                 return;
             }
 
@@ -192,96 +191,6 @@ public class Agent {
         }
     }
 
-    private void checkDirection() {
-        int choice = choiceMove;
-        //Change to find the choice lowest that is both unoccupied
-        int yMeter = (int) location.getY();
-        int xMeter = (int) location.getX();
-        int[][] map = sim.vectorMap;
-
-        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-            int center = map[yMeter][xMeter];
-            int north = map[yMeter - 1][xMeter];
-            int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter + 1];
-            int west = map[yMeter][xMeter - 1];
-            int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1][xMeter - 1];
-            int southEast = map[yMeter + 1][xMeter + 1];
-            int southWest = map[yMeter + 1][xMeter - 1];
-
-            // System.out.println("\nAgent ID: " + AgentID);
-            // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
-            // System.out.println("[" + east + "][" + center + "][" + west + "]");
-            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            // System.out.println("X " + xMeter + " Y " + yMeter);
-            final int Divisor = 1;
-
-            double transferedVelx = ((Math.abs(xVelocity) / Divisor));
-            double transferedVely = ((Math.abs(yVelocity) / Divisor));
-
-            double transferedVel = (transferedVelx + transferedVely);
-
-            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
-            Collections.sort(values);
-
-            int smallest = values.get(choice);
-
-            if (smallest == Integer.MAX_VALUE) {
-                xVelocity = 0;
-                yVelocity = 0;
-                return;
-            }
-
-            if (smallest == 0) {
-                return;
-            }
-
-            checkXVelocity = reduceMagnitude(checkXVelocity, transferedVelx);
-            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DEVISOR);
-            checkYVelocity = reduceMagnitude(checkYVelocity, transferedVely);
-            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
-
-            if (timeSinceLastWallCollision > 5) {
-                if (smallest == north) {
-                    // System.out.println("Going North");
-                    checkYVelocity -= transferedVel;
-                } else if (smallest == south) {
-                    // System.out.println("Going South");
-                    checkYVelocity += transferedVel;
-                } else if (smallest == west) {
-                    // System.out.println("Going West");
-                    checkXVelocity -= transferedVel;
-                } else if (smallest == east) {
-                    // System.out.println("Going East");
-                    checkXVelocity += transferedVel;
-                } else if (smallest == northEast) {
-                    // System.out.println("Going North East");
-                    checkYVelocity -= transferedVel / 2;
-                    checkYVelocity += transferedVel / 2;
-                } else if (smallest == northWest) {
-                    // System.out.println("Going North West");
-                    checkYVelocity -= transferedVel / 2;
-                    checkXVelocity -= transferedVel / 2;
-                } else if (smallest == southEast) {
-                    // System.out.println("Going South East");
-                    checkYVelocity += transferedVel / 2;
-                    checkXVelocity += transferedVel / 2;
-                } else if (smallest == southWest) {
-                    // System.out.println("Going South West");
-                    checkYVelocity += transferedVel / 2;
-                    checkXVelocity -= transferedVel / 2;
-                }
-            }
-
-            double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude here
-            double scaleFactor = targetVelocity / currentMagnitude;
-
-            checkXVelocity *= scaleFactor;
-            checkYVelocity *= scaleFactor;
-        }
-    }
-
     /**
      * <p>
      * Call to update the location of the agent using its velocity and any
@@ -292,6 +201,7 @@ public class Agent {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
+        Divisor = 16;
 
     }
 
@@ -483,9 +393,8 @@ public class Agent {
     private void checkAgents(LinkedList< Agent> otherAgents) {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
-        checkXVelocity = xVelocity;
-        checkYVelocity = yVelocity;
-        checkDirection();
+
+        updateVelocity();
 
         for (Agent i : otherAgents) {
             // System.out.println(i.AgentID != this.AgentID);
@@ -502,15 +411,14 @@ public class Agent {
                         return;
                     } else {
                         //System.out.println(AgentID + " is blocked");
+                        Divisor = 1;
                         return;
                     }
                 }
             }
         }
         //System.out.println("Moving " + AgentID);
-        if (sim.vectorMapEnabled() && !inSpawn) {
-            updateVelocity();
-        }
+
         updateLocation();
     }
 
