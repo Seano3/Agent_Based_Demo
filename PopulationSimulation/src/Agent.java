@@ -37,7 +37,7 @@ public class Agent {
         AgentID = name;
         choiceMove = 0;
         this.size = size;
-        targetVelocity = size * 1.25 / 0.255;
+        targetVelocity = size * 1.25 / 0.255; // replicate human walking speed based on average person
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
