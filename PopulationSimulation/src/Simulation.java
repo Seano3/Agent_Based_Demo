@@ -45,13 +45,13 @@ public class Simulation extends JPanel {
     private static String outputPath;
     private int NumberOfAgents;
 
-    public Simulation(int width, int height, boolean vectorMapEnabled) {
+    public Simulation(int width, int height) {
         NumberOfAgents = 0;
-        map = new vectorMapGen(width, (height - 200));
         frame = 0;
-        this.useVectorMap = vectorMapEnabled;
+        this.useVectorMap = false;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.WHITE);
+        panelHeight = 200;
 
         outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
 
@@ -168,7 +168,6 @@ public class Simulation extends JPanel {
         add(toggleAgentNumbersButton);
         add(timeStepInput);
         add(timeStepInputLabel);
-
         timer = new Timer(0, e -> {
             update();
             repaint();
@@ -195,16 +194,19 @@ public class Simulation extends JPanel {
 
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
+        map = new vectorMapGen(this);
+        if (useVectorMap) {
+            map = new vectorMapGen(this);
+            for (Exit i : exits) {
+                map.addExitVM(i);
+            }
+            VectorMapGeneration();
+        }
     }
 
     public void addExit(Exit exit) { // no need to remove exits
-        map.addExitVM(exit);
         exits.add(exit);
         totalExits++;
-    }
-
-    public void addBoxVM(Box box) {
-        obstacles.add(box);
     }
 
     public void addSpawn(Spawn spawn) {
@@ -217,45 +219,47 @@ public class Simulation extends JPanel {
         Exit closestExit = findClosestExit(agent.getLocation());
         Spawn closestSpawn = findClosestSpawn(agent.getLocation());
 
-        // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
-        if (closestSpawn != null) {
-            agent.setInSpawn(closestSpawn.inSpawn(agent));
-        }
+        if(vectorMapEnabled()) {
+            // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
+            if (closestSpawn != null) {
+                agent.setInSpawn(closestSpawn.inSpawn(agent));
+            }
 
-        if (isSpawned && closestSpawn != null) {
+            if (isSpawned && closestSpawn != null) {
             /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
             double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
             agent.setLocation(new Location(centerX, centerY));*/
-            double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
+                double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
 
-            if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
-                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
-                    agent.setXVelocity(0);
-                    agent.setYVelocity(-initialVelocityMagnitude);
+                if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
+                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                        agent.setXVelocity(0);
+                        agent.setYVelocity(-initialVelocityMagnitude);
+                    } else {
+                        agent.setXVelocity(0);
+                        agent.setYVelocity(initialVelocityMagnitude);
+                    }
                 } else {
-                    agent.setXVelocity(0);
-                    agent.setYVelocity(initialVelocityMagnitude);
+                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                        agent.setXVelocity(-initialVelocityMagnitude);
+                        agent.setYVelocity(0);
+                        System.out.println("Left");
+                    } else {
+                        agent.setXVelocity(initialVelocityMagnitude);
+                        agent.setYVelocity(0);
+                        System.out.println("Right");
+                    }
                 }
-            } else {
-                if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
-                    agent.setXVelocity(-initialVelocityMagnitude);
-                    agent.setYVelocity(0);
-                    System.out.println("Left");
-                } else {
-                    agent.setXVelocity(initialVelocityMagnitude);
-                    agent.setYVelocity(0);
-                    System.out.println("Right");
-                }
+            } else if (closestExit != null) {
+                System.out.println("Normal");
+                double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
+                double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+                double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+                double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+                agent.setXVelocity(directionVector[0] * magnitude);
+                agent.setYVelocity(directionVector[1] * magnitude);
             }
-        } else if (closestExit != null) {
-            System.out.println("Normal");
-            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
-            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
-            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
-            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
-            agent.setXVelocity(directionVector[0] * magnitude);
-            agent.setYVelocity(directionVector[1] * magnitude);
         }
 
         agents.add(agent);
@@ -282,10 +286,6 @@ public class Simulation extends JPanel {
      * Updates the simulation each frame </p>
      */
     public void update() {
-        if (frame == 0) { //create the vector map once the first time the simulation is updated
-            VectorMapGeneration();
-        }
-
         frame++;
         elapsedTime += 0.01;
         frameLabel.setText("Frame: " + frame);
@@ -339,6 +339,7 @@ public class Simulation extends JPanel {
         g2d.setColor(Color.GREEN);
 
         for (Exit i : exits) {
+
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if (i.getAlignment() == Exit.alignment.HORIZONTAL) {
@@ -346,7 +347,6 @@ public class Simulation extends JPanel {
             } else {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
-
         }
 
         // for (Spawn i : spawns) {
@@ -399,7 +399,6 @@ public class Simulation extends JPanel {
         }
 
         g2d.setColor(Color.GRAY);
-        panelHeight = 200;
         g2d.fillRect(0, height - panelHeight, width, panelHeight);
 
         timeLabel.setBounds(10, height - panelHeight + 10, 100, 30);

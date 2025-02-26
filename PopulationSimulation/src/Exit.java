@@ -33,15 +33,15 @@ public class Exit {
         if (alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();
             double upperBound = location.getY() + size;
-            return agent.getLocation().getY() < upperBound + agent.getSize()
-                    && agent.getLocation().getY() > lowerBound - agent.getSize()
+            return agent.getLocation().getY() < upperBound - agent.getSize() + 1
+                    && agent.getLocation().getY() > lowerBound + agent.getSize() - 1
                     && agent.getLocation().getX() < location.getX() + agent.getSize() + 5
                     && agent.getLocation().getX() > location.getX() - agent.getSize() - 5;
         } else { // horizontal
-            double lowerBound = location.getX();
-            double upperBound = location.getX() + size;
-            return location.getX() < upperBound - agent.getSize()
-                    && agent.getLocation().getX() > lowerBound - agent.getSize()
+            double leftBound = location.getX();
+            double rightBound = location.getX() + size;
+            return location.getX() > leftBound - agent.getSize() + 1
+                    && agent.getLocation().getX() < rightBound + agent.getSize() - 1
                     && agent.getLocation().getY() < location.getY() + agent.getSize() + 5
                     && agent.getLocation().getY() > location.getY() - agent.getSize() - 5;
         }
