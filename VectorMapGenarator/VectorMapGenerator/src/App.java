@@ -1,18 +1,20 @@
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class App {
-    final int LENGTH = 110;
-    final int HEIGHT = 72;
-    private static final int[][] directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; //these set the {dx dy} for each possible jump in the BFS algo
+
+    final int LENGTH = 100;
+    final int HEIGHT = 50;
+    private static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; //these set the {dx dy} for each possible jump in the BFS algo
 
     public static void main(String[] args) throws Exception {
-        int[][] map = new int[110][72];
+        int[][] map = new int[100][50];
 
-        for (int x = 0; x < 110; x++) { 
-            for (int y = 0; y < 72; y++) {
+        for (int x = 0; x < 100; x++) {
+            for (int y = 0; y < 50; y++) {
                 map[x][y] = Integer.MAX_VALUE;
             }
         }
@@ -22,26 +24,14 @@ public class App {
         //         map[x][y] = -1;
         //     }
         // }
-
-        // door 1
-        for (int x = 44; x <= 45; x++) {
-            map[x][71] = 0;
+        for (int i = 45; i < 55; i++) {
+            map[i][0] = 0;
         }
 
-        // door 2
-        for (int y = 67; y <= 71; y++) {
-            map[0][y] = 0;
-        }
-
-        // door 4
-        for (int x = 18; x <= 19; x++) {
-            map[x][0] = 0;
-        }
-
-        // door 5
-
-        for (int x = 92; x <= 93; x++) {
-            map[x][0] = 0;
+        for (int x = 40; x < 60; x++) {
+            for (int y = 20; y < 30; y++) {
+                map[x][y] = -1;
+            }
         }
 
         // int[][] inputGrid = {
@@ -50,13 +40,12 @@ public class App {
         // { 1, 1, 1, 1 },
         // { 0, 1, 1, 0 }
         // };
-
         int[][] result = calculateDistances(map);
 
-        int [][] results = new int[72][110]; 
+        int[][] results = new int[50][100];
 
-        for (int i = 0; i < result.length; i++){
-            for (int j = 0; j < result[0].length; j++){
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
                 results[j][i] = result[i][j];
             }
         }
@@ -68,7 +57,6 @@ public class App {
         //     }
         //     System.out.println();
         // }
-
         try {
             exportToCSV(results, "vector_map.csv");
         } catch (IOException e) {
@@ -77,7 +65,6 @@ public class App {
 
         // starting with a zero. find all nearby squares without a number or a higher
         // number and set it to n + 1 where in is your squares number
-
     }
 
     public static int[][] calculateDistances(int[][] grid) {
@@ -116,7 +103,7 @@ public class App {
 
                     if (isValidPosition(grid, newRow, newCol) && !visited[newRow][newCol]) {
                         distances[newRow][newCol] = distances[currentPosition[0]][currentPosition[1]] + 1;
-                        queue.offer(new int[] { newRow, newCol });
+                        queue.offer(new int[]{newRow, newCol});
                         visited[newRow][newCol] = true;
                     }
                 }
@@ -131,7 +118,7 @@ public class App {
         for (int r = 0; r < grid.length; r++) {
             for (int c = 0; c < grid[0].length; c++) {
                 if (grid[r][c] == 0) {
-                    positions.add(new int[] { r, c });
+                    positions.add(new int[]{r, c});
                 }
             }
         }
