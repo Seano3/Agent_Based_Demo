@@ -149,21 +149,32 @@ public class RunSimulation {
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                if (attributes.length != 4) {
+                if (attributes.length != 5 && attributes.length != 1) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
                 }
 
                 try {
-                    int xCoord = Integer.parseInt(attributes[0]);
-                    double yCoord = Double.parseDouble(attributes[1]);
-                    double height = Double.parseDouble(attributes[2]);
-                    double width = Double.parseDouble(attributes[3]);
-
+                    String type = attributes[0];
                     Obstacle obj;
-                    Location location = new Location(xCoord, yCoord);
-
-                    obj = new Box(location, width, height);
+                    if (type.equalsIgnoreCase("walls")) {
+                        obj = new Box(new Location(0, 0), sim.width, sim.height - PANEL_HEIGHT);
+                    } else if (type.equalsIgnoreCase("box")) {
+                        double xCoord = Double.parseDouble(attributes[1]);
+                        double yCoord = Double.parseDouble(attributes[2]);
+                        double height = Double.parseDouble(attributes[3]);
+                        double width = Double.parseDouble(attributes[4]);
+                        obj = new Box(new Location(xCoord, yCoord), width, height);
+                    } else if (type.equalsIgnoreCase("line")) {
+                        double x1 = Double.parseDouble(attributes[1]);
+                        double y1 = Double.parseDouble(attributes[2]);
+                        double x2 = Double.parseDouble(attributes[3]);
+                        double y2 = Double.parseDouble(attributes[4]);
+                        obj = new Line(x1, y1, x2, y2);
+                    } else { // Unknown Type
+                        System.err.println("Invalid number of attributes in line: " + line);
+                        continue;
+                    }
                     sim.addObjs(obj);
                     //System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
@@ -173,14 +184,6 @@ public class RunSimulation {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-
-
-
-        // Simulation walls
-        //TODO: make this a toggle in one of the files (probably obstacles)
-        sim.addObstacle(new Box(new Location(0, 0), sim.width, sim.height - PANEL_HEIGHT));
-        sim.addObstacle(new Line(new Location((double) sim.width / 2, 0), new Location((double) sim.width / 2, sim.height)));
-        sim.addObstacle(new Line(0,(double) (sim.height- PANEL_HEIGHT) / 2, sim.width, (double) (sim.height - PANEL_HEIGHT) / 2));
 
         sim.toggleVectorMap(); // enable and regen vector map
         //Initialize Agents
