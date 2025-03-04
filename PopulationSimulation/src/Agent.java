@@ -21,9 +21,11 @@ public class Agent {
     private Color color;
     private int timeSinceLastWallCollision = 50;
     private boolean inSpawn = false;
+    private boolean firstSpawnBoundCheck = true;
     private int choiceMove;
     private double targetVelocity;
     private int Divisor = 1;
+
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -101,6 +103,10 @@ public class Agent {
 
     public boolean getInSpawn() {
         return inSpawn;
+    }
+
+    public void setFirstSpawnBoundCheck(boolean firstSpawnBoundCheck) {
+        this.firstSpawnBoundCheck = firstSpawnBoundCheck;
     }
 
     private void updateVelocity() {
@@ -217,8 +223,10 @@ public class Agent {
      */
     public void updateAgent(LinkedList< Agent> otherAgents, int frame, LinkedList<
         Exit> exits, LinkedList< Obstacle> obstacles) {
-        checkObstacles(obstacles, frame, exits);
-        choiceMove = 0;
+        if (!this.firstSpawnBoundCheck) {
+            checkObstacles(obstacles, frame, exits);
+            choiceMove = 0;
+        }
         checkAgents(otherAgents);
         updateCSV();
     }
