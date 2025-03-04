@@ -9,18 +9,20 @@ import java.util.Queue;
 
 public class vectorMapGen {
 
-    private int LENGTH;
-    private int HEIGHT;
+    private final int LENGTH;
+    private final int HEIGHT;
     private static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // these set the {dx dy} for each possible jump in the BFS algo
     private int[][] results;
     int[][] map;
+    int agentScale;
 
     private boolean inBounds(int x, int y) {
         return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
     }
-    int agentScale = 20;
+
 
     public vectorMapGen(Simulation sim) {
+        agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize()); // assumes agents are present, round up to prevent bugs
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
         map = new int[LENGTH][HEIGHT];
@@ -58,8 +60,8 @@ public class vectorMapGen {
                 int linePasses = 250;
                 int i = 0;
                 while (i < linePasses) {
-                    for (int j = (int) xIter - 5; j < (int) xIter + 5; j++) {
-                        for (int k = (int) yIter - 5; k < (int) yIter + 5; k++) {
+                    for (int j = (int) xIter - agentScale; j < (int) xIter + agentScale; j++) {
+                        for (int k = (int) yIter - agentScale; k < (int) yIter + agentScale; k++) {
                             if (inBounds(j, k)) {
                                 map[j][k] = -1;
                             }
@@ -73,7 +75,7 @@ public class vectorMapGen {
                     }
                 }
             } else if (Box.class.isAssignableFrom(OBS.getClass())) {
-                System.out.println("Missing box vector map calc!!!");
+                addBoxObsticle((Box) OBS);
             } else { // HOLY SHIT THIS IS BAD CAPTAIN THE SHIP IS GOING DOWN
                 System.exit(-1138);
             }
@@ -83,7 +85,7 @@ public class vectorMapGen {
             int xPos = (int) exit.getLocation().getX();
             int yPos = (int) exit.getLocation().getY();
             if (exit.getAlignment() == Exit.alignment.VERTICAL) {
-                for (int i = xPos - 5; i < xPos + 5; i++) {
+                for (int i = xPos - agentScale; i < xPos + agentScale; i++) {
                     for (int j = yPos + agentScale; j < yPos + exit.getSize() - agentScale; j++) {
                         if (inBounds(i, j)) {
                             if (exit.buildingExit) {
@@ -95,7 +97,7 @@ public class vectorMapGen {
                     }
                 }
             } else { // horizontal
-                for (int i = yPos - 5; i < yPos + 5; i++) {
+                for (int i = yPos - agentScale; i < yPos + agentScale; i++) {
                     for (int j = xPos + agentScale; j < xPos + exit.getSize() - agentScale; j++) {
                         if (inBounds(j, i)) {
                             if (exit.buildingExit) {
@@ -218,7 +220,7 @@ public class vectorMapGen {
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
                     for (int k = x + agentScale; k < x + size - agentScale; k++) {
-                        for (int j = -5; j < 5; j++) { //this for loop gets rid of the vector map buffer for each exits.
+                        for (int j = -agentScale; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                             if (inBounds(k, j)) {
                                 if (y == 0) {
                                     map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
@@ -232,7 +234,7 @@ public class vectorMapGen {
                 } else {
                     // System.out.println("Exit not building exit");
                     for (int k = x + agentScale; k < x + size - agentScale; k++) {
-                        for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
+                        for (int j = -agentScale; j < agentScale; j++) { //this for loop is the buffer zone on each side of the line.
                             map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                         }
                     }
@@ -243,7 +245,7 @@ public class vectorMapGen {
             // System.out.println("Vertical");
             if (exit.buildingExit) {
                 for (int k = y + agentScale; k < y + size - agentScale; k++) {
-                    for (int j = 0; j < 10; j++) { //this for loop gets rid of the vector map buffer for each exits.
+                    for (int j = 0; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                         if (inBounds(k, j)) {
                             if (x == 0) {
                                 map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
@@ -257,7 +259,7 @@ public class vectorMapGen {
             } else {
                 //  System.out.println("Exit not building exit");
                 for (int k = y + agentScale; k < y + size - agentScale; k++) {
-                    for (int j = -5; j < 5; j++) { //this for loop is the buffer zone on each side of the line. 
+                    for (int j = -agentScale; j < agentScale; j++) { //this for loop is the buffer zone on each side of the line.
                         map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
                     }
                 }

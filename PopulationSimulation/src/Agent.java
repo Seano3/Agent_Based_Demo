@@ -201,7 +201,7 @@ public class Agent {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
-        Divisor = 16;
+        Divisor = 8;
 
     }
 
