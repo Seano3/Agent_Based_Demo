@@ -133,13 +133,17 @@ public class Agent {
             // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
             //final int Divisor = 4;
+
+            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
+            Collections.sort(values);
+            if (values.contains(Integer.MAX_VALUE)) {
+                Divisor = 1;
+            }
+
             double transferedVelx = ((Math.abs(xVelocity) / Divisor));
             double transferedVely = ((Math.abs(yVelocity) / Divisor));
 
             double transferedVel = (transferedVelx + transferedVely);
-
-            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
-            Collections.sort(values);
 
             int smallest = values.get(choice);
 
@@ -159,39 +163,53 @@ public class Agent {
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
-                    // System.out.println("Going North");
+                    if(AgentID == 1)
+                        System.out.println("Going North");
                     yVelocity -= transferedVel;
                 } else if (smallest == south) {
-                    // System.out.println("Going South");
+                    if(AgentID == 1)
+                        System.out.println("Going South");
                     yVelocity += transferedVel;
                 } else if (smallest == west) {
-                    // System.out.println("Going West");
+                    if(AgentID == 1)
+                        System.out.println("Going West");
                     xVelocity -= transferedVel;
                 } else if (smallest == east) {
-                    // System.out.println("Going East");
+                    if(AgentID == 1)
+                        System.out.println("Going East");
                     xVelocity += transferedVel;
                 } else if (smallest == northEast) {
-                    // System.out.println("Going North East");
+                    if(AgentID == 1)
+                        System.out.println("Going North East");
                     yVelocity -= transferedVel / 2;
                     xVelocity += transferedVel / 2;
                 } else if (smallest == northWest) {
-                    // System.out.println("Going North West");
+                    if(AgentID == 1)
+                        System.out.println("Going North West");
                     yVelocity -= transferedVel / 2;
                     xVelocity -= transferedVel / 2;
                 } else if (smallest == southEast) {
-                    // System.out.println("Going South East");
+                    if(AgentID == 1)
+                        System.out.println("Going South East");
                     yVelocity += transferedVel / 2;
                     xVelocity += transferedVel / 2;
                 } else if (smallest == southWest) {
-                    // System.out.println("Going South West");
+                    if(AgentID == 1)
+                        System.out.println("Going South West");
                     yVelocity += transferedVel / 2;
                     xVelocity -= transferedVel / 2;
                 }
             }
 
-            double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude here
+            double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude
+            double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
-
+//            double scaleFactor;
+//            if (targetVelocity > 0 == currentDirection > 0) {
+//                scaleFactor = targetVelocity / currentMagnitude;
+//            } else {
+//                scaleFactor = currentMagnitude / targetVelocity;
+//            }
             xVelocity *= scaleFactor;
             yVelocity *= scaleFactor;
         }
@@ -207,8 +225,6 @@ public class Agent {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
         location.changePosition(newX, newY);
-        Divisor = 8;
-
     }
 
     /**
@@ -223,6 +239,8 @@ public class Agent {
      */
     public void updateAgent(LinkedList< Agent> otherAgents, int frame, LinkedList<
         Exit> exits, LinkedList< Obstacle> obstacles) {
+        if (collisions.isEmpty())
+            Divisor = 8;
         if (!this.firstSpawnBoundCheck) {
             checkObstacles(obstacles, frame, exits);
             choiceMove = 0;
@@ -264,7 +282,7 @@ public class Agent {
                 return false;
             }
         }
-
+        Divisor = 1;
         collisions.add(collision);
         // System.out.println("Adding Collision " + collision.GetID());
         return true;
@@ -280,6 +298,7 @@ public class Agent {
             if (collisions.get(i).removeFrame()) {
                 //System.out.println("Removing Collision " + collisions.get(i).GetID());
                 collisions.remove(i);
+                Divisor = 1;
             }
         }
     }
@@ -413,13 +432,16 @@ public class Agent {
 
                 if (distance < (i.getSize() + this.getSize())) {
                     if (choiceMove <= 7) {
+                        Divisor = 1;
                         choiceMove++;
+                        if (AgentID == 1)
+                            System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
                         checkAgents(otherAgents);
-                        //System.out.println(this.AgentID + " chose move " + choiceMove);
                         return;
                     } else {
-                        //System.out.println(AgentID + " is blocked");
-                        Divisor = 1;
+//                        if (AgentID == 1)
+//                            System.out.println(AgentID + " is blocked");
+                        choiceMove = 0;
                         return;
                     }
                 }

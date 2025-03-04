@@ -22,7 +22,7 @@ public class vectorMapGen {
 
 
     public vectorMapGen(Simulation sim) {
-        agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize()) + 1; // assumes agents are present, round up to prevent bugs
+        agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize() + 5); // assumes agents are present, round up to prevent bugs
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
         map = new int[LENGTH][HEIGHT];

@@ -44,9 +44,11 @@ public class Simulation extends JPanel {
     private boolean useVectorMap;
     private static String outputPath;
     private int NumberOfAgents;
+    private int spawnerAgentID;
 
     public Simulation(int width, int height) {
         NumberOfAgents = 0;
+        spawnerAgentID = 0;
         frame = 0;
         this.useVectorMap = false;
         setPreferredSize(new Dimension(width, height));
@@ -175,6 +177,7 @@ public class Simulation extends JPanel {
 
     }
 
+
     //TODO: fix this
     private void updateTimerLabel() {
         double hours = (elapsedTime / 3600000) % 24;
@@ -194,6 +197,7 @@ public class Simulation extends JPanel {
 
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
+        spawnerAgentID = agents.size();
         map = new vectorMapGen(this);
         if (useVectorMap) {
             map = new vectorMapGen(this);
@@ -281,6 +285,10 @@ public class Simulation extends JPanel {
         agentCountLabel.setText("Agents: " + totalAgents);
     }
 
+    private int updateSpawnerID() {
+        return spawnerAgentID++;
+    }
+
     /**
      * <p>
      * Updates the simulation each frame </p>
@@ -294,7 +302,7 @@ public class Simulation extends JPanel {
         for (Spawn spawn : spawns) {
             if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval() && spawn.getIsActivelySpawning() && (spawn.getSpawnNumber() != 0) && (spawn.getSpawnDelay() < frame)) {
                 // Spawn a new agent
-                Agent newAgent = new Agent(totalAgents, spawn.getSpawnAgentSize(), spawn.getCenterLocation().getX(), spawn.getCenterLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
+                Agent newAgent = new Agent(updateSpawnerID(), spawn.getSpawnAgentSize(), spawn.getCenterLocation().getX(), spawn.getCenterLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
                 addAgent(newAgent, true);
                 spawn.setLastSpawnFrame(frame);
                 spawn.setSpawnNumber(spawn.getSpawnNumber() - 1);
@@ -325,7 +333,7 @@ public class Simulation extends JPanel {
         debugCSV();
         generateCSV(agents.size(), this);
         generateEscapeRateCSV(agents.size(), this);
-        System.out.println("Agents Remaingng: " + agents.size());
+//        System.out.println("Agents Remaingng: " + agents.size());
     }
 
     /**
@@ -372,7 +380,7 @@ public class Simulation extends JPanel {
 
                 } else {
                     j.setInSpawn(false);
-                    System.out.println("Agent " + j.AgentID + " is not in spawn");
+                    //System.out.println("Agent " + j.AgentID + " is not in spawn");
                     j.setFirstSpawnBoundCheck(false);
                 }
             }
