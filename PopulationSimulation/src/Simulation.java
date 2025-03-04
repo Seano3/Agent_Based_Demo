@@ -369,9 +369,11 @@ public class Simulation extends JPanel {
             for (Agent j : agents) {
                 if (i.inSpawn(j)) {
                     j.setInSpawn(true);
+
                 } else {
                     j.setInSpawn(false);
                     System.out.println("Agent " + j.AgentID + " is not in spawn");
+                    j.setFirstSpawnBoundCheck(false);
                 }
             }
 
