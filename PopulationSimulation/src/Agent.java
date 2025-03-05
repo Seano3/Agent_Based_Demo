@@ -25,7 +25,9 @@ public class Agent {
     private int choiceMove;
     private double targetVelocity;
     private int Divisor = 1;
-
+    private int lastDirection;
+    private int direction;
+    private int scaleBuffer;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -39,6 +41,7 @@ public class Agent {
      * @param sim Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
+        scaleBuffer = 0;
         AgentID = name;
         choiceMove = 0;
         this.size = size;
@@ -133,7 +136,6 @@ public class Agent {
             // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
             // System.out.println("X " + xMeter + " Y " + yMeter);
             //final int Divisor = 4;
-
             List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
             Collections.sort(values);
             if (values.contains(Integer.MAX_VALUE)) {
@@ -163,41 +165,57 @@ public class Agent {
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going North");
+                    }
                     yVelocity -= transferedVel;
+                    direction = 1;
                 } else if (smallest == south) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going South");
+                    }
                     yVelocity += transferedVel;
+                    direction = -1;
                 } else if (smallest == west) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going West");
+                    }
                     xVelocity -= transferedVel;
+                    direction = 2;
                 } else if (smallest == east) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going East");
+                    }
                     xVelocity += transferedVel;
+                    direction = -2;
                 } else if (smallest == northEast) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going North East");
+                    }
                     yVelocity -= transferedVel / 2;
                     xVelocity += transferedVel / 2;
+                    direction = 3;
                 } else if (smallest == northWest) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going North West");
+                    }
                     yVelocity -= transferedVel / 2;
                     xVelocity -= transferedVel / 2;
+                    direction = 4;
                 } else if (smallest == southEast) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going South East");
+                    }
                     yVelocity += transferedVel / 2;
                     xVelocity += transferedVel / 2;
+                    direction = -4;
                 } else if (smallest == southWest) {
-                    if(AgentID == 1)
+                    if (AgentID == 1) {
                         System.out.println("Going South West");
+                    }
                     yVelocity += transferedVel / 2;
                     xVelocity -= transferedVel / 2;
+                    direction = -3;
                 }
             }
 
@@ -210,9 +228,18 @@ public class Agent {
 //            } else {
 //                scaleFactor = currentMagnitude / targetVelocity;
 //            }
-            xVelocity *= scaleFactor;
-            yVelocity *= scaleFactor;
+            if (lastDirection == -direction) {
+                scaleBuffer = 10;
+            } else {
+                scaleBuffer--;
+            }
+            if (scaleBuffer == 0 || true) {
+                xVelocity *= scaleFactor;
+                yVelocity *= scaleFactor;
+            }
+            lastDirection = direction;
         }
+
     }
 
     /**
@@ -239,8 +266,9 @@ public class Agent {
      */
     public void updateAgent(LinkedList< Agent> otherAgents, int frame, LinkedList<
         Exit> exits, LinkedList< Obstacle> obstacles) {
-        if (collisions.isEmpty())
+        if (collisions.isEmpty()) {
             Divisor = 8;
+        }
         if (!this.firstSpawnBoundCheck) {
             checkObstacles(obstacles, frame, exits);
             choiceMove = 0;
@@ -430,12 +458,13 @@ public class Agent {
                 double dy = i.getLocation().getY() - newY;
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < (i.getSize() + this.getSize())) {
+                if (distance < (i.getSize() + this.getSize() - this.size)) {
                     if (choiceMove <= 7) {
                         Divisor = 1;
                         choiceMove++;
-                        if (AgentID == 1)
+                        if (AgentID == 1) {
                             System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
+                        }
                         checkAgents(otherAgents);
                         return;
                     } else {
