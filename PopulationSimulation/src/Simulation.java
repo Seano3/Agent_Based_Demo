@@ -395,6 +395,7 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             if (i.inExit(exits) != null) {
+                i.inAnyExit = true;
                 if (i.inExit(exits).buildingExit) {
                     i.inExit = true;
                 }
@@ -402,6 +403,7 @@ public class Simulation extends JPanel {
             } else if (i.getInSpawn()) {
                 g2d.setColor(Color.BLUE);
             } else {
+                i.inAnyExit = false;
                 i.inExit = false;
                 g2d.setColor(i.getColor());
             }

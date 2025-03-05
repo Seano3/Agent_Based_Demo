@@ -29,6 +29,8 @@ public class Agent {
     private int yDirection;
     private int scaleBuffer;
     public boolean inExit;
+    public boolean inAnyExit;
+    private int scanningAgent = 3;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -170,31 +172,35 @@ public class Agent {
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going North");
                     }
                     yVelocity -= transferedVel;
-                    xDirection = 1;
+                    xDirection = -1;
+                    yDirection = 0;
                 } else if (smallest == south) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going South");
                     }
                     yVelocity += transferedVel;
-                    yDirection = -1;
+                    yDirection = 1;
+                    xDirection = 0;
                 } else if (smallest == west) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going West");
                     }
                     xVelocity -= transferedVel;
                     xDirection = -1;
+                    yDirection = 0;
                 } else if (smallest == east) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going East");
                     }
                     xVelocity += transferedVel;
-                    xDirection = 21;
+                    xDirection = 1;
+                    yDirection = 0;
                 } else if (smallest == northEast) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going North East");
                     }
                     yVelocity -= transferedVel / 2;
@@ -202,7 +208,7 @@ public class Agent {
                     yDirection = -1;
                     xDirection = 1;
                 } else if (smallest == northWest) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going North West");
                     }
                     yVelocity -= transferedVel / 2;
@@ -210,7 +216,7 @@ public class Agent {
                     xDirection = -1;
                     yDirection = -1;
                 } else if (smallest == southEast) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going South East");
                     }
                     yVelocity += transferedVel / 2;
@@ -218,7 +224,7 @@ public class Agent {
                     xDirection = 1;
                     yDirection = 1;
                 } else if (smallest == southWest) {
-                    if (AgentID == 0) {
+                    if (AgentID == scanningAgent) {
                         System.out.println("Going South West");
                     }
                     yVelocity += transferedVel / 2;
@@ -235,23 +241,35 @@ public class Agent {
             scaleXVelocity(scaleFactor);
             scaleYVelocity(scaleFactor);
 
-            if (AgentID == 0) {
+            if (AgentID == scanningAgent) {
                 System.out.println("X: " + xVelocity + " Y: " + yVelocity);
                 System.out.println("Scale Factor " + scaleFactor + " Target Velocity " + targetVelocity + " Current Magnitude " + currentMagnitude);
+            }
+
+            if (xVelocity + yVelocity < targetVelocity / Divisor) {
+                Divisor = 1;
             }
         }
 
     }
 
     private void scaleXVelocity(double scaleFactor) {
-        if (isSameSine(xDirection, xVelocity) || (xVelocity < 0.1 && xVelocity > -0.1) || inExit) {
+        if (isSameSine(xDirection, xVelocity) || (xVelocity < 1 && xVelocity > -1) || inExit || inSpawn) {
+            if (AgentID == scanningAgent) {
+                System.out.println("Scaling X");
+            }
             xVelocity *= scaleFactor;
+            return;
         }
     }
 
     private void scaleYVelocity(double scaleFactor) {
-        if (isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit) {
+        if (isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit || inSpawn) {
+            if (AgentID == scanningAgent) {
+                System.out.println("Scaling Y");
+            }
             yVelocity *= scaleFactor;
+            return;
         }
     }
 
@@ -471,17 +489,17 @@ public class Agent {
                 double dy = i.getLocation().getY() - newY;
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < (i.getSize() + this.getSize())) {
+                if (distance < ((i.getSize() + this.getSize()))) {
                     if (choiceMove <= 7) {
                         Divisor = 1;
                         choiceMove++;
-                        if (AgentID == 0) {
+                        if (AgentID == scanningAgent) {
                             System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
                         }
                         checkAgents(otherAgents);
                         return;
                     } else {
-                        if (AgentID == 0) {
+                        if (AgentID == scanningAgent) {
                             System.out.println(AgentID + " is blocked");
                         }
                         choiceMove = 0;
