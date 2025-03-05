@@ -234,6 +234,7 @@ public class Simulation extends JPanel {
             double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
             agent.setLocation(new Location(centerX, centerY));*/
+                agent.setFirstSpawnBoundCheck(true);
                 double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
 
                 if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
@@ -256,6 +257,7 @@ public class Simulation extends JPanel {
                     }
                 }
             } else if (closestExit != null) {
+                agent.setFirstSpawnBoundCheck(false);
                 System.out.println("Normal");
                 double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
                 double xMagnitude = agent.getXVelocity() * agent.getXVelocity();

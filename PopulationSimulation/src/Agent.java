@@ -21,7 +21,7 @@ public class Agent {
     private Color color;
     private int timeSinceLastWallCollision = 50;
     private boolean inSpawn = false;
-    private boolean firstSpawnBoundCheck = true;
+    private boolean firstSpawnBoundCheck;
     private int choiceMove;
     private double targetVelocity;
     private int Divisor = 1;
