@@ -31,6 +31,7 @@ public class Agent {
     public boolean inExit;
     public boolean inAnyExit;
     private int scanningAgent = 3;
+    private int blockedTimer;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -45,6 +46,7 @@ public class Agent {
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         scaleBuffer = 0;
+        blockedTimer = 0;
         AgentID = name;
         inExit = false;
         choiceMove = 0;
@@ -116,7 +118,7 @@ public class Agent {
         this.firstSpawnBoundCheck = firstSpawnBoundCheck;
     }
 
-    private void updateVelocity() {
+    private void updateVelocity(boolean scaleOveride) {
         int choice = choiceMove;
         //Change to find the choice lowest that is both unoccupied
         int yMeter = (int) location.getY();
@@ -238,8 +240,8 @@ public class Agent {
             double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
 
-            scaleXVelocity(scaleFactor);
-            scaleYVelocity(scaleFactor);
+            scaleXVelocity(scaleFactor, scaleOveride);
+            scaleYVelocity(scaleFactor, scaleOveride);
 
             if (AgentID == scanningAgent) {
                 System.out.println("X: " + xVelocity + " Y: " + yVelocity);
@@ -253,8 +255,8 @@ public class Agent {
 
     }
 
-    private void scaleXVelocity(double scaleFactor) {
-        if (isSameSine(xDirection, xVelocity) || (xVelocity < 1 && xVelocity > -1) || inExit || inSpawn) {
+    private void scaleXVelocity(double scaleFactor, boolean scaleOveride) {
+        if (scaleOveride || isSameSine(xDirection, xVelocity) || (xVelocity < 1 && xVelocity > -1) || inExit || inSpawn) {
             if (AgentID == scanningAgent) {
                 System.out.println("Scaling X");
             }
@@ -263,8 +265,8 @@ public class Agent {
         }
     }
 
-    private void scaleYVelocity(double scaleFactor) {
-        if (isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit || inSpawn) {
+    private void scaleYVelocity(double scaleFactor, boolean scaleOveride) {
+        if (scaleOveride || isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit || inSpawn) {
             if (AgentID == scanningAgent) {
                 System.out.println("Scaling Y");
             }
@@ -480,7 +482,7 @@ public class Agent {
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
 
-        updateVelocity();
+        updateVelocity(false);
 
         for (Agent i : otherAgents) {
             // System.out.println(i.AgentID != this.AgentID);
@@ -501,6 +503,13 @@ public class Agent {
                     } else {
                         if (AgentID == scanningAgent) {
                             System.out.println(AgentID + " is blocked");
+                        }
+                        //blockedTimer++;
+                        if (blockedTimer > 10) {
+                            choiceMove = 0;
+                            updateVelocity(true);
+                            updateLocation();
+                            return;
                         }
                         choiceMove = 0;
                         return;
