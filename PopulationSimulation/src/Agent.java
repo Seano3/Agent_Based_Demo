@@ -30,7 +30,7 @@ public class Agent {
     private int scaleBuffer;
     public boolean inExit;
     public boolean inAnyExit;
-    private int scanningAgent = 3;
+    private int scanningAgent = 1;
     private int blockedTimer;
 
     /**
@@ -281,6 +281,7 @@ public class Agent {
      * acceleration it may have</p>
      */
     public void updateLocation() {
+        scaleBuffer = 0;
         timeSinceLastWallCollision++;
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
@@ -479,10 +480,12 @@ public class Agent {
      * @param otherAgents an array of all other agents in the simulation
      */
     private void checkAgents(LinkedList< Agent> otherAgents) {
+        //Divisor = 1;
+        updateVelocity(false);
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
-
-        updateVelocity(false);
+        //Divisor = 8;
+        //updateVelocity(false);
 
         for (Agent i : otherAgents) {
             // System.out.println(i.AgentID != this.AgentID);
@@ -504,14 +507,14 @@ public class Agent {
                         if (AgentID == scanningAgent) {
                             System.out.println(AgentID + " is blocked");
                         }
-                        //blockedTimer++;
+                        blockedTimer++;
                         if (blockedTimer > 10) {
                             choiceMove = 0;
-                            updateVelocity(true);
-                            updateLocation();
-                            return;
+                            blockedTimer = 0;
+                            //scaleBuffer = (int) this.size / 4;
+                        } else {
+                            choiceMove = 0;
                         }
-                        choiceMove = 0;
                         return;
                     }
                 }
