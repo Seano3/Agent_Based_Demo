@@ -25,10 +25,10 @@ public class Agent {
     private int choiceMove;
     private double targetVelocity;
     private int Divisor = 1;
-    private int lastDirection;
     private int xDirection;
     private int yDirection;
     private int scaleBuffer;
+    public boolean inExit;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -44,6 +44,7 @@ public class Agent {
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         scaleBuffer = 0;
         AgentID = name;
+        inExit = false;
         choiceMove = 0;
         this.size = size;
         targetVelocity = size * 1.25 / 0.255; // replicate human walking speed based on average person
@@ -243,13 +244,13 @@ public class Agent {
     }
 
     private void scaleXVelocity(double scaleFactor) {
-        if (isSameSine(xDirection, xVelocity) || (xVelocity < 0.1 && xVelocity > -0.1)) {
+        if (isSameSine(xDirection, xVelocity) || (xVelocity < 0.1 && xVelocity > -0.1) || inExit) {
             xVelocity *= scaleFactor;
         }
     }
 
     private void scaleYVelocity(double scaleFactor) {
-        if (isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1)) {
+        if (isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit) {
             yVelocity *= scaleFactor;
         }
     }

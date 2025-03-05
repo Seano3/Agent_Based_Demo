@@ -177,7 +177,6 @@ public class Simulation extends JPanel {
 
     }
 
-
     //TODO: fix this
     private void updateTimerLabel() {
         double hours = (elapsedTime / 3600000) % 24;
@@ -223,14 +222,14 @@ public class Simulation extends JPanel {
         Exit closestExit = findClosestExit(agent.getLocation());
         Spawn closestSpawn = findClosestSpawn(agent.getLocation());
 
-        if(vectorMapEnabled()) {
+        if (vectorMapEnabled()) {
             // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
             if (closestSpawn != null) {
                 agent.setInSpawn(closestSpawn.inSpawn(agent));
             }
 
             if (isSpawned && closestSpawn != null) {
-            /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
+                /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
             double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
             agent.setLocation(new Location(centerX, centerY));*/
@@ -396,10 +395,14 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             if (i.inExit(exits) != null) {
+                if (i.inExit(exits).buildingExit) {
+                    i.inExit = true;
+                }
                 g2d.setColor(Color.RED);
             } else if (i.getInSpawn()) {
                 g2d.setColor(Color.BLUE);
             } else {
+                i.inExit = false;
                 g2d.setColor(i.getColor());
             }
             g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
