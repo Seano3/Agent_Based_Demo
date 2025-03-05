@@ -26,7 +26,8 @@ public class Agent {
     private double targetVelocity;
     private int Divisor = 1;
     private int lastDirection;
-    private int direction;
+    private int xDirection;
+    private int yDirection;
     private int scaleBuffer;
 
     /**
@@ -165,81 +166,88 @@ public class Agent {
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going North");
                     }
                     yVelocity -= transferedVel;
-                    direction = 1;
+                    xDirection = 1;
                 } else if (smallest == south) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going South");
                     }
                     yVelocity += transferedVel;
-                    direction = -1;
+                    yDirection = -1;
                 } else if (smallest == west) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going West");
                     }
                     xVelocity -= transferedVel;
-                    direction = 2;
+                    xDirection = -1;
                 } else if (smallest == east) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going East");
                     }
                     xVelocity += transferedVel;
-                    direction = -2;
+                    xDirection = 21;
                 } else if (smallest == northEast) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going North East");
                     }
                     yVelocity -= transferedVel / 2;
                     xVelocity += transferedVel / 2;
-                    direction = 3;
+                    yDirection = -1;
+                    xDirection = 1;
                 } else if (smallest == northWest) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going North West");
                     }
                     yVelocity -= transferedVel / 2;
                     xVelocity -= transferedVel / 2;
-                    direction = 4;
+                    xDirection = -1;
+                    yDirection = -1;
                 } else if (smallest == southEast) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going South East");
                     }
                     yVelocity += transferedVel / 2;
                     xVelocity += transferedVel / 2;
-                    direction = -4;
+                    xDirection = 1;
+                    yDirection = 1;
                 } else if (smallest == southWest) {
-                    if (AgentID == 1) {
+                    if (AgentID == 3) {
                         System.out.println("Going South West");
                     }
                     yVelocity += transferedVel / 2;
                     xVelocity -= transferedVel / 2;
-                    direction = -3;
+                    xDirection = -1;
+                    yDirection = 1;
                 }
             }
 
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude
             double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
-//            double scaleFactor;
-//            if (targetVelocity > 0 == currentDirection > 0) {
-//                scaleFactor = targetVelocity / currentMagnitude;
-//            } else {
-//                scaleFactor = currentMagnitude / targetVelocity;
-//            }
-            if (lastDirection == -direction) {
-                scaleBuffer = 10;
-            } else {
-                scaleBuffer--;
+
+            scaleXVelocity(scaleFactor);
+            scaleYVelocity(scaleFactor);
+
+            if (AgentID == 3) {
+                System.out.println("X: " + xVelocity + " Y: " + yVelocity);
             }
-            if (scaleBuffer == 0 || true) {
-                xVelocity *= scaleFactor;
-                yVelocity *= scaleFactor;
-            }
-            lastDirection = direction;
         }
 
+    }
+
+    private void scaleXVelocity(double scaleFactor) {
+        if (isSameSine(xDirection, xVelocity)) {
+            xVelocity *= scaleFactor;
+        }
+    }
+
+    private void scaleYVelocity(double scaleFactor) {
+        if (isSameSine(yDirection, yVelocity)) {
+            yVelocity *= scaleFactor;
+        }
     }
 
     /**
@@ -458,18 +466,19 @@ public class Agent {
                 double dy = i.getLocation().getY() - newY;
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < (i.getSize() + this.getSize() - this.size)) {
+                if (distance < (i.getSize() + this.getSize())) {
                     if (choiceMove <= 7) {
                         Divisor = 1;
                         choiceMove++;
-                        if (AgentID == 1) {
+                        if (AgentID == 3) {
                             System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
                         }
                         checkAgents(otherAgents);
                         return;
                     } else {
-//                        if (AgentID == 1)
-//                            System.out.println(AgentID + " is blocked");
+                        if (AgentID == 3) {
+                            System.out.println(AgentID + " is blocked");
+                        }
                         choiceMove = 0;
                         return;
                     }
@@ -517,5 +526,9 @@ public class Agent {
             // System.out.println("Increasing " + value + " by " + reduction + " to " + valueModified);
         }
         return valueModified;
+    }
+
+    private boolean isSameSine(double value1, double value2) {
+        return (value1 > 0) == (value2 > 0);
     }
 }
