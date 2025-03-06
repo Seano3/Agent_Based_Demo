@@ -10,13 +10,10 @@ public class Agent {
     private double size;
     private double xVelocity;
     private double yVelocity;
-    private double checkXVelocity;
-    private double checkYVelocity;
     private Location location;
     private List<Collision> collisions;
     private Simulation sim;
     private String csvName;
-    private String folder;
     private final double TIME_STEP = 0.01;
     private Color color;
     private int timeSinceLastWallCollision = 50;
@@ -27,7 +24,6 @@ public class Agent {
     private int Divisor = 1;
     private int xDirection;
     private int yDirection;
-    private int scaleBuffer;
     public boolean inExit;
     public boolean inAnyExit;
     private int scanningAgent = -1;
@@ -45,7 +41,6 @@ public class Agent {
      * @param sim Passthrough of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
-        scaleBuffer = 0;
         blockedTimer = 0;
         AgentID = name;
         inExit = false;
@@ -152,7 +147,7 @@ public class Agent {
                 //System.out.println("Agent " + AgentID + " is at door");
                 return;
             }
-            
+
             if (smallest == Integer.MAX_VALUE) {
                 choiceMove = 8;
                 return;
@@ -285,7 +280,6 @@ public class Agent {
      * acceleration it may have</p>
      */
     public void updateLocation() {
-        scaleBuffer = 0;
         timeSinceLastWallCollision++;
         double newX = location.getX() + (xVelocity * TIME_STEP);
         double newY = location.getY() + (yVelocity * TIME_STEP);
