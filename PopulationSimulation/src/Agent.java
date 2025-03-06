@@ -30,7 +30,7 @@ public class Agent {
     private int scaleBuffer;
     public boolean inExit;
     public boolean inAnyExit;
-    private int scanningAgent = 1;
+    private int scanningAgent = 6;
     private int blockedTimer;
 
     /**
@@ -159,6 +159,10 @@ public class Agent {
             }
 
             if (values.contains(Integer.MAX_VALUE)) {
+                Divisor = 1;
+            }
+
+            if (Math.abs(xVelocity) + Math.abs(yVelocity) < targetVelocity / 5) {
                 Divisor = 1;
             }
 
