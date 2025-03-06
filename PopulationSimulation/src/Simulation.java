@@ -248,16 +248,16 @@ public class Simulation extends JPanel {
                     if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
                         agent.setXVelocity(-initialVelocityMagnitude);
                         agent.setYVelocity(0);
-                        System.out.println("Left");
+                        //System.out.println("Left");
                     } else {
                         agent.setXVelocity(initialVelocityMagnitude);
                         agent.setYVelocity(0);
-                        System.out.println("Right");
+                        //System.out.println("Right");
                     }
                 }
             } else if (closestExit != null) {
                 agent.setFirstSpawnBoundCheck(false);
-                System.out.println("Normal");
+                //System.out.println("Normal");
                 double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
                 double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
                 double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
@@ -582,7 +582,7 @@ public class Simulation extends JPanel {
         double minDistance = Double.MAX_VALUE;
 
         for (Spawn spawn : spawns) {
-            System.out.println("Spawn works");
+            //System.out.println("Spawn works");
             double distance = distanceTo(location, spawn.getLocation());
             if (distance < minDistance) {
                 minDistance = distance;

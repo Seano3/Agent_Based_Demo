@@ -30,7 +30,7 @@ public class Agent {
     private int scaleBuffer;
     public boolean inExit;
     public boolean inAnyExit;
-    private int scanningAgent = 6;
+    private int scanningAgent = -1;
     private int blockedTimer;
 
     /**
@@ -149,10 +149,10 @@ public class Agent {
 
             if (smallest == 0) {
                 //updateLocation();
-                System.out.println("Agent " + AgentID + " is at door");
+                //System.out.println("Agent " + AgentID + " is at door");
                 return;
             }
-
+            
             if (smallest == Integer.MAX_VALUE) {
                 choiceMove = 8;
                 return;
