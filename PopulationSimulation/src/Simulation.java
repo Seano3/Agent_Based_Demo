@@ -46,6 +46,12 @@ public class Simulation extends JPanel {
     private int NumberOfAgents;
     private int spawnerAgentID;
 
+    /**
+     * <p> Constructor for the Simulation class </p>
+     *
+     * @param width Width of the simulation panel in pixels
+     * @param height Height of the simulation panel in pixels
+     */
     public Simulation(int width, int height) {
         NumberOfAgents = 0;
         spawnerAgentID = 0;
@@ -194,6 +200,9 @@ public class Simulation extends JPanel {
         return useVectorMap;
     }
 
+    /**
+     * <p> Toggles the vector map on and off </p>
+     */
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
         spawnerAgentID = agents.size();
@@ -207,16 +216,32 @@ public class Simulation extends JPanel {
         }
     }
 
+    /**
+     * <p> Adds an exit to the simulation </p>
+     *
+     * @param exit Exit object to add
+     */
     public void addExit(Exit exit) { // no need to remove exits
         exits.add(exit);
         totalExits++;
     }
 
+    /**
+     * <p> Adds a spawn to the simulation </p>
+     *
+     * @param spawn Spawn object to add
+     */
     public void addSpawn(Spawn spawn) {
         spawns.add(spawn);
         totalSpawns++;
     }
 
+    /**
+     * <p> Adds an agent to the simulation </p>
+     *
+     * @param agent Agent object to add
+     * @param isSpawned boolean to determine if the agent is spawned from a spawner or not
+     */
     public void addAgent(Agent agent, boolean isSpawned) {
         NumberOfAgents++;
         Exit closestExit = findClosestExit(agent.getLocation());
@@ -272,6 +297,11 @@ public class Simulation extends JPanel {
         agentCountLabel.setText("Agents: " + totalAgents);
     }
 
+    /**
+     * <p> Adds an obstacle to the simulation </p>
+     *
+     * @param obj Obstacle object to add
+     */
     public void addObjs(Obstacle obj) {
         obstacles.add(obj);
     }
@@ -280,12 +310,22 @@ public class Simulation extends JPanel {
         obstacles.add(obstacle);
     }
 
+    /**
+     * <p> Removes an agent from the simulation </p>
+     *
+     * @param agent Agent object to remove
+     */
     public void removeAgent(Agent agent) {
         agents.remove(agent);
         totalAgents--;
         agentCountLabel.setText("Agents: " + totalAgents);
     }
 
+    /**
+     * Updates the spawner ID for the simulation by incrementing it by 1
+     *
+     * @return The updated spawner ID
+     */
     private int updateSpawnerID() {
         return spawnerAgentID++;
     }
@@ -499,6 +539,9 @@ public class Simulation extends JPanel {
         }
     }
 
+    /**
+     * <p> Clears the escape rate CSV file </p>
+     */
     private void clearEscapeRateCSV() {
         String csvFile = "escape-rate.csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile))) {
@@ -508,6 +551,12 @@ public class Simulation extends JPanel {
         }
     }
 
+    /**
+     * <p> Generates the escape rate CSV file </p>
+     *
+     * @param numAgents number of agents in the sim
+     * @param sim Passthrough the simulation
+     */
     public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
         String csvFile = "escape-rate.csv";
         int frame = sim.frame;
@@ -561,6 +610,12 @@ public class Simulation extends JPanel {
         return totalKE;
     }
 
+    /**
+     * <p>Finds the closest exit to the inputted location</p>
+     *
+     * @param location Location to input
+     * @return Closest exit to location
+     */
     private Exit findClosestExit(Location location) {
         Exit closestExit = null;
         double minDistance = Double.MAX_VALUE;
@@ -577,6 +632,12 @@ public class Simulation extends JPanel {
         return closestExit;
     }
 
+    /**
+     * <p>Finds the closest spawn to the inputted location</p>
+     *
+     * @param location Location to input
+     * @return Closest spawn to location
+     */
     private Spawn findClosestSpawn(Location location) {
         Spawn closestSpawn = null;
         double minDistance = Double.MAX_VALUE;
@@ -593,12 +654,26 @@ public class Simulation extends JPanel {
         return closestSpawn;
     }
 
+    /**
+     * <p>Calculates the distance between two locations</p>
+     *
+     * @param start Location to start from
+     * @param finish Location to finish at
+     * @return Distance between start and finish in pixels
+     */
     private double distanceTo(Location start, Location finish) {
         double dx = start.getX() - finish.getX();
         double dy = start.getY() - finish.getY();
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    /**
+     * <p>Calculates the direction vector between two locations</p>
+     *
+     * @param agentLocation Location of the agent
+     * @param exitLocation Location of the exit
+     * @return Direction vector between agent and exit
+     */
     private double[] calculateDirectionVector(Location agentLocation, Location exitLocation) {
         double dx = exitLocation.getX() - agentLocation.getX();
         double dy = exitLocation.getY() - agentLocation.getY();
@@ -606,6 +681,9 @@ public class Simulation extends JPanel {
         return new double[]{dx / magnitude, dy / magnitude};
     }
 
+    /**
+     * <p>Generates the vector map for the simulation</p>
+     */
     public void VectorMapGeneration() {
         vectorMap = map.calculateMap();
     }

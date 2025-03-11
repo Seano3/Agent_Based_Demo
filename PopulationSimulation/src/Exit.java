@@ -10,6 +10,14 @@ public class Exit {
     private Location location; //topmost or leftmost point --- use negative size to extend right or down
     public boolean buildingExit;
 
+    /**
+     * This is the class used to create exit points for agents
+     *
+     * @param size Length of Exit in pixels
+     * @param location Topmost or leftmost point of Exit
+     * @param alignment Vertical or Horizontal, 0 for vertical, 1 for horizontal
+     * @param buildingExit Whether the exit is a building exit or not
+     */
     public Exit(int size, Location location, Exit.alignment alignment, boolean buildingExit) {
         this.buildingExit = buildingExit;
         this.size = size;
@@ -29,6 +37,12 @@ public class Exit {
         return location;
     }
 
+    /**
+     * Checks if an agent is in the exit area
+     *
+     * @param agent Agent to check
+     * @return True if agent is in exit area and false if not
+     */
     public boolean inExit(Agent agent) {
         if (alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();

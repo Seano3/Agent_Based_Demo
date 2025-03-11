@@ -21,6 +21,12 @@ public class Location {
         return "(" + xCord + ", " + yCord + ")";
     }
 
+    /**
+     * This method calculates the distance between two locations
+     *
+     * @param loc Location to compare to
+     * @return Distance between the two locations
+     */
     public double getDistance(Location loc){
         double xComponent = loc.getX() - xCord;
         double yComponent = loc.getY() - yCord;

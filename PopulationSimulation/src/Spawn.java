@@ -16,6 +16,21 @@ public class Spawn {
     private double spawnAgentYVelocity;
     private boolean isActivelySpawning;
 
+    /**
+     * This is the class used to create spawn points for agents
+     *
+     * @param size Length of Spawn in pixels
+     * @param location Topmost or leftmost point of Spawn
+     * @param alignment Vertical or Horizontal, 0 for vertical, 1 for horizontal
+     * @param spawnRateInterval Number of frames between spawns
+     * @param spawnAgentSize Size of spawned agents
+     * @param spawnAgentXVelocity X velocity of spawned agents
+     * @param spawnAgentYVelocity Y velocity of spawned agents
+     * @param direction Direction spawning takes place relative to center of spawn, 0 for left or up, 1 for right or down
+     * @param spawnDelay Number of frames before first spawn
+     * @param spawnNumber Number of agents to spawn, -1 for infinite
+     */
+
     public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity, Spawn.direction direction, int spawnDelay ,int spawnNumber) {
         this.size = size;
         this.location = location;
@@ -90,6 +105,12 @@ public class Spawn {
         this.isActivelySpawning = isActivelySpawning;
     }
 
+    /**
+     * Checks if an agent is in the spawn area
+     *
+     * @param agent Agent to check
+     * @return True if agent is in spawn area and false if not
+     */
     public boolean inSpawn(Agent agent) {
         if(alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();

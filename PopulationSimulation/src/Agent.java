@@ -113,6 +113,11 @@ public class Agent {
         this.firstSpawnBoundCheck = firstSpawnBoundCheck;
     }
 
+    /**
+     * <p> Updates the velocity of the agent based on the vector map </p>
+     *
+     * @param scaleOveride boolean to override the scaling of the velocity
+     */
     private void updateVelocity(boolean scaleOveride) {
         int choice = choiceMove;
         //Change to find the choice lowest that is both unoccupied
@@ -254,6 +259,12 @@ public class Agent {
 
     }
 
+    /**
+     * <p> Scales the X velocity of the agent based on the scale factor and the current velocity</p>
+     *
+     * @param scaleFactor The scale factor to multiply the velocity by
+     * @param scaleOveride boolean to override the scaling of the velocity
+     */
     private void scaleXVelocity(double scaleFactor, boolean scaleOveride) {
         if (scaleOveride || isSameSine(xDirection, xVelocity) || (xVelocity < 1 && xVelocity > -1) || inExit || inSpawn) {
             if (AgentID == scanningAgent) {
@@ -264,6 +275,12 @@ public class Agent {
         }
     }
 
+    /**
+     * <p> Scales the Y velocity of the agent based on the scale factor and the current velocity</p>
+     *
+     * @param scaleFactor The scale factor to multiply the velocity by
+     * @param scaleOveride boolean to override the scaling of the velocity
+     */
     private void scaleYVelocity(double scaleFactor, boolean scaleOveride) {
         if (scaleOveride || isSameSine(yDirection, yVelocity) || (yVelocity < 0.1 && yVelocity > -0.1) || inExit || inSpawn) {
             if (AgentID == scanningAgent) {
@@ -363,6 +380,12 @@ public class Agent {
         }
     }
 
+    /**
+     * <p> Checks if the agent is in an exit </p>
+     *
+     * @param exits list of all exits in the simulation
+     * @return the exit the agent is in
+     */
     public Exit inExit(LinkedList< Exit> exits) {
         for (Exit i : exits) {
             if (i.inExit(this)) {
@@ -372,6 +395,12 @@ public class Agent {
         return null;
     }
 
+    /**
+     * <p> Checks if the agent is in a spawn </p>
+     *
+     * @param spawns list of all exits in the simulation
+     * @return the spawn the agent is in
+     */
     private Spawn inSpawn(LinkedList< Spawn> spawns) {
         for (Spawn i : spawns) {
             if (i.inSpawn(this)) {
@@ -535,6 +564,9 @@ public class Agent {
                 + '}';
     }
 
+    /**
+     * <p> Writes the agent data to a CSV file </p>
+     */
     private void updateCSV() {
         try (FileWriter writer = new FileWriter(csvName, true)) {
             writer.write(AgentID + ","
@@ -549,6 +581,13 @@ public class Agent {
         }
     }
 
+    /**
+     * <p> Reduces the magnitude of a value by a certain amount </p>
+     *
+     * @param value Value to be reduced
+     * @param reduction Amount to reduce the value by
+     * @return The value after the reduction
+     */
     public double reduceMagnitude(double value, double reduction) {
         double valueModified = value;
         if (value > 0) {
@@ -561,6 +600,13 @@ public class Agent {
         return valueModified;
     }
 
+    /**
+     * <p> Checks if two values have the same sign </p>
+     *
+     * @param value1 First value to compare
+     * @param value2 Second value to compare
+     * @return True if the values have the same sign, false if not
+     */
     private boolean isSameSine(double value1, double value2) {
         return (value1 > 0) == (value2 > 0);
     }
