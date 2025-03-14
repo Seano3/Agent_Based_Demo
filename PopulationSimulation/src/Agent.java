@@ -38,7 +38,7 @@ public class Agent {
      * @param yCord The y coordinate of the agent
      * @param xVel The x velocity of the agent
      * @param yVel The y velocity of the agent
-     * @param sim Passthrough of the simulation the agent will be added to
+     * @param sim Pass through of the simulation the agent will be added to
      */
     public Agent(int name, double size, double xCord, double yCord, double xVel, double yVel, Simulation sim) {
         blockedTimer = 0;
@@ -172,9 +172,9 @@ public class Agent {
             double transferedVel = (transferedVelx + transferedVely);
 
             xVelocity = reduceMagnitude(xVelocity, transferedVelx);
-            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DEVISOR);
+            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DIVISOR);
             yVelocity = reduceMagnitude(yVelocity, transferedVely);
-            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DEVISOR);
+            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DIVISOR);
 
             if (timeSinceLastWallCollision > 5) {
                 if (smallest == north) {
