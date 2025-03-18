@@ -253,35 +253,37 @@ public class Simulation extends JPanel {
                 agent.setInSpawn(closestSpawn.inSpawn(agent));
             }
 
-            if (isSpawned && closestSpawn != null) {
+            if (isSpawned && closestSpawn != null) { // If agent is spawned from a spawner
                 /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
             double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
 
             agent.setLocation(new Location(centerX, centerY));*/
-                agent.setFirstSpawnBoundCheck(true);
+                agent.setInSpawn(true); // Set agent to be in spawn
+                agent.setFirstSpawnBoundCheck(true); // Set agent to check for first spawn bounds
                 double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
 
-                if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) {
-                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) { // If the spawn is horizontal
+                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the left side
                         agent.setXVelocity(0);
                         agent.setYVelocity(-initialVelocityMagnitude);
-                    } else {
+                    } else { // If the spawn is on the right side
                         agent.setXVelocity(0);
                         agent.setYVelocity(initialVelocityMagnitude);
                     }
-                } else {
-                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) {
+                } else { // If the spawn is vertical
+                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the top side
                         agent.setXVelocity(-initialVelocityMagnitude);
                         agent.setYVelocity(0);
                         //System.out.println("Left");
-                    } else {
+                    } else { // If the spawn is on the bottom side
                         agent.setXVelocity(initialVelocityMagnitude);
                         agent.setYVelocity(0);
                         //System.out.println("Right");
                     }
                 }
-            } else if (closestExit != null) {
+            } else if (closestExit != null) { // If agent is not spawned from a spawner
                 agent.setFirstSpawnBoundCheck(false);
+                agent.setInSpawn(false);
                 //System.out.println("Normal");
                 double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
                 double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
@@ -416,13 +418,10 @@ public class Simulation extends JPanel {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
             for (Agent j : agents) {
-                if (i.inSpawn(j)) {
-                    j.setInSpawn(true);
-
-                } else {
-                    j.setInSpawn(false);
+                if (!i.inSpawn(j)) {
+                    j.setInSpawn(false); // If agent is not in spawn, set inSpawn to false
                     //System.out.println("Agent " + j.AgentID + " is not in spawn");
-                    j.setFirstSpawnBoundCheck(false);
+                    j.setFirstSpawnBoundCheck(false); // If agent is not in spawn, set firstSpawnBoundCheck to false. This value will not change from here to avoid agents glitching through walls without collisions
                 }
             }
 
