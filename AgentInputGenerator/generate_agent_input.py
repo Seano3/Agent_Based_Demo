@@ -1,4 +1,5 @@
 from operator import floordiv
+import os
 
 def generate_agents(x, y, size, number_of_agents, columns, gap):
     agents = []
@@ -15,7 +16,7 @@ def generate_agents(x, y, size, number_of_agents, columns, gap):
     return agents
 
 
-file_path = 'agent-input.csv'
+file_path = os.getcwd() + '\\AgentInputGenerator\\agent-input.csv'
 if __name__ == '__main__':
     # x of starting agent
     x = 300

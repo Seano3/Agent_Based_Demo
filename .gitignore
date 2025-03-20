@@ -2,3 +2,4 @@ PopulationSimulation/bin/
 PopulationSimulation/outputfiles/*
 !PopulationSimulation/outputfiles/.gitkeep
 out
+AgentInputGenerator/agent-input.csv
