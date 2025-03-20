@@ -287,17 +287,21 @@ public class vectorMapGen {
         int y = (int) box.getLocation().getY();
         int width = (int) box.getWidth();
         int height = (int) box.getHeight();
-        for (int i = 0; i < width; i++) {
-            if (inBounds(x + i, y))
-                map[x + i][y] = -1;
-            if (inBounds(x + i, y + height))
-                map[x + i][y + height] = -1;
+        for (int i = 0; i < width; i++) { // horizontals
+            for (int j = -agentScale; j < agentScale; j++) {
+                if (inBounds(x + i, y + j))
+                    map[x + i][y + j] = -1;
+                if (inBounds(x + i, y + height + j))
+                    map[x + i][y + height + j] = -1;
+            }
         }
-        for (int i = 0; i < height; i++) {
-            if (inBounds(x, y + i))
-                map[x][y + i] = -1;
-            if (inBounds(x + width, y + i))
-                map[x + width][y + i] = -1;
+        for (int i = 0; i < height; i++) { // verticals
+            for (int j = -agentScale; j < agentScale; j++) {
+                if (inBounds(x + j, y + i))
+                    map[x + j][y + i] = -1;
+                if (inBounds(x + width + j, y + i))
+                    map[x + width + j][y + i] = -1;
+            }
         }
 
     }
