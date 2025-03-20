@@ -17,7 +17,7 @@ public class Agent {
     private final double TIME_STEP = 0.01;
     private Color color;
     private int timeSinceLastWallCollision = 50;
-    private boolean inSpawn = false;
+    private boolean inSpawn;
     private boolean firstSpawnBoundCheck;
     private int choiceMove;
     private double targetVelocity;
@@ -113,6 +113,8 @@ public class Agent {
         this.firstSpawnBoundCheck = firstSpawnBoundCheck;
     }
 
+
+
     /**
      * <p> Updates the velocity of the agent based on the vector map </p>
      *
@@ -125,6 +127,7 @@ public class Agent {
         int xMeter = (int) location.getX();
         int[][] map = sim.vectorMap;
 
+        if (!inSpawn){
         if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
             int center = map[yMeter][xMeter];
             int north = map[yMeter - 1][xMeter];
@@ -239,6 +242,7 @@ public class Agent {
                     yDirection = 1;
                 }
             }
+        }
 
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude
             double currentDirection = Math.atan2(yVelocity, xVelocity);
