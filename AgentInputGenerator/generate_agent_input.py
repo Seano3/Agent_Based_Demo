@@ -18,13 +18,13 @@ def generate_agents(x, y, size, number_of_agents, columns, gap):
 file_path = os.getcwd() + '\\AgentInputGenerator\\agent-input.csv'
 if __name__ == '__main__':
     # x of starting agent
-    x = 300
+    x = 450
     # y of starting agent
-    y = 300
+    y = 350
     # size of all agents
     size = 10
     # number of agents in block
-    number_of_agents = 20
+    number_of_agents = 100
     # number of agents to spawn before moving to new row
     columns = 10
     # gap between agents excluding radius of agents

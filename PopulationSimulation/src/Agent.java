@@ -18,14 +18,12 @@ public class Agent {
     private Color color;
     private int timeSinceLastWallCollision = 50;
     private boolean inSpawn;
-    private boolean firstSpawnBoundCheck;
     private int choiceMove;
     private double targetVelocity;
     private int Divisor = 1;
     private int xDirection;
     private int yDirection;
     public boolean inExit;
-    public boolean inAnyExit;
     private int scanningAgent = -1;
     private int blockedTimer;
 
@@ -46,7 +44,7 @@ public class Agent {
         inExit = false;
         choiceMove = 0;
         this.size = size;
-        targetVelocity = size * 1.25 / 0.255; // replicate human walking speed based on average person
+        targetVelocity = Agent.getTargetVelocity(size); // replicate human walking speed based on average person
         xVelocity = xVel;
         yVelocity = yVel;
         location = new Location(xCord, yCord);
@@ -101,18 +99,9 @@ public class Agent {
         return color;
     }
 
-    public void setInSpawn(boolean inSpawn) {
-        this.inSpawn = inSpawn;
+    public static double getTargetVelocity(double size) {
+        return size * 1.25 / 0.255;
     }
-
-    public boolean getInSpawn() {
-        return inSpawn;
-    }
-
-    public void setFirstSpawnBoundCheck(boolean firstSpawnBoundCheck) {
-        this.firstSpawnBoundCheck = firstSpawnBoundCheck;
-    }
-
 
 
     /**
@@ -244,6 +233,11 @@ public class Agent {
             }
         }
 
+            if (xVelocity + yVelocity == 0) { // small fix for agents spawning at standstill
+                xVelocity = 0.1;
+                yVelocity = 0.1;
+            }
+
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude
             double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
@@ -275,7 +269,6 @@ public class Agent {
                 System.out.println("Scaling X");
             }
             xVelocity *= scaleFactor;
-            return;
         }
     }
 
@@ -290,8 +283,7 @@ public class Agent {
             if (AgentID == scanningAgent) {
                 System.out.println("Scaling Y");
             }
-            yVelocity *= scaleFactor;
-            return;
+            yVelocity *= scaleFactor;;
         }
     }
 
@@ -312,21 +304,15 @@ public class Agent {
      * Checks the location of the agent to see if it is colliding with anything
      * and updates the velocity accordingly</p>
      *
-     * @param otherAgents List of all other agents in the simulation
-     * @param frame the current frame
-     * @param exits list of all exits in the simulation
-     * @param obstacles list of all obstacles in the simulation
+     * @param sim the simulation object
      */
-    public void updateAgent(LinkedList< Agent> otherAgents, int frame, LinkedList<
-        Exit> exits, LinkedList< Obstacle> obstacles) {
+    public void updateAgent(Simulation sim) {
+        choiceMove = 0;
         if (collisions.isEmpty()) {
             Divisor = 8;
         }
-        if (!this.firstSpawnBoundCheck) {
-            checkObstacles(obstacles, frame, exits);
-            choiceMove = 0;
-        }
-        checkAgents(otherAgents);
+        checkObstacles(sim);
+        checkAgents(sim.getAgents());
         updateCSV();
     }
 
@@ -393,9 +379,11 @@ public class Agent {
     public Exit inExit(LinkedList< Exit> exits) {
         for (Exit i : exits) {
             if (i.inExit(this)) {
+                inExit = true;
                 return i;
             }
         }
+        inExit = false;
         return null;
     }
 
@@ -405,12 +393,14 @@ public class Agent {
      * @param spawns list of all exits in the simulation
      * @return the spawn the agent is in
      */
-    private Spawn inSpawn(LinkedList< Spawn> spawns) {
+    public Spawn inSpawn(LinkedList< Spawn> spawns) {
         for (Spawn i : spawns) {
             if (i.inSpawn(this)) {
+                inSpawn = true;
                 return i;
             }
         }
+        inSpawn = false;
         return null;
     }
 
@@ -419,14 +409,13 @@ public class Agent {
      * Checks the collision with each Obstacle and changes the velocity
      * accordingly</p>
      *
-     * @param obstacles list of all obstacles in the simulation
-     * @param frame The current frame
-     * @param exits list of all exits in the simulation
+     * @param sim the simulation object
      */
-    private void checkObstacles(LinkedList< Obstacle> obstacles, int frame, LinkedList<Exit> exits) {
+    private void checkObstacles(Simulation sim) {
         //If we are inside an exit, modify collision checks
-        Exit currentExit = inExit(exits);
-        if (currentExit != null) {
+        int frame = sim.getFrame();
+        if (inExit) {
+            Exit currentExit = inExit(sim.getExits());
             if (currentExit.getAlignment() == Exit.alignment.VERTICAL) {
 
                 if (getLocation().getY() - getSize() < currentExit.getLocation().getY()) { // Top of exit
@@ -492,7 +481,11 @@ public class Agent {
             return;
         }
 
-        for (Obstacle i : obstacles) {
+        if (inSpawn) {
+            return; // do not check for obstacle collisions inside spawns
+        }
+
+        for (Obstacle i : sim.getObstacles()) {
             i.checkCollision(this, frame);
         }
 
@@ -517,36 +510,37 @@ public class Agent {
         double newY = location.getY() + (yVelocity * TIME_STEP);
         //Divisor = 8;
         //updateVelocity(false);
+        if (!inSpawn) {
+            for (Agent i : otherAgents) {
+                // System.out.println(i.AgentID != this.AgentID);
+                if (i.AgentID != this.AgentID) {
+                    double dx = i.getLocation().getX() - newX;
+                    double dy = i.getLocation().getY() - newY;
+                    double distance = Math.sqrt(dx * dx + dy * dy);
 
-        for (Agent i : otherAgents) {
-            // System.out.println(i.AgentID != this.AgentID);
-            if (i.AgentID != this.AgentID) {
-                double dx = i.getLocation().getX() - newX;
-                double dy = i.getLocation().getY() - newY;
-                double distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < ((i.getSize() + this.getSize()))) {
-                    if (choiceMove <= 7) {
-                        Divisor = 1;
-                        choiceMove++;
-                        if (AgentID == scanningAgent) {
-                            System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
-                        }
-                        checkAgents(otherAgents);
-                        return;
-                    } else {
-                        if (AgentID == scanningAgent) {
-                            System.out.println(AgentID + " is blocked");
-                        }
-                        blockedTimer++;
-                        if (blockedTimer > 10) {
-                            choiceMove = 0;
-                            blockedTimer = 0;
-                            //scaleBuffer = (int) this.size / 4;
+                    if (distance < ((i.getSize() + this.getSize()))) {
+                        if (choiceMove <= 7) {
+                            Divisor = 1;
+                            choiceMove++;
+                            if (AgentID == scanningAgent) {
+                                System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
+                            }
+                            checkAgents(otherAgents);
+                            return;
                         } else {
-                            choiceMove = 0;
+                            if (AgentID == scanningAgent) {
+                                System.out.println(AgentID + " is blocked");
+                            }
+                            blockedTimer++;
+                            if (blockedTimer > 10) {
+                                choiceMove = 0;
+                                blockedTimer = 0;
+                                //scaleBuffer = (int) this.size / 4;
+                            } else {
+                                choiceMove = 0;
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }

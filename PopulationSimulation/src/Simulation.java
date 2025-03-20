@@ -35,7 +35,7 @@ public class Simulation extends JPanel {
     private boolean isAgentNumbersEnabled;
     private double startTime;
     private double initialKE = 0;
-    private int totalAgents = 0;
+    private int currentAgentCount = 0;
     private int totalExits = 0;
     private int totalSpawns = 0;
     private int timeStep = 1;
@@ -43,7 +43,7 @@ public class Simulation extends JPanel {
     vectorMapGen map;
     private boolean useVectorMap;
     private static String outputPath;
-    private int NumberOfAgents;
+    private int lifetimeAgentCount;
     private int spawnerAgentID;
 
     /**
@@ -53,7 +53,7 @@ public class Simulation extends JPanel {
      * @param height Height of the simulation panel in pixels
      */
     public Simulation(int width, int height) {
-        NumberOfAgents = 0;
+        lifetimeAgentCount = 0;
         spawnerAgentID = 0;
         frame = 0;
         this.useVectorMap = false;
@@ -196,6 +196,8 @@ public class Simulation extends JPanel {
         return panelHeight;
     }
 
+    public int getLifetimeAgentCount() { return lifetimeAgentCount;}
+
     public boolean vectorMapEnabled() {
         return useVectorMap;
     }
@@ -243,71 +245,54 @@ public class Simulation extends JPanel {
      * @param isSpawned boolean to determine if the agent is spawned from a spawner or not
      */
     public void addAgent(Agent agent, boolean isSpawned) {
-        NumberOfAgents++;
-        Exit closestExit = findClosestExit(agent.getLocation());
-        Spawn closestSpawn = findClosestSpawn(agent.getLocation());
-
+        Exit closestExit = null;
         if (vectorMapEnabled()) {
-            // Determine if agent is in the spawn so agent class will disable vector map for that agent if it is inside
-            if (closestSpawn != null) {
-                agent.setInSpawn(closestSpawn.inSpawn(agent));
-            }
-
-            if (isSpawned && closestSpawn != null) { // If agent is spawned from a spawner
-                /*double centerX = closestSpawn.getLocation().getX() + closestSpawn.getSize() / 2.0;
-            double centerY = closestSpawn.getLocation().getY() + closestSpawn.getSize() / 2.0;
-
-            agent.setLocation(new Location(centerX, centerY));*/
-                agent.setInSpawn(true); // Set agent to be in spawn
-                agent.setFirstSpawnBoundCheck(true); // Set agent to check for first spawn bounds
-                double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
-
-                if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) { // If the spawn is horizontal
-                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the left side
-                        agent.setXVelocity(0);
-                        agent.setYVelocity(-initialVelocityMagnitude);
-                    } else { // If the spawn is on the right side
-                        agent.setXVelocity(0);
-                        agent.setYVelocity(initialVelocityMagnitude);
-                    }
-                } else { // If the spawn is vertical
-                    if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the top side
-                        agent.setXVelocity(-initialVelocityMagnitude);
-                        agent.setYVelocity(0);
-                        //System.out.println("Left");
-                    } else { // If the spawn is on the bottom side
-                        agent.setXVelocity(initialVelocityMagnitude);
-                        agent.setYVelocity(0);
-                        //System.out.println("Right");
-                    }
-                }
-            } else if (closestExit != null) { // If agent is not spawned from a spawner
-                agent.setFirstSpawnBoundCheck(false);
-                agent.setInSpawn(false);
-                //System.out.println("Normal");
-                double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
-                double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
-                double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
-                double magnitude = Math.sqrt(xMagnitude + yMagnitude);
-                agent.setXVelocity(directionVector[0] * magnitude);
-                agent.setYVelocity(directionVector[1] * magnitude);
-            }
+            closestExit = findClosestExit(agent.getLocation());
         }
+        if (isSpawned) { // If agent is spawned from a spawner
 
+            Spawn closestSpawn = agent.inSpawn(spawns); // run spawn calc to update bool
+            double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
+
+            if (closestSpawn.getAlignment() == Spawn.alignment.HORIZONTAL) { // If the spawn is horizontal
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the top side
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(-initialVelocityMagnitude);
+                } else { // If the spawn is on the bottom side
+                    agent.setXVelocity(0);
+                    agent.setYVelocity(initialVelocityMagnitude);
+                }
+            } else { // If the spawn is vertical
+                if (closestSpawn.getDirection() == Spawn.direction.LEFT) { // If the spawn is on the left side
+                    agent.setXVelocity(-initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                } else { // If the spawn is on the right side
+                    agent.setXVelocity(initialVelocityMagnitude);
+                    agent.setYVelocity(0);
+                }
+            }
+        } else if (closestExit != null) { // If agent is not spawned from a spawner
+            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
+            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
+            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
+            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
+            agent.setXVelocity(directionVector[0] * magnitude);
+            agent.setYVelocity(directionVector[1] * magnitude);
+        }
         agents.add(agent);
-        totalAgents++;
-        agentCountLabel.setText("Agents: " + totalAgents);
+        if (lifetimeAgentCount == 0) // initialize vector map if spawned agent is first agent, since we don't have agent size until then
+            toggleVectorMap();
+        lifetimeAgentCount++;
+        currentAgentCount++;
+        agentCountLabel.setText("Agents: " + currentAgentCount);
+
     }
 
     /**
      * <p> Adds an obstacle to the simulation </p>
      *
-     * @param obj Obstacle object to add
+     * @param obstacle Obstacle object to add
      */
-    public void addObjs(Obstacle obj) {
-        obstacles.add(obj);
-    }
-
     public void addObstacle(Obstacle obstacle) {
         obstacles.add(obstacle);
     }
@@ -319,17 +304,8 @@ public class Simulation extends JPanel {
      */
     public void removeAgent(Agent agent) {
         agents.remove(agent);
-        totalAgents--;
-        agentCountLabel.setText("Agents: " + totalAgents);
-    }
-
-    /**
-     * Updates the spawner ID for the simulation by incrementing it by 1
-     *
-     * @return The updated spawner ID
-     */
-    private int updateSpawnerID() {
-        return spawnerAgentID++;
+        currentAgentCount--;
+        agentCountLabel.setText("Agents: " + currentAgentCount);
     }
 
     /**
@@ -341,24 +317,13 @@ public class Simulation extends JPanel {
         elapsedTime += 0.01;
         frameLabel.setText("Frame: " + frame);
         updateTimerLabel();
-
-        for (Spawn spawn : spawns) {
-            if (frame - spawn.getLastSpawnFrame() >= spawn.getSpawnRateInterval() && spawn.getIsActivelySpawning() && (spawn.getSpawnNumber() != 0) && (spawn.getSpawnDelay() < frame)) {
-                // Spawn a new agent
-                Agent newAgent = new Agent(updateSpawnerID(), spawn.getSpawnAgentSize(), spawn.getCenterLocation().getX(), spawn.getCenterLocation().getY(), spawn.getSpawnAgentXVelocity(), spawn.getSpawnAgentYVelocity(), this);
-                addAgent(newAgent, true);
-                spawn.setLastSpawnFrame(frame);
-                spawn.setSpawnNumber(spawn.getSpawnNumber() - 1);
-            }
-        }
+        for (Spawn i : spawns)
+                i.updateSpawner(frame, this);
 
         for (int i = 0; i < agents.size(); i++) {
             // System.out.println(i.xAcceleration);
-            agents.get(i).updateAgent(agents, frame, exits, obstacles);
+            agents.get(i).updateAgent(this);
             agents.get(i).updateCollisionsStorage();
-            if (!spawns.isEmpty()) {
-                spawns.getFirst().setIsActivelySpawning(!agents.get(i).getInSpawn());
-            }
 
             if (agents.get(i).getLocation().getX() < -agents.get(i).getSize() * 2
                     || agents.get(i).getLocation().getY() < -agents.get(i).getSize() * 2
@@ -367,10 +332,6 @@ public class Simulation extends JPanel {
                 removeAgent(agents.get(i));
             }
 
-            // if (agents.get(i).inExit(exits) != null) {
-            //     //removeAgent(agents.get(i));
-            //     NumberOfAgents--;
-            // }
             // TODO: Write to Excel sheet of locational data of each Agent
         }
         debugCSV();
@@ -390,7 +351,6 @@ public class Simulation extends JPanel {
         g2d.setColor(Color.GREEN);
 
         for (Exit i : exits) {
-
             // Draw all exits
             g2d.setColor(Color.BLUE);
             if (i.getAlignment() == Exit.alignment.HORIZONTAL) {
@@ -400,15 +360,6 @@ public class Simulation extends JPanel {
             }
         }
 
-        // for (Spawn i : spawns) {
-        //     // Draw all spawns
-        //     g2d.setColor(Color.RED);
-        //     if (i.getAlignment() == Spawn.alignment.HORIZONTAL) {
-        //         g2d.fillRect((int) i.getLocation().getX(), (int) i.getLocation().getY() - 5, i.getSize(), 10);
-        //     } else {
-        //         g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
-        //     }
-        // }
         for (Spawn i : spawns) {
             // Draw all spawns
             g2d.setColor(Color.RED);
@@ -417,14 +368,6 @@ public class Simulation extends JPanel {
             } else {
                 g2d.fillRect((int) i.getLocation().getX() - 5, (int) i.getLocation().getY(), 10, i.getSize());
             }
-            for (Agent j : agents) {
-                if (!i.inSpawn(j)) {
-                    j.setInSpawn(false); // If agent is not in spawn, set inSpawn to false
-                    //System.out.println("Agent " + j.AgentID + " is not in spawn");
-                    j.setFirstSpawnBoundCheck(false); // If agent is not in spawn, set firstSpawnBoundCheck to false. This value will not change from here to avoid agents glitching through walls without collisions
-                }
-            }
-
         }
 
         for (Obstacle i : obstacles) {
@@ -434,16 +377,10 @@ public class Simulation extends JPanel {
         for (Agent i : agents) {
             // Draw all agents
             if (i.inExit(exits) != null) {
-                i.inAnyExit = true;
-                if (i.inExit(exits).buildingExit) {
-                    i.inExit = true;
-                }
                 g2d.setColor(Color.RED);
-            } else if (i.getInSpawn()) {
+            } else if (i.inSpawn(spawns) != null) {
                 g2d.setColor(Color.BLUE);
             } else {
-                i.inAnyExit = false;
-                i.inExit = false;
                 g2d.setColor(i.getColor());
             }
             g2d.fillOval((int) (i.getLocation().getX() - i.getSize()), (int) (i.getLocation().getY() - i.getSize()), (int) i.getSize() * 2, (int) i.getSize() * 2);
@@ -478,12 +415,6 @@ public class Simulation extends JPanel {
             for (int i = 0; i < gridHeight; i += 10) {
                 g2d.drawLine(0, i, width, i);
             }
-
-            // for(int i = 0; i < 110; i++){
-            //     for (int j = 0; j < 72; j++){/
-            //         g2d.drawString(String.valueOf(vectorMap[j][i]), i * 10, j * 10);
-            //     }
-            // }
         }
     }
 
@@ -686,4 +617,6 @@ public class Simulation extends JPanel {
     public void VectorMapGeneration() {
         vectorMap = map.calculateMap();
     }
+
+    public int getFrame() { return frame; }
 }

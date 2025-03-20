@@ -71,7 +71,7 @@ public class RunSimulation {
             while ((line = br.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                if (attributes.length != 11) {
+                if (attributes.length != 9) {
                     System.err.println("Invalid number of attributes in line: " + line);
                     continue;
                 }
@@ -81,13 +81,11 @@ public class RunSimulation {
                     double xCoord = Double.parseDouble(attributes[1]);
                     double yCoord = Double.parseDouble(attributes[2]);
                     double alignmentNum = Double.parseDouble(attributes[3]);
-                    int spawnRateInterval = Integer.parseInt(attributes[4]);
+                    int spawnRateInterval = Integer.parseInt(attributes[4].replace(" ",""));
                     double spawnAgentSize = Double.parseDouble(attributes[5]);
-                    double spawnAgentXVelocity = Double.parseDouble(attributes[6]);
-                    double spawnAgentYVelocity = Double.parseDouble(attributes[7]);
-                    double direction = Double.parseDouble(attributes[8]);
-                    int spawnDelay = Integer.parseInt(attributes[9]);
-                    int spawnNumber = Integer.parseInt(attributes[10]); //If spawnNumber is -1, then it will spawn indefinitely
+                    double direction = Double.parseDouble(attributes[6]);
+                    int spawnDelay = Integer.parseInt(attributes[7].replace(" ",""));
+                    int spawnNumber = Integer.parseInt(attributes[8].replace(" ","")); //If spawnNumber is -1, then it will spawn indefinitely
                     Spawn spawn;
                     Location location = new Location(xCoord, yCoord);
                     Spawn.direction directionEnum = Spawn.direction.LEFT;
@@ -95,9 +93,9 @@ public class RunSimulation {
                         directionEnum = Spawn.direction.RIGHT;
                     }
                     if (alignmentNum == 0) {
-                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay, spawnNumber);
+                        spawn = new Spawn(size, location, Spawn.alignment.VERTICAL, spawnRateInterval, spawnAgentSize, directionEnum, spawnDelay, spawnNumber);
                     } else {
-                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, spawnAgentXVelocity, spawnAgentYVelocity, directionEnum, spawnDelay, spawnNumber);
+                        spawn = new Spawn(size, location, Spawn.alignment.HORIZONTAL, spawnRateInterval, spawnAgentSize, directionEnum, spawnDelay, spawnNumber);
                     }
 
                     sim.addSpawn(spawn);
@@ -175,7 +173,7 @@ public class RunSimulation {
                         System.err.println("Invalid number of attributes in line: " + line);
                         continue;
                     }
-                    sim.addObjs(obj);
+                    sim.addObstacle(obj);
                     //System.out.println("Created Obstacle: " + obj.getLocation().toString());
                 } catch (NumberFormatException e) {
                     System.err.println("Invalid number format in line: " + line);
@@ -184,8 +182,8 @@ public class RunSimulation {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-
-        sim.toggleVectorMap(); // enable and regen vector map
+        if(!sim.getAgents().isEmpty())
+            sim.toggleVectorMap(); // enable and regen vector map
         //Initialize Agents
         // for(int i = 0; i < 3; i++){
         //     sim.addAgent(new Agent(i, 20, i * 50, Math.random() * 500 + 2.5, Math.random() * 5 + 2.5, Math.random() * 5 + 2.5));
