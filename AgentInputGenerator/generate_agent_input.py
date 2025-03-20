@@ -1,4 +1,3 @@
-from operator import floordiv
 import os
 
 def generate_agents(x, y, size, number_of_agents, columns, gap):
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     number_of_agents = 20
     # number of agents to spawn before moving to new row
     columns = 10
-    # gap between agents
+    # gap between agents excluding radius of agents
     gap = 5
     # velocity initialization must be done manually atm
 
