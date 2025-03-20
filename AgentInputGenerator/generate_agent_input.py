@@ -9,7 +9,7 @@ def generate_agents(x, y, size, number_of_agents, columns, gap):
             i,
             size,
             x + agent_gap * (i % columns),
-            y + (floordiv(i, columns) * agent_gap),
+            y + i // columns * agent_gap,
         ]
 
         agents.append(agent)
