@@ -28,6 +28,7 @@ public class Simulation extends JPanel {
     private JButton frameStepButton;
     private JButton timeStepButton;
     private JButton toggleAgentNumbersButton;
+    private JButton toggleHeatMapButton;
     private JLabel timeStepInputLabel;
     private JTextField timeStepInput;
     private boolean isPaused;
@@ -44,7 +45,8 @@ public class Simulation extends JPanel {
     private boolean useVectorMap;
     private static String outputPath;
     private int lifetimeAgentCount;
-    private int spawnerAgentID;
+    private boolean heatMapEnabled = false;
+
 
     /**
      * <p> Constructor for the Simulation class </p>
@@ -54,7 +56,6 @@ public class Simulation extends JPanel {
      */
     public Simulation(int width, int height) {
         lifetimeAgentCount = 0;
-        spawnerAgentID = 0;
         frame = 0;
         this.useVectorMap = false;
         setPreferredSize(new Dimension(width, height));
@@ -86,6 +87,7 @@ public class Simulation extends JPanel {
         toggleGridButton = new JButton("Enable Grid");
         frameStepButton = new JButton("Frame Step");
         timeStepButton = new JButton("Time Step");
+        toggleHeatMapButton = new JButton("Show Heat Map");
         timeStepInput = new JTextField("1", 1);
         timeStepInput.setEditable(true);
 
@@ -117,6 +119,18 @@ public class Simulation extends JPanel {
             } else {
                 toggleGridButton.setText("Disable Grid");
                 isGridEnabled = true;
+                repaint();
+            }
+        });
+
+        toggleHeatMapButton.addActionListener(e -> {
+            if (heatMapEnabled) {
+                toggleHeatMapButton.setText("Show Heat Map");
+                heatMapEnabled = false;
+                repaint();
+            } else {
+                toggleHeatMapButton.setText("Hide Heat Map");
+                heatMapEnabled = true;
                 repaint();
             }
         });
@@ -174,6 +188,7 @@ public class Simulation extends JPanel {
         add(frameStepButton);
         add(timeStepButton);
         add(toggleAgentNumbersButton);
+        add(toggleHeatMapButton);
         add(timeStepInput);
         add(timeStepInputLabel);
         timer = new Timer(0, e -> {
@@ -207,7 +222,6 @@ public class Simulation extends JPanel {
      */
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
-        spawnerAgentID = agents.size();
         map = new vectorMapGen(this);
         if (useVectorMap) {
             map = new vectorMapGen(this);
@@ -245,11 +259,7 @@ public class Simulation extends JPanel {
      * @param isSpawned boolean to determine if the agent is spawned from a spawner or not
      */
     public void addAgent(Agent agent, boolean isSpawned) {
-        Exit closestExit = null;
-        if (vectorMapEnabled()) {
-            closestExit = findClosestExit(agent.getLocation());
-        }
-        if (isSpawned) { // If agent is spawned from a spawner
+                if (isSpawned) { // If agent is spawned from a spawner
 
             Spawn closestSpawn = agent.inSpawn(spawns); // run spawn calc to update bool
             double initialVelocityMagnitude = Math.sqrt(agent.getXVelocity() * agent.getXVelocity() + agent.getYVelocity() * agent.getYVelocity());
@@ -271,13 +281,6 @@ public class Simulation extends JPanel {
                     agent.setYVelocity(0);
                 }
             }
-        } else if (closestExit != null) { // If agent is not spawned from a spawner
-            double[] directionVector = calculateDirectionVector(agent.getLocation(), closestExit.getLocation());
-            double xMagnitude = agent.getXVelocity() * agent.getXVelocity();
-            double yMagnitude = agent.getYVelocity() * agent.getYVelocity();
-            double magnitude = Math.sqrt(xMagnitude + yMagnitude);
-            agent.setXVelocity(directionVector[0] * magnitude);
-            agent.setYVelocity(directionVector[1] * magnitude);
         }
         agents.add(agent);
         if (lifetimeAgentCount == 0) // initialize vector map if spawned agent is first agent, since we don't have agent size until then
@@ -402,6 +405,7 @@ public class Simulation extends JPanel {
         agentCountLabel.setBounds(10, height - panelHeight + 21, 100, 30);
         frameLabel.setBounds(10, height - panelHeight + 32, 100, 30);
         toggleAgentNumbersButton.setBounds(600, height - panelHeight + 10, 150, 30);
+        toggleHeatMapButton.setBounds(760, height - panelHeight + 10, 150, 30);
 
         timeStepInputLabel.setBounds(10, height - panelHeight + 50, 130, 30);
         timeStepInput.setBounds(130, height - panelHeight + 50, 40, 30);
@@ -414,6 +418,28 @@ public class Simulation extends JPanel {
             }
             for (int i = 0; i < gridHeight; i += 10) {
                 g2d.drawLine(0, i, width, i);
+            }
+        }
+
+        // heat map mode
+        if (heatMapEnabled) {
+            for (int i = 0; i < vectorMap.length; i++) {
+                for (int j = 0; j < vectorMap[i].length; j++) {
+                    int red;
+                    if (vectorMap[i][j] == -1) {
+                        red = 0;
+                    } else if (vectorMap[i][j] == 0) {
+                        red = 255;
+                    } else if (vectorMap[i][j] == Integer.MAX_VALUE) {
+                        red = 0;
+                    } else {
+                        red = 255 - (vectorMap[i][j] / 10);
+                    }
+
+                    Color heat = new Color(255, red,red);
+                    g2d.setColor(heat);
+                    g2d.drawLine(j,i,j,i);
+                }
             }
         }
     }
@@ -538,77 +564,6 @@ public class Simulation extends JPanel {
         }
 
         return totalKE;
-    }
-
-    /**
-     * <p>Finds the closest exit to the inputted location</p>
-     *
-     * @param location Location to input
-     * @return Closest exit to location
-     */
-    private Exit findClosestExit(Location location) {
-        Exit closestExit = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Exit exit : exits) {
-            //System.out.println("Exit works");
-            double distance = distanceTo(location, exit.getLocation());
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestExit = exit;
-            }
-        }
-
-        return closestExit;
-    }
-
-    /**
-     * <p>Finds the closest spawn to the inputted location</p>
-     *
-     * @param location Location to input
-     * @return Closest spawn to location
-     */
-    private Spawn findClosestSpawn(Location location) {
-        Spawn closestSpawn = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Spawn spawn : spawns) {
-            //System.out.println("Spawn works");
-            double distance = distanceTo(location, spawn.getLocation());
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestSpawn = spawn;
-            }
-        }
-
-        return closestSpawn;
-    }
-
-    /**
-     * <p>Calculates the distance between two locations</p>
-     *
-     * @param start Location to start from
-     * @param finish Location to finish at
-     * @return Distance between start and finish in pixels
-     */
-    private double distanceTo(Location start, Location finish) {
-        double dx = start.getX() - finish.getX();
-        double dy = start.getY() - finish.getY();
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    /**
-     * <p>Calculates the direction vector between two locations</p>
-     *
-     * @param agentLocation Location of the agent
-     * @param exitLocation Location of the exit
-     * @return Direction vector between agent and exit
-     */
-    private double[] calculateDirectionVector(Location agentLocation, Location exitLocation) {
-        double dx = exitLocation.getX() - agentLocation.getX();
-        double dy = exitLocation.getY() - agentLocation.getY();
-        double magnitude = Math.sqrt(dx * dx + dy * dy);
-        return new double[]{dx / magnitude, dy / magnitude};
     }
 
     /**

@@ -20,6 +20,9 @@ public class vectorMapGen {
         return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
     }
 
+    public int getHeight() { return HEIGHT; }
+    public int getLength() { return LENGTH; }
+
 
     public vectorMapGen(Simulation sim) {
         agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize() + 5); // assumes agents are present, round up to prevent bugs
