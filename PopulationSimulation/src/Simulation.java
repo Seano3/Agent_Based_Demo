@@ -222,7 +222,6 @@ public class Simulation extends JPanel {
      */
     public void toggleVectorMap() {
         useVectorMap = !useVectorMap;
-        map = new vectorMapGen(this);
         if (useVectorMap) {
             map = new vectorMapGen(this);
             for (Exit i : exits) {
@@ -283,7 +282,7 @@ public class Simulation extends JPanel {
             }
         }
         agents.add(agent);
-        if (lifetimeAgentCount == 0) // initialize vector map if spawned agent is first agent, since we don't have agent size until then
+        if (lifetimeAgentCount == 0 && isSpawned) // initialize vector map if spawned agent is first agent, since we don't have agent size until then
             toggleVectorMap();
         lifetimeAgentCount++;
         currentAgentCount++;
