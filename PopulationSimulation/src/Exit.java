@@ -54,7 +54,7 @@ public class Exit {
         } else { // horizontal
             double leftBound = location.getX();
             double rightBound = location.getX() + size;
-            return location.getX() > leftBound - agent.getSize() + 1
+            return agent.getLocation().getX() > leftBound - agent.getSize() + 1
                     && agent.getLocation().getX() < rightBound + agent.getSize() - 1
                     && agent.getLocation().getY() < location.getY() + agent.getSize() + 5
                     && agent.getLocation().getY() > location.getY() - agent.getSize() - 5;

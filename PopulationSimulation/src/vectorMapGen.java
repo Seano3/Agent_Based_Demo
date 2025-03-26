@@ -20,6 +20,9 @@ public class vectorMapGen {
         return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
     }
 
+    public int getHeight() { return HEIGHT; }
+    public int getLength() { return LENGTH; }
+
 
     public vectorMapGen(Simulation sim) {
         agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize() + 5); // assumes agents are present, round up to prevent bugs
@@ -219,7 +222,7 @@ public class vectorMapGen {
             //System.out.println("Horizonal");
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
-                    for (int k = x + agentScale; k < x + size - agentScale; k++) {
+                    for (int k = x + agentScale; k < x + size - 0; k++) {
                         for (int j = -agentScale; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                             if (inBounds(k, j)) {
                                 if (y == 0) {

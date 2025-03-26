@@ -12,8 +12,7 @@ public class Spawn {
     private int spawnDelay;
     private int lastSpawnFrame;
     private double spawnAgentSize;
-    private double spawnAgentXVelocity;
-    private double spawnAgentYVelocity;
+    private double spawnAgentVelocity;
     private boolean isActivelySpawning;
 
     /**
@@ -24,26 +23,23 @@ public class Spawn {
      * @param alignment Vertical or Horizontal, 0 for vertical, 1 for horizontal
      * @param spawnRateInterval Number of frames between spawns
      * @param spawnAgentSize Size of spawned agents
-     * @param spawnAgentXVelocity X velocity of spawned agents
-     * @param spawnAgentYVelocity Y velocity of spawned agents
      * @param direction Direction spawning takes place relative to center of spawn, 0 for left or up, 1 for right or down
      * @param spawnDelay Number of frames before first spawn
      * @param spawnNumber Number of agents to spawn, -1 for infinite
      */
 
-    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, double spawnAgentXVelocity, double spawnAgentYVelocity, Spawn.direction direction, int spawnDelay ,int spawnNumber) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, Spawn.direction direction, int spawnDelay ,int spawnNumber) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
         this.spawnRateInterval = spawnRateInterval;
         this.lastSpawnFrame = 0;
         this.spawnAgentSize = spawnAgentSize;
-        this.spawnAgentXVelocity = spawnAgentXVelocity;
-        this.spawnAgentYVelocity = spawnAgentYVelocity;
         this.isActivelySpawning = true;
         this.direction = direction;
         this.spawnDelay = spawnDelay;
         this.spawnNumber = spawnNumber;
+        this.spawnAgentVelocity = Agent.getTargetVelocity(spawnAgentSize);
         if (alignment == alignment.VERTICAL) {
             this.centerLocation = new Location(location.getX(), location.getY() + (double) size /2);
         } else {
@@ -79,14 +75,6 @@ public class Spawn {
         return spawnAgentSize;
     }
 
-    public double getSpawnAgentXVelocity() {
-        return spawnAgentXVelocity;
-    }
-
-    public double getSpawnAgentYVelocity() {
-        return spawnAgentYVelocity;
-    }
-
     public int getSpawnNumber() { return spawnNumber; }
 
     public int getSpawnDelay() { return spawnDelay; }
@@ -105,6 +93,8 @@ public class Spawn {
         this.isActivelySpawning = isActivelySpawning;
     }
 
+    private Agent lastSpawned;
+
     /**
      * Checks if an agent is in the spawn area
      *
@@ -112,21 +102,49 @@ public class Spawn {
      * @return True if agent is in spawn area and false if not
      */
     public boolean inSpawn(Agent agent) {
-        if(alignment == alignment.VERTICAL) {
+        if (alignment == alignment.VERTICAL) {
             double lowerBound = location.getY();
             double upperBound = location.getY() + size;
-            return agent.getLocation().getY() < upperBound + agent.getSize() &&
-                    agent.getLocation().getY() > lowerBound - agent.getSize() &&
-                    agent.getLocation().getX() < location.getX() + agent.getSize()+5 &&
-                    agent.getLocation().getX() > location.getX() - agent.getSize()-5;
+            return agent.getLocation().getY() < upperBound - agent.getSize() + 1
+                    && agent.getLocation().getY() > lowerBound + agent.getSize() - 1
+                    && agent.getLocation().getX() < location.getX() + agent.getSize() + 5
+                    && agent.getLocation().getX() > location.getX() - agent.getSize() - 5;
         } else { // horizontal
-            double lowerBound = location.getX();
-            double upperBound = location.getX() + size;
-            return location.getX() < upperBound - agent.getSize() &&
-                    agent.getLocation().getX() > lowerBound - agent.getSize() &&
-                    agent.getLocation().getY() < location.getY() + agent.getSize()+5 &&
-                    agent.getLocation().getY() > location.getY() - agent.getSize()-5;
+            double leftBound = location.getX();
+            double rightBound = location.getX() + size;
+            return agent.getLocation().getX() > leftBound - agent.getSize() + 1
+                    && agent.getLocation().getX() < rightBound + agent.getSize() - 1
+                    && agent.getLocation().getY() < location.getY() + agent.getSize() + 5
+                    && agent.getLocation().getY() > location.getY() - agent.getSize() - 5;
         }
     }
 
+    public void updateSpawner(int frame, Simulation sim) {
+        if (frame - lastSpawnFrame >= spawnRateInterval && isActivelySpawning && (spawnNumber != 0) && (spawnDelay < frame)) {
+            // Spawn a new agent if the previous agent has left the spawn
+            if (lastSpawned == null || !inSpawn(lastSpawned)) {
+                lastSpawned = new Agent(sim.getLifetimeAgentCount(), spawnAgentSize, centerLocation.getX(), centerLocation.getY(), 0, 0, sim);
+                setInitialVelocity(lastSpawned);
+                sim.addAgent(lastSpawned, true);
+                setLastSpawnFrame(frame);
+                spawnNumber--;
+            }
+        }
+    }
+
+    private void setInitialVelocity(Agent agent) {
+        if (alignment == alignment.VERTICAL) {
+            if (direction == direction.LEFT) {
+                agent.setXVelocity(-spawnAgentVelocity);
+            } else { // RIGHT
+                agent.setXVelocity(spawnAgentVelocity);
+            }
+        } else {
+            if (direction == direction.LEFT) { // UP
+                agent.setYVelocity(-spawnAgentVelocity);
+            } else { // DOWN
+                agent.setYVelocity(spawnAgentVelocity);
+            }
+        }
+    }
 }
