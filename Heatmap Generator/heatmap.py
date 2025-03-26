@@ -1,39 +1,50 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import os
+
+#README: To use this just put the agent output files into the Agent Files folder and run the script. It will output a csv file with the heatmap data.
+# use excel to turn that into a colorful one afterwards :)
 
 def read_csv_files(directory):
     """Read all CSV files in the given directory and return a concatenated DataFrame."""
     dfs = []
-    # dfs.append("x,y")  # Add header to the list
     for filename in os.listdir(directory):
         if filename.endswith('.csv'):
             df = pd.read_csv(os.path.join(directory, filename))
+            df.columns = ['x', 'y']
             dfs.append(df)
     return pd.concat(dfs, ignore_index=True)
 
-def plot_coordinates(df):
-    """Plot the coordinates from the DataFrame."""
-    print("DataFrame columns:", df.columns)  # Debugging step
-    # Check if columns 'x' and 'y' exist with exact names
-    if 'x' not in df.columns or 'y' not in df.columns:
-        # Try to find columns with similar names (case-insensitive and stripping spaces)
-        df.columns = df.columns.str.strip().str.lower()
-        if 'x' not in df.columns or 'y' not in df.columns:
-            raise KeyError("The DataFrame does not contain 'x' and 'y' columns.")
+def count_numbers(df):
+    """Count duplicate rows in the DataFrame and return a table of distinct rows with their counts."""
+    # Count occurrences of each distinct row
+    counts = df.value_counts().reset_index()
+    counts.columns = list(df.columns) + ['count']  # Rename columns to include 'count'
+    return counts
+
+
+def max_value(dt):
+    """Return the maximum value in the 'count' column of the DataFrame."""
+    return dt['count'].max()
+
+def convert_count_to_table(dt):
+    max_x = dt['x'].max()
+    max_y = dt['y'].max()
     
-    plt.figure(figsize=(10, 8))
-    sns.kdeplot(data=df, x='x', y='y', cmap='viridis', fill=True, bw_adjust=.5)
-    plt.gca().invert_yaxis()  # Invert y-axis if necessary
-    plt.title('Heatmap of Coordinate Frequencies')
-    plt.xlabel('X Coordinate')
-    plt.ylabel('Y Coordinate')
-    plt.show()
+    matrix = np.zeros((max_x + 1, max_y + 1), dtype=int)
+    
+    for _, row in dt.iterrows():
+        x, y, count = int(row['x']), int(row['y']), int(row['count'])
+        matrix[x, y] = count
+        
+    return matrix
+
 
 if __name__ == "__main__":
     directory = './Agent Files'  # Replace with the path to your CSV files
     df = read_csv_files(directory)
-    print(df)
-    plot_coordinates(df)
+    dt = count_numbers(df)
+    max = max_value(dt)
+    dm = convert_count_to_table(dt)
+    print(dm)
+    np.savetxt("output_heatmap.csv", dm, delimiter=",", fmt='%d')
