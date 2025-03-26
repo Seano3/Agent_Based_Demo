@@ -5,3 +5,4 @@ PopulationSimulation/inputfiles/*
 !PopulationSimulation/inputfiles/.gitkeep
 out
 AgentInputGenerator/agent-input.csv
+HeatmapGenerator/Agent-Files/*

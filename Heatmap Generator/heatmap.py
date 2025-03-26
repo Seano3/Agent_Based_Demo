@@ -28,8 +28,9 @@ def max_value(dt):
     return dt['count'].max()
 
 def convert_count_to_table(dt):
-    max_x = dt['x'].max()
-    max_y = dt['y'].max()
+    #Max Size of the Simulation
+    max_x = 1100
+    max_y = 720
     
     matrix = np.zeros((max_x + 1, max_y + 1), dtype=int)
     
@@ -41,7 +42,7 @@ def convert_count_to_table(dt):
 
 
 if __name__ == "__main__":
-    directory = './Agent Files'  # Replace with the path to your CSV files
+    directory = './Agent-Files'  # Replace with the path to your CSV files
     df = read_csv_files(directory)
     dt = count_numbers(df)
     max = max_value(dt)

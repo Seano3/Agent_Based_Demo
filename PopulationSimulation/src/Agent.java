@@ -52,18 +52,14 @@ public class Agent {
         this.sim = sim;
         this.color = new Color((int) (Math.random() * 0x1000000));
 
-        csvName = "src/AgentCSVs/Agent-" + AgentID + ".csv";
+        csvName = "PopulationSimulation/outputfiles/AgentCSVs/Agent-" + AgentID + ".csv";
 
         try (FileWriter writer = new FileWriter(csvName)) {
-            writer.write(AgentID + ","
-                    + size + ","
-                    + location.getX() + ","
-                    + location.getY() + ","
-                    + xVelocity + ","
-                    + yVelocity);
+            writer.write(location.getX() + ","
+                    + location.getY());
             writer.write("\n");
         } catch (IOException e) {
-            //System.err.println("Error writing to CSV file: " + e.getMessage());
+            System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
 
@@ -103,9 +99,9 @@ public class Agent {
         return size * 1.25 / 0.255;
     }
 
-
     /**
-     * <p> Updates the velocity of the agent based on the vector map </p>
+     * <p>
+     * Updates the velocity of the agent based on the vector map </p>
      *
      * @param scaleOveride boolean to override the scaling of the velocity
      */
@@ -116,122 +112,122 @@ public class Agent {
         int xMeter = (int) location.getX();
         int[][] map = sim.vectorMap;
 
-        if (!inSpawn){
-        if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
-            int center = map[yMeter][xMeter];
-            int north = map[yMeter - 1][xMeter];
-            int south = map[yMeter + 1][xMeter];
-            int east = map[yMeter][xMeter + 1];
-            int west = map[yMeter][xMeter - 1];
-            int northEast = map[yMeter - 1][xMeter + 1];
-            int northWest = map[yMeter - 1][xMeter - 1];
-            int southEast = map[yMeter + 1][xMeter + 1];
-            int southWest = map[yMeter + 1][xMeter - 1];
+        if (!inSpawn) {
+            if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+                int center = map[yMeter][xMeter];
+                int north = map[yMeter - 1][xMeter];
+                int south = map[yMeter + 1][xMeter];
+                int east = map[yMeter][xMeter + 1];
+                int west = map[yMeter][xMeter - 1];
+                int northEast = map[yMeter - 1][xMeter + 1];
+                int northWest = map[yMeter - 1][xMeter - 1];
+                int southEast = map[yMeter + 1][xMeter + 1];
+                int southWest = map[yMeter + 1][xMeter - 1];
 
-            // System.out.println("\nAgent ID: " + AgentID);
-            // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
-            // System.out.println("[" + east + "][" + center + "][" + west + "]");
-            // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-            // System.out.println("X " + xMeter + " Y " + yMeter);
-            //final int Divisor = 4;
-            List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
-            Collections.sort(values);
+                // System.out.println("\nAgent ID: " + AgentID);
+                // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
+                // System.out.println("[" + east + "][" + center + "][" + west + "]");
+                // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+                // System.out.println("X " + xMeter + " Y " + yMeter);
+                //final int Divisor = 4;
+                List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
+                Collections.sort(values);
 
-            int smallest = values.get(choice);
+                int smallest = values.get(choice);
 
-            if (smallest == 0) {
-                //updateLocation();
-                //System.out.println("Agent " + AgentID + " is at door");
-                return;
-            }
+                if (smallest == 0) {
+                    //updateLocation();
+                    //System.out.println("Agent " + AgentID + " is at door");
+                    return;
+                }
 
-            if (smallest == Integer.MAX_VALUE) {
-                choiceMove = 8;
-                return;
-            }
+                if (smallest == Integer.MAX_VALUE) {
+                    choiceMove = 8;
+                    return;
+                }
 
-            if (values.contains(Integer.MAX_VALUE)) {
-                Divisor = 1;
-            }
+                if (values.contains(Integer.MAX_VALUE)) {
+                    Divisor = 1;
+                }
 
-            if (Math.abs(xVelocity) + Math.abs(yVelocity) < targetVelocity / 5) {
-                Divisor = 1;
-            }
+                if (Math.abs(xVelocity) + Math.abs(yVelocity) < targetVelocity / 5) {
+                    Divisor = 1;
+                }
 
-            double transferedVelx = ((Math.abs(xVelocity) / Divisor));
-            double transferedVely = ((Math.abs(yVelocity) / Divisor));
+                double transferedVelx = ((Math.abs(xVelocity) / Divisor));
+                double transferedVely = ((Math.abs(yVelocity) / Divisor));
 
-            double transferedVel = (transferedVelx + transferedVely);
+                double transferedVel = (transferedVelx + transferedVely);
 
-            xVelocity = reduceMagnitude(xVelocity, transferedVelx);
-            //System.out.println("X: " + xVelocity + " change by " + xVelocity / DIVISOR);
-            yVelocity = reduceMagnitude(yVelocity, transferedVely);
-            //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DIVISOR);
+                xVelocity = reduceMagnitude(xVelocity, transferedVelx);
+                //System.out.println("X: " + xVelocity + " change by " + xVelocity / DIVISOR);
+                yVelocity = reduceMagnitude(yVelocity, transferedVely);
+                //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DIVISOR);
 
-            if (timeSinceLastWallCollision > 5) {
-                if (smallest == north) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going North");
+                if (timeSinceLastWallCollision > 5) {
+                    if (smallest == north) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going North");
+                        }
+                        yVelocity -= transferedVel;
+                        xDirection = -1;
+                        yDirection = 0;
+                    } else if (smallest == south) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going South");
+                        }
+                        yVelocity += transferedVel;
+                        yDirection = 1;
+                        xDirection = 0;
+                    } else if (smallest == west) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going West");
+                        }
+                        xVelocity -= transferedVel;
+                        xDirection = -1;
+                        yDirection = 0;
+                    } else if (smallest == east) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going East");
+                        }
+                        xVelocity += transferedVel;
+                        xDirection = 1;
+                        yDirection = 0;
+                    } else if (smallest == northEast) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going North East");
+                        }
+                        yVelocity -= transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                        yDirection = -1;
+                        xDirection = 1;
+                    } else if (smallest == northWest) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going North West");
+                        }
+                        yVelocity -= transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                        xDirection = -1;
+                        yDirection = -1;
+                    } else if (smallest == southEast) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going South East");
+                        }
+                        yVelocity += transferedVel / 2;
+                        xVelocity += transferedVel / 2;
+                        xDirection = 1;
+                        yDirection = 1;
+                    } else if (smallest == southWest) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going South West");
+                        }
+                        yVelocity += transferedVel / 2;
+                        xVelocity -= transferedVel / 2;
+                        xDirection = -1;
+                        yDirection = 1;
                     }
-                    yVelocity -= transferedVel;
-                    xDirection = -1;
-                    yDirection = 0;
-                } else if (smallest == south) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going South");
-                    }
-                    yVelocity += transferedVel;
-                    yDirection = 1;
-                    xDirection = 0;
-                } else if (smallest == west) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going West");
-                    }
-                    xVelocity -= transferedVel;
-                    xDirection = -1;
-                    yDirection = 0;
-                } else if (smallest == east) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going East");
-                    }
-                    xVelocity += transferedVel;
-                    xDirection = 1;
-                    yDirection = 0;
-                } else if (smallest == northEast) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going North East");
-                    }
-                    yVelocity -= transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                    yDirection = -1;
-                    xDirection = 1;
-                } else if (smallest == northWest) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going North West");
-                    }
-                    yVelocity -= transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
-                    xDirection = -1;
-                    yDirection = -1;
-                } else if (smallest == southEast) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going South East");
-                    }
-                    yVelocity += transferedVel / 2;
-                    xVelocity += transferedVel / 2;
-                    xDirection = 1;
-                    yDirection = 1;
-                } else if (smallest == southWest) {
-                    if (AgentID == scanningAgent) {
-                        System.out.println("Going South West");
-                    }
-                    yVelocity += transferedVel / 2;
-                    xVelocity -= transferedVel / 2;
-                    xDirection = -1;
-                    yDirection = 1;
                 }
             }
-        }
 
             if (xVelocity + yVelocity == 0) { // small fix for agents spawning at standstill
                 xVelocity = 0.1;
@@ -258,7 +254,9 @@ public class Agent {
     }
 
     /**
-     * <p> Scales the X velocity of the agent based on the scale factor and the current velocity</p>
+     * <p>
+     * Scales the X velocity of the agent based on the scale factor and the
+     * current velocity</p>
      *
      * @param scaleFactor The scale factor to multiply the velocity by
      * @param scaleOveride boolean to override the scaling of the velocity
@@ -273,7 +271,9 @@ public class Agent {
     }
 
     /**
-     * <p> Scales the Y velocity of the agent based on the scale factor and the current velocity</p>
+     * <p>
+     * Scales the Y velocity of the agent based on the scale factor and the
+     * current velocity</p>
      *
      * @param scaleFactor The scale factor to multiply the velocity by
      * @param scaleOveride boolean to override the scaling of the velocity
@@ -371,7 +371,8 @@ public class Agent {
     }
 
     /**
-     * <p> Checks if the agent is in an exit </p>
+     * <p>
+     * Checks if the agent is in an exit </p>
      *
      * @param exits list of all exits in the simulation
      * @return the exit the agent is in
@@ -388,7 +389,8 @@ public class Agent {
     }
 
     /**
-     * <p> Checks if the agent is in a spawn </p>
+     * <p>
+     * Checks if the agent is in a spawn </p>
      *
      * @param spawns list of all exits in the simulation
      * @return the spawn the agent is in
@@ -563,16 +565,14 @@ public class Agent {
     }
 
     /**
-     * <p> Writes the agent data to a CSV file </p>
+     * <p>
+     * Writes the agent data to a CSV file </p>
      */
     private void updateCSV() {
+        //System.out.println("Updating CSV to " + csvName);
         try (FileWriter writer = new FileWriter(csvName, true)) {
-            writer.write(AgentID + ","
-                    + size + ","
-                    + location.getX() + ","
-                    + location.getY() + ","
-                    + xVelocity + ","
-                    + yVelocity);
+            writer.write((int) location.getX() + ","
+                    + (int) location.getY());
             writer.write("\n");
         } catch (IOException e) {
             //System.err.println("Error writing to CSV file: " + e.getMessage());
@@ -580,7 +580,8 @@ public class Agent {
     }
 
     /**
-     * <p> Reduces the magnitude of a value by a certain amount </p>
+     * <p>
+     * Reduces the magnitude of a value by a certain amount </p>
      *
      * @param value Value to be reduced
      * @param reduction Amount to reduce the value by
@@ -599,7 +600,8 @@ public class Agent {
     }
 
     /**
-     * <p> Checks if two values have the same sign </p>
+     * <p>
+     * Checks if two values have the same sign </p>
      *
      * @param value1 First value to compare
      * @param value2 Second value to compare
