@@ -20,9 +20,13 @@ public class vectorMapGen {
         return x >= 0 && x < LENGTH && y >= 0 && y < HEIGHT;
     }
 
-    public int getHeight() { return HEIGHT; }
-    public int getLength() { return LENGTH; }
+    public int getHeight() {
+        return HEIGHT;
+    }
 
+    public int getLength() {
+        return LENGTH;
+    }
 
     public vectorMapGen(Simulation sim) {
         agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize() + 5); // assumes agents are present, round up to prevent bugs
@@ -74,7 +78,7 @@ public class vectorMapGen {
                     yIter += ySize / linePasses;
                     i++;
                     if (i == 250) {
-                        System.out.println("Added obs to vector map");
+                        //System.out.println("Added obs to vector map");
                     }
                 }
             } else if (Box.class.isAssignableFrom(OBS.getClass())) {
@@ -292,18 +296,22 @@ public class vectorMapGen {
         int height = (int) box.getHeight();
         for (int i = 0; i < width; i++) { // horizontals
             for (int j = -agentScale; j < agentScale; j++) {
-                if (inBounds(x + i, y + j))
+                if (inBounds(x + i, y + j)) {
                     map[x + i][y + j] = -1;
-                if (inBounds(x + i, y + height + j))
+                }
+                if (inBounds(x + i, y + height + j)) {
                     map[x + i][y + height + j] = -1;
+                }
             }
         }
         for (int i = 0; i < height; i++) { // verticals
             for (int j = -agentScale; j < agentScale; j++) {
-                if (inBounds(x + j, y + i))
+                if (inBounds(x + j, y + i)) {
                     map[x + j][y + i] = -1;
-                if (inBounds(x + width + j, y + i))
+                }
+                if (inBounds(x + width + j, y + i)) {
                     map[x + width + j][y + i] = -1;
+                }
             }
         }
 
