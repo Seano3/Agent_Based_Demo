@@ -24,7 +24,7 @@ public class Agent {
     private int xDirection;
     private int yDirection;
     public boolean inExit;
-    private int scanningAgent = -1;
+    private int scanningAgent = 3;
     private int blockedTimer;
 
     /**
@@ -512,42 +512,42 @@ public class Agent {
         double newY = location.getY() + (yVelocity * TIME_STEP);
         //Divisor = 8;
         //updateVelocity(false);
-        if (!inSpawn) {
-            for (Agent i : otherAgents) {
-                // System.out.println(i.AgentID != this.AgentID);
-                if (i.AgentID != this.AgentID) {
-                    double dx = i.getLocation().getX() - newX;
-                    double dy = i.getLocation().getY() - newY;
-                    double distance = Math.sqrt(dx * dx + dy * dy);
+        for (Agent i : otherAgents) {
+            // System.out.println(i.AgentID != this.AgentID);
+            if (i.AgentID != this.AgentID) {
+                double dx = i.getLocation().getX() - newX;
+                double dy = i.getLocation().getY() - newY;
+                double distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < ((i.getSize() + this.getSize()))) {
-                        if (choiceMove <= 7) {
-                            Divisor = 1;
-                            choiceMove++;
-                            if (AgentID == scanningAgent) {
-                                System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
-                            }
-                            checkAgents(otherAgents);
-                            return;
-                        } else {
-                            if (AgentID == scanningAgent) {
-                                System.out.println(AgentID + " is blocked");
-                            }
-                            blockedTimer++;
-                            if (blockedTimer > 10) {
-                                choiceMove = 0;
-                                blockedTimer = 0;
-                                //scaleBuffer = (int) this.size / 4;
-                            } else {
-                                choiceMove = 0;
-                            }
-                            return;
+                if (distance < ((i.getSize() + this.getSize()))) {
+                    if (choiceMove <= 7) {
+                        Divisor = 1;
+                        choiceMove++;
+                        if (AgentID == scanningAgent) {
+                            System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
                         }
+                        checkAgents(otherAgents);
+                        return;
+                    } else {
+                        if (AgentID == scanningAgent) {
+                            System.out.println(AgentID + " is blocked");
+                        }
+                        blockedTimer++;
+                        if (blockedTimer > 10) {
+                            choiceMove = 0;
+                            blockedTimer = 0;
+                            //scaleBuffer = (int) this.size / 4;
+                        } else {
+                            choiceMove = 0;
+                        }
+                        return;
                     }
                 }
             }
         }
-        //System.out.println("Moving " + AgentID);
+        if (inSpawn && choiceMove <= 0) {
+            choiceMove = 10;
+        }
 
         updateLocation();
     }

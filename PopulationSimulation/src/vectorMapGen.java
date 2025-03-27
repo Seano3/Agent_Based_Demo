@@ -11,6 +11,7 @@ public class vectorMapGen {
 
     private final int LENGTH;
     private final int HEIGHT;
+    private LinkedList<Spawn> spawnList;
     private static final int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // these set the {dx dy} for each possible jump in the BFS algo
     private int[][] results;
     int[][] map;
@@ -33,7 +34,7 @@ public class vectorMapGen {
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
         map = new int[LENGTH][HEIGHT];
-
+        spawnList = sim.getSpawns();
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
         for (int x = 0; x < LENGTH; x++) { //INIT whole map
             for (int y = 0; y < HEIGHT; y++) {
@@ -88,6 +89,7 @@ public class vectorMapGen {
                 }
             }
         }
+
     }
 
     public int[][] calculateMap() {
@@ -246,6 +248,7 @@ public class vectorMapGen {
         }
     }
 
+
     public void addLineVM(Line line) {
         int x1 = (int) line.getLocation().getX();
         int y1 = (int) line.getLocation().getY();
@@ -299,8 +302,8 @@ public class vectorMapGen {
                 int linePasses = 250;
                 int i = 0;
                 while (i < linePasses) {
-                    for (int j = (int) xIter - agentScale; j < (int) xIter + agentScale; j++) {
-                        for (int k = (int) yIter - agentScale; k < (int) yIter + agentScale; k++) {
+                    for (int j = (int) (xIter - agentScale / 2.0)+2; j < (int) (xIter + agentScale / 2.0)+2; j++) {
+                        for (int k = (int) (yIter - agentScale / 2.0)+2; k < (int) (yIter + agentScale / 2.0)+2; k++) {
                             if (inBounds(j, k)) {
                                 map[j][k] = -1;
                             }
