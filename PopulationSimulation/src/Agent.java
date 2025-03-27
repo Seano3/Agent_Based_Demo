@@ -24,7 +24,7 @@ public class Agent {
     private int xDirection;
     private int yDirection;
     public boolean inExit;
-    private int scanningAgent = -1;
+    private int scanningAgent = 9;
     private int blockedTimer;
 
     /**
@@ -230,22 +230,22 @@ public class Agent {
             }
 
             if (xVelocity + yVelocity == 0) { // small fix for agents spawning at standstill
-                xVelocity = 0.1;
-                yVelocity = 0.1;
+                xVelocity = Agent.getTargetVelocity(size) / 2;
+                yVelocity = Agent.getTargetVelocity(size) / 2;
             }
 
             double currentMagnitude = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity); // Set your desired magnitude
             double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
 
-            scaleXVelocity(scaleFactor, scaleOveride);
-            scaleYVelocity(scaleFactor, scaleOveride);
-
             if (AgentID == scanningAgent) {
                 System.out.println("X: " + xVelocity + " Y: " + yVelocity);
                 System.out.println("Scale Factor " + scaleFactor + " Target Velocity " + targetVelocity + " Current Magnitude " + currentMagnitude);
             }
 
+            scaleXVelocity(scaleFactor, scaleOveride);
+            scaleYVelocity(scaleFactor, scaleOveride);
+            
             if (xVelocity + yVelocity < targetVelocity / Divisor) {
                 Divisor = 1;
             }
@@ -498,6 +498,45 @@ public class Agent {
         timeSinceLastWallCollision = 0;
     }
 
+    private int chooseMove(LinkedList<Agent> otherAgents) {
+        double newX = location.getX() + (xVelocity * TIME_STEP);
+        double newY = location.getY() + (yVelocity * TIME_STEP);
+        for (Agent i : otherAgents) {
+            // System.out.println(i.AgentID != this.AgentID);
+            if (i.AgentID != this.AgentID) {
+                double dx = i.getLocation().getX() - newX;
+                double dy = i.getLocation().getY() - newY;
+                double distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < ((i.getSize() + this.getSize()))) {
+                    if (choiceMove <= 7) {
+                        Divisor = 1;
+                        choiceMove++;
+                        if (AgentID == scanningAgent) {
+                            System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
+                        }
+                        checkAgents(otherAgents);
+                        return choiceMove;
+                    } else {
+                        if (AgentID == scanningAgent) {
+                            System.out.println(AgentID + " is blocked");
+                        }
+                        blockedTimer++;
+                        if (blockedTimer > 10) {
+                            choiceMove = 0;
+                            blockedTimer = 0;
+                            //scaleBuffer = (int) this.size / 4;
+                        } else {
+                            choiceMove = 0;
+                        }
+                        return choiceMove;
+                    }
+                }
+            }
+        }
+        return choiceMove;
+    }
+
     /**
      * <p>
      * Checks the collision with each other agent and changes the velocity
@@ -508,47 +547,12 @@ public class Agent {
     private void checkAgents(LinkedList< Agent> otherAgents) {
         //Divisor = 1;
         updateVelocity(false);
-        double newX = location.getX() + (xVelocity * TIME_STEP);
-        double newY = location.getY() + (yVelocity * TIME_STEP);
+        choiceMove = chooseMove(otherAgents);
         //Divisor = 8;
         //updateVelocity(false);
-        if (!inSpawn) {
-            for (Agent i : otherAgents) {
-                // System.out.println(i.AgentID != this.AgentID);
-                if (i.AgentID != this.AgentID) {
-                    double dx = i.getLocation().getX() - newX;
-                    double dy = i.getLocation().getY() - newY;
-                    double distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < ((i.getSize() + this.getSize()))) {
-                        if (choiceMove <= 7) {
-                            Divisor = 1;
-                            choiceMove++;
-                            if (AgentID == scanningAgent) {
-                                System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
-                            }
-                            checkAgents(otherAgents);
-                            return;
-                        } else {
-                            if (AgentID == scanningAgent) {
-                                System.out.println(AgentID + " is blocked");
-                            }
-                            blockedTimer++;
-                            if (blockedTimer > 10) {
-                                choiceMove = 0;
-                                blockedTimer = 0;
-                                //scaleBuffer = (int) this.size / 4;
-                            } else {
-                                choiceMove = 0;
-                            }
-                            return;
-                        }
-                    }
-                }
-            }
+        if (inSpawn && choiceMove != 0) {
+            choiceMove = 10;
         }
-        //System.out.println("Moving " + AgentID);
-
         updateLocation();
     }
 
