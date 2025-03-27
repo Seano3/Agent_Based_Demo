@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 #README: To use this just put the agent output files into the Agent Files folder and run the script. It will output a csv file with the heatmap data.
 # use excel to turn that into a colorful one afterwards :)
@@ -47,5 +48,18 @@ if __name__ == "__main__":
     dt = count_numbers(df)
     max = max_value(dt)
     dm = convert_count_to_table(dt)
+    
+    dm = np.rot90(dm, k=1)
+    
     print(dm)
     np.savetxt("output_heatmap.csv", dm, delimiter=",", fmt='%d')
+    
+    normalized_dm = dm / max
+    plt.imshow(normalized_dm, cmap='Reds', origin='lower')
+    plt.colorbar(label='Intensity')  # Add a color bar to show the scale
+    plt.title("Heatmap")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    
+    plt.savefig("output_heatmap.png")
+    plt.show()
