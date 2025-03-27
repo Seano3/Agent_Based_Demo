@@ -57,36 +57,7 @@ public class vectorMapGen {
 
         // public Line(Location location, Location endpoint, double Force) {
         // Line(sim.width / 2, 0), sim.width / 2, sim.height));
-        for (Obstacle OBS : sim.getObstacles()) {
-            if (Line.class.isAssignableFrom(OBS.getClass())) {
-                Line line = (Line) OBS;
-                double xSize = line.getEndpoint().getX() - line.getLocation().getX();
-                double ySize = line.getEndpoint().getY() - line.getLocation().getY();
-                double xIter = line.getLocation().getX();
-                double yIter = line.getLocation().getY();
-                int linePasses = 250;
-                int i = 0;
-                while (i < linePasses) {
-                    for (int j = (int) xIter - agentScale; j < (int) xIter + agentScale; j++) {
-                        for (int k = (int) yIter - agentScale; k < (int) yIter + agentScale; k++) {
-                            if (inBounds(j, k)) {
-                                map[j][k] = -1;
-                            }
-                        }
-                    }
-                    xIter += xSize / linePasses;
-                    yIter += ySize / linePasses;
-                    i++;
-                    if (i == 250) {
-                        //System.out.println("Added obs to vector map");
-                    }
-                }
-            } else if (Box.class.isAssignableFrom(OBS.getClass())) {
-                addBoxObsticle((Box) OBS);
-            } else { // HOLY SHIT THIS IS BAD CAPTAIN THE SHIP IS GOING DOWN
-                System.exit(-1138);
-            }
-        }
+        addObsitcle(sim);
 
         for (Exit exit : sim.getExits()) {
             int xPos = (int) exit.getLocation().getX();
@@ -317,11 +288,36 @@ public class vectorMapGen {
 
     }
 
-    public void addLineObsiticle(Line line) {
-
-    }
-
-    public void addObsitcle() {
-
+    public void addObsitcle(Simulation sim) {
+        for (Obstacle OBS : sim.getObstacles()) {
+            if (Line.class.isAssignableFrom(OBS.getClass())) {
+                Line line = (Line) OBS;
+                double xSize = line.getEndpoint().getX() - line.getLocation().getX();
+                double ySize = line.getEndpoint().getY() - line.getLocation().getY();
+                double xIter = line.getLocation().getX();
+                double yIter = line.getLocation().getY();
+                int linePasses = 250;
+                int i = 0;
+                while (i < linePasses) {
+                    for (int j = (int) xIter - agentScale; j < (int) xIter + agentScale; j++) {
+                        for (int k = (int) yIter - agentScale; k < (int) yIter + agentScale; k++) {
+                            if (inBounds(j, k)) {
+                                map[j][k] = -1;
+                            }
+                        }
+                    }
+                    xIter += xSize / linePasses;
+                    yIter += ySize / linePasses;
+                    i++;
+                    if (i == 250) {
+                        //System.out.println("Added obs to vector map");
+                    }
+                }
+            } else if (Box.class.isAssignableFrom(OBS.getClass())) {
+                addBoxObsticle((Box) OBS);
+            } else { // HOLY SHIT THIS IS BAD CAPTAIN THE SHIP IS GOING DOWN
+                System.exit(-1138);
+            }
+        }
     }
 }

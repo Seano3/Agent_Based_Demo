@@ -30,8 +30,8 @@ def max_value(dt):
 
 def convert_count_to_table(dt):
     #Max Size of the Simulation
-    max_x = 1100
-    max_y = 720
+    max_x = 110
+    max_y = 72
     
     matrix = np.zeros((max_x + 1, max_y + 1), dtype=int)
     
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     max = max_value(dt)
     dm = convert_count_to_table(dt)
     
-    dm = np.rot90(dm, k=1)
+    dm = np.rot90(dm, k=1) #Rotate 90 becuase our origin is at the upper left rather than bottem left
     
     print(dm)
     np.savetxt("output_heatmap.csv", dm, delimiter=",", fmt='%d')
@@ -58,8 +58,8 @@ if __name__ == "__main__":
     plt.imshow(normalized_dm, cmap='Reds', origin='lower')
     plt.colorbar(label='Intensity')  # Add a color bar to show the scale
     plt.title("Heatmap")
-    plt.xlabel("X")
-    plt.ylabel("Y")
+    # plt.xlabel("X")
+    # plt.ylabel("Y")
     
     plt.savefig("output_heatmap.png")
     plt.show()
