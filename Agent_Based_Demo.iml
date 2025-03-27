@@ -14,8 +14,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
     </content>
-    <orderEntry type="jdk" jdkName="openjdk-20" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="corretto-22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Python 3.12 (Agent_Based_Demo) interpreter library" level="application" />
   </component>
 </module>
