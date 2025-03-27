@@ -57,7 +57,7 @@ public class vectorMapGen {
 
         // public Line(Location location, Location endpoint, double Force) {
         // Line(sim.width / 2, 0), sim.width / 2, sim.height));
-        addObsitcle(sim);
+        addObsitcles(sim);
 
         for (Exit exit : sim.getExits()) {
             int xPos = (int) exit.getLocation().getX();
@@ -288,7 +288,7 @@ public class vectorMapGen {
 
     }
 
-    public void addObsitcle(Simulation sim) {
+    public void addObsitcles(Simulation sim) {
         for (Obstacle OBS : sim.getObstacles()) {
             if (Line.class.isAssignableFrom(OBS.getClass())) {
                 Line line = (Line) OBS;
