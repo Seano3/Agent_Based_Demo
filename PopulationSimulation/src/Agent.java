@@ -25,6 +25,7 @@ public class Agent {
     private int yDirection;
     public boolean inExit;
     private int scanningAgent = 3;
+    private int scanningAgent = 3;
     private int blockedTimer;
 
     /**
