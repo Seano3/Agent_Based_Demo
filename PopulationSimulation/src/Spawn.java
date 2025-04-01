@@ -1,6 +1,13 @@
+
 public class Spawn {
-    public enum alignment {VERTICAL, HORIZONTAL}; // will need to be reworked to support angled exits
-    public enum direction {LEFT, RIGHT};
+
+    public enum alignment {
+        VERTICAL, HORIZONTAL
+    }; // will need to be reworked to support angled exits
+
+    public enum direction {
+        LEFT, RIGHT
+    };
 
     private int size;
     private Spawn.alignment alignment;
@@ -23,12 +30,12 @@ public class Spawn {
      * @param alignment Vertical or Horizontal, 0 for vertical, 1 for horizontal
      * @param spawnRateInterval Number of frames between spawns
      * @param spawnAgentSize Size of spawned agents
-     * @param direction Direction spawning takes place relative to center of spawn, 0 for left or up, 1 for right or down
+     * @param direction Direction spawning takes place relative to center of
+     * spawn, 0 for left or up, 1 for right or down
      * @param spawnDelay Number of frames before first spawn
      * @param spawnNumber Number of agents to spawn, -1 for infinite
      */
-
-    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, Spawn.direction direction, int spawnDelay ,int spawnNumber) {
+    public Spawn(int size, Location location, Spawn.alignment alignment, int spawnRateInterval, double spawnAgentSize, Spawn.direction direction, int spawnDelay, int spawnNumber) {
         this.size = size;
         this.location = location;
         this.alignment = alignment;
@@ -41,9 +48,9 @@ public class Spawn {
         this.spawnNumber = spawnNumber;
         this.spawnAgentVelocity = Agent.getTargetVelocity(spawnAgentSize);
         if (alignment == alignment.VERTICAL) {
-            this.centerLocation = new Location(location.getX(), location.getY() + (double) size /2);
+            this.centerLocation = new Location(location.getX(), location.getY() + (double) size / 2);
         } else {
-            this.centerLocation = new Location(location.getX() + (double) size /2, location.getY());
+            this.centerLocation = new Location(location.getX() + (double) size / 2, location.getY());
         }
     }
 
@@ -59,13 +66,17 @@ public class Spawn {
         return alignment;
     }
 
-    public Spawn.direction getDirection() { return direction; }
+    public Spawn.direction getDirection() {
+        return direction;
+    }
 
     public Location getLocation() {
         return location;
     }
 
-    public Location getCenterLocation() { return centerLocation; }
+    public Location getCenterLocation() {
+        return centerLocation;
+    }
 
     public int getLastSpawnFrame() {
         return lastSpawnFrame;
@@ -75,15 +86,21 @@ public class Spawn {
         return spawnAgentSize;
     }
 
-    public int getSpawnNumber() { return spawnNumber; }
+    public int getSpawnNumber() {
+        return spawnNumber;
+    }
 
-    public int getSpawnDelay() { return spawnDelay; }
+    public int getSpawnDelay() {
+        return spawnDelay;
+    }
 
     public void setLastSpawnFrame(int lastSpawnFrame) {
         this.lastSpawnFrame = lastSpawnFrame;
     }
 
-    public void setSpawnNumber(int spawnNumber) { this.spawnNumber = spawnNumber; }
+    public void setSpawnNumber(int spawnNumber) {
+        this.spawnNumber = spawnNumber;
+    }
 
     public boolean getIsActivelySpawning() {
         return isActivelySpawning;
@@ -119,15 +136,30 @@ public class Spawn {
         }
     }
 
+    private boolean spawnClear(Simulation sim) {
+        for (Agent agent : sim.getAgents()) {
+            double dx = agent.getLocation().getX() - centerLocation.getX();
+            double dy = agent.getLocation().getY() - centerLocation.getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < spawnAgentSize + agent.getSize()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void updateSpawner(int frame, Simulation sim) {
         if (frame - lastSpawnFrame >= spawnRateInterval && isActivelySpawning && (spawnNumber != 0) && (spawnDelay < frame)) {
             // Spawn a new agent if the previous agent has left the spawn
-            if (lastSpawned == null || !inSpawn(lastSpawned)) {
-                lastSpawned = new Agent(sim.getLifetimeAgentCount(), spawnAgentSize, centerLocation.getX(), centerLocation.getY(), 0, 0, sim);
-                setInitialVelocity(lastSpawned);
-                sim.addAgent(lastSpawned, true);
-                setLastSpawnFrame(frame);
-                spawnNumber--;
+            if (spawnClear(sim)) {
+                {
+                    lastSpawned = new Agent(sim.getLifetimeAgentCount(), spawnAgentSize, centerLocation.getX(), centerLocation.getY(), 0, 0, sim);
+                    setInitialVelocity(lastSpawned);
+                    sim.addAgent(lastSpawned, true);
+                    setLastSpawnFrame(frame);
+                    spawnNumber--;
+                }
             }
         }
     }

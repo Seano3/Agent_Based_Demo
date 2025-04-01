@@ -37,7 +37,7 @@ public class vectorMapGen {
         //THESE THREE ARE APPLIED TO EVREY MAP AND ARE NOT HARD CODED BECUASE THEY ARE NESSICARY FOR FUNCTION
         for (int x = 0; x < LENGTH; x++) { //INIT whole map
             for (int y = 0; y < HEIGHT; y++) {
-                map[x][y] = Integer.MAX_VALUE;
+                map[x][y] = Integer.MAX_VALUE - 1;
             }
         }
 
@@ -69,7 +69,7 @@ public class vectorMapGen {
                             if (exit.buildingExit) {
                                 map[i][j] = 0;
                             } else {
-                                map[i][j] = Integer.MAX_VALUE;
+                                map[i][j] = Integer.MAX_VALUE - 1;
                             }
                         }
                     }
@@ -81,7 +81,7 @@ public class vectorMapGen {
                             if (exit.buildingExit) {
                                 map[j][i] = 0;
                             } else {
-                                map[j][i] = Integer.MAX_VALUE;
+                                map[j][i] = Integer.MAX_VALUE - 1;
                             }
                         }
                     }
@@ -124,7 +124,7 @@ public class vectorMapGen {
         // Initialize distances to Integer.MAX_VALUE
         for (int x = 0; x < distances.length; x++) {
             for (int y = 0; y < distances[0].length; y++) {
-                distances[x][y] = Integer.MAX_VALUE;
+                distances[x][y] = Integer.MAX_VALUE - 1;
             }
         }
 
@@ -201,9 +201,9 @@ public class vectorMapGen {
                         for (int j = -agentScale; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                             if (inBounds(k, j)) {
                                 if (y == 0) {
-                                    map[k][0 + j] = Integer.MAX_VALUE; //Exits on top of map
+                                    map[k][0 + j] = Integer.MAX_VALUE - 1; //Exits on top of map
                                 } else {
-                                    map[k][y - j] = Integer.MAX_VALUE; //Exits on bottom of map
+                                    map[k][y - j] = Integer.MAX_VALUE - 1; //Exits on bottom of map
                                 }
                             }
                         }
@@ -213,7 +213,7 @@ public class vectorMapGen {
                     // System.out.println("Exit not building exit");
                     for (int k = x + agentScale; k < x + size - agentScale; k++) {
                         for (int j = -agentScale; j < agentScale; j++) { //this for loop is the buffer zone on each side of the line.
-                            map[k][y + j] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                            map[k][y + j] = Integer.MAX_VALUE - 1; //Removes barrer marker in affected zones 
                         }
                     }
 
@@ -226,9 +226,9 @@ public class vectorMapGen {
                     for (int j = 0; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                         if (inBounds(k, j)) {
                             if (x == 0) {
-                                map[0 + j][k] = Integer.MAX_VALUE; //Exits on left of map
+                                map[0 + j][k] = Integer.MAX_VALUE - 1; //Exits on left of map
                             } else {
-                                map[x - j][k] = Integer.MAX_VALUE; //Exits on right of map
+                                map[x - j][k] = Integer.MAX_VALUE - 1; //Exits on right of map
                             }
                         }
                     }
@@ -238,7 +238,7 @@ public class vectorMapGen {
                 //  System.out.println("Exit not building exit");
                 for (int k = y + agentScale; k < y + size - agentScale; k++) {
                     for (int j = -agentScale; j < agentScale; j++) { //this for loop is the buffer zone on each side of the line.
-                        map[x + j][k] = Integer.MAX_VALUE; //Removes barrer marker in affected zones 
+                        map[x + j][k] = Integer.MAX_VALUE - 1; //Removes barrer marker in affected zones 
                     }
                 }
             }
@@ -289,6 +289,7 @@ public class vectorMapGen {
     }
 
     public void addObsitcles(Simulation sim) {
+        int bufferScale = agentScale;
         for (Obstacle OBS : sim.getObstacles()) {
             if (Line.class.isAssignableFrom(OBS.getClass())) {
                 Line line = (Line) OBS;
@@ -299,8 +300,8 @@ public class vectorMapGen {
                 int linePasses = 250;
                 int i = 0;
                 while (i < linePasses) {
-                    for (int j = (int) xIter - agentScale; j < (int) xIter + agentScale; j++) {
-                        for (int k = (int) yIter - agentScale; k < (int) yIter + agentScale; k++) {
+                    for (int j = (int) xIter - bufferScale; j < (int) xIter + bufferScale; j++) {
+                        for (int k = (int) yIter - bufferScale; k < (int) yIter + bufferScale; k++) {
                             if (inBounds(j, k)) {
                                 map[j][k] = -1;
                             }

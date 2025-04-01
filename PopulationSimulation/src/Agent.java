@@ -24,7 +24,7 @@ public class Agent {
     private int xDirection;
     private int yDirection;
     public boolean inExit;
-    private int scanningAgent = -1;
+    private int scanningAgent = 3;
     private int blockedTimer;
 
     /**
@@ -114,39 +114,58 @@ public class Agent {
 
         if (!inSpawn) {
             if (yMeter > 0 && yMeter < map.length - 1 && xMeter > 0 && xMeter < map[0].length - 1) {
+                DirectionList list = new DirectionList();
                 int center = map[yMeter][xMeter];
                 int north = map[yMeter - 1][xMeter];
+                list.addDirection("north", north);
                 int south = map[yMeter + 1][xMeter];
+                list.addDirection("south", south);
                 int east = map[yMeter][xMeter + 1];
+                list.addDirection("east", east);
                 int west = map[yMeter][xMeter - 1];
+                list.addDirection("west", west);
                 int northEast = map[yMeter - 1][xMeter + 1];
+                list.addDirection("northEast", northEast);
                 int northWest = map[yMeter - 1][xMeter - 1];
+                list.addDirection("northWest", northWest);
                 int southEast = map[yMeter + 1][xMeter + 1];
+                list.addDirection("southEast", southEast);
                 int southWest = map[yMeter + 1][xMeter - 1];
+                list.addDirection("southWest", southWest);
 
-                // System.out.println("\nAgent ID: " + AgentID);
-                // System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
-                // System.out.println("[" + east + "][" + center + "][" + west + "]");
-                // System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
-                // System.out.println("X " + xMeter + " Y " + yMeter);
+                if (AgentID == scanningAgent && choiceMove == 0) {
+                    System.out.println("[" + northWest + "][" + north + "][" + northEast + "]");
+                    System.out.println("[" + east + "][" + center + "][" + west + "]");
+                    System.out.println("[" + southWest + "][" + south + "][" + southEast + "]");
+                    System.out.println("X " + xMeter + " Y " + yMeter);
+                }
                 //final int Divisor = 4;
-                List<Integer> values = Arrays.asList(center, north, south, east, west, northEast, northWest, southEast, southWest);
-                Collections.sort(values);
+                list.sort();
 
-                int smallest = values.get(choice);
+                if (AgentID == scanningAgent) {
+                    System.out.println("Sorted List: ");
+                    System.out.println(list.toString());
+                }
 
-                if (smallest == 0) {
+                if (choice >= 8) {
+                    return;
+                }
+
+                Direction smallest = list.get(choice);
+                int smallestWeight = smallest.getWeight();
+
+                if (smallestWeight == 0) {
                     //updateLocation();
                     //System.out.println("Agent " + AgentID + " is at door");
                     return;
                 }
 
-                if (smallest == Integer.MAX_VALUE) {
+                if (smallestWeight == Integer.MAX_VALUE) { //This is actualy the only thing keeping spawners alive
                     choiceMove = 8;
                     return;
                 }
 
-                if (values.contains(Integer.MAX_VALUE)) {
+                if (list.nearWall()) {
                     Divisor = 1;
                 }
 
@@ -165,35 +184,35 @@ public class Agent {
                 //System.out.println("Y: " + yVelocity + " change by " + yVelocity / DIVISOR);
 
                 if (timeSinceLastWallCollision > 5) {
-                    if (smallest == north) {
+                    if (smallest.getDirection().equals("north")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going North");
                         }
                         yVelocity -= transferedVel;
                         xDirection = -1;
                         yDirection = 0;
-                    } else if (smallest == south) {
+                    } else if (smallest.getDirection().equals("south")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going South");
                         }
                         yVelocity += transferedVel;
                         yDirection = 1;
                         xDirection = 0;
-                    } else if (smallest == west) {
-                        if (AgentID == scanningAgent) {
-                            System.out.println("Going West");
-                        }
-                        xVelocity -= transferedVel;
-                        xDirection = -1;
-                        yDirection = 0;
-                    } else if (smallest == east) {
+                    } else if (smallest.getDirection().equals("east")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going East");
                         }
                         xVelocity += transferedVel;
                         xDirection = 1;
                         yDirection = 0;
-                    } else if (smallest == northEast) {
+                    } else if (smallest.getDirection().equals("west")) {
+                        if (AgentID == scanningAgent) {
+                            System.out.println("Going West");
+                        }
+                        xVelocity -= transferedVel;
+                        xDirection = -1;
+                        yDirection = 0;
+                    } else if (smallest.getDirection().equals("northEast")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going North East");
                         }
@@ -201,7 +220,7 @@ public class Agent {
                         xVelocity += transferedVel / 2;
                         yDirection = -1;
                         xDirection = 1;
-                    } else if (smallest == northWest) {
+                    } else if (smallest.getDirection().equals("northWest")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going North West");
                         }
@@ -209,7 +228,7 @@ public class Agent {
                         xVelocity -= transferedVel / 2;
                         xDirection = -1;
                         yDirection = -1;
-                    } else if (smallest == southEast) {
+                    } else if (smallest.getDirection().equals("southEast")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going South East");
                         }
@@ -217,7 +236,7 @@ public class Agent {
                         xVelocity += transferedVel / 2;
                         xDirection = 1;
                         yDirection = 1;
-                    } else if (smallest == southWest) {
+                    } else if (smallest.getDirection().equals("southWest")) {
                         if (AgentID == scanningAgent) {
                             System.out.println("Going South West");
                         }
@@ -238,12 +257,16 @@ public class Agent {
             double currentDirection = Math.atan2(yVelocity, xVelocity);
             double scaleFactor = targetVelocity / currentMagnitude;
 
+            if (AgentID == scanningAgent) {
+                System.out.println("X: " + xVelocity + " Y: " + yVelocity);
+                System.out.println("Scale Factor " + scaleFactor + " Target Velocity " + targetVelocity + " Current Magnitude " + currentMagnitude);
+            }
+
             scaleXVelocity(scaleFactor, scaleOveride);
             scaleYVelocity(scaleFactor, scaleOveride);
 
             if (AgentID == scanningAgent) {
-                System.out.println("X: " + xVelocity + " Y: " + yVelocity);
-                System.out.println("Scale Factor " + scaleFactor + " Target Velocity " + targetVelocity + " Current Magnitude " + currentMagnitude);
+                System.out.println("Scaled Velocity: X: " + xVelocity + " Y: " + yVelocity);
             }
 
             if (xVelocity + yVelocity < targetVelocity / Divisor) {
@@ -314,6 +337,9 @@ public class Agent {
         checkObstacles(sim);
         checkAgents(sim.getAgents());
         updateCSV();
+        if (AgentID == scanningAgent) {
+            System.out.println("--------------------");
+        }
     }
 
     /**
@@ -498,6 +524,39 @@ public class Agent {
         timeSinceLastWallCollision = 0;
     }
 
+    private boolean willIColide(LinkedList< Agent> otherAgents) {
+        double newX = location.getX() + (xVelocity * TIME_STEP);
+        double newY = location.getY() + (yVelocity * TIME_STEP);
+        if (AgentID == scanningAgent) {
+            System.out.println("Checking Collision for " + AgentID);
+        }
+
+        for (Agent i : otherAgents) {
+            if (i.AgentID != this.AgentID) {
+                double dx = i.getLocation().getX() - newX;
+                double dy = i.getLocation().getY() - newY;
+
+                // double dx = (int) i.getLocation().getX() - (int) newX;
+                // double dy = (int) i.getLocation().getY() - (int) newY;
+                double distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < (i.getSize() + this.getSize())) {
+                    if (AgentID == scanningAgent) {
+                        System.out.println();
+                        System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
+                        System.out.println("Minimum Distance: " + (i.getSize() + this.getSize()));
+                        System.out.println("Distance: " + distance);
+                        System.out.println("This (x,y): (" + (int) newX + "," + (int) newY + ") Other (x,y): (" + (int) i.getLocation().getX() + "," + (int) i.getLocation().getY() + ")");
+                        System.out.println();
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * <p>
      * Checks the collision with each other agent and changes the velocity
@@ -506,49 +565,26 @@ public class Agent {
      * @param otherAgents an array of all other agents in the simulation
      */
     private void checkAgents(LinkedList< Agent> otherAgents) {
-        //Divisor = 1;
         updateVelocity(false);
-        double newX = location.getX() + (xVelocity * TIME_STEP);
-        double newY = location.getY() + (yVelocity * TIME_STEP);
-        //Divisor = 8;
-        //updateVelocity(false);
-        if (!inSpawn) {
-            for (Agent i : otherAgents) {
-                // System.out.println(i.AgentID != this.AgentID);
-                if (i.AgentID != this.AgentID) {
-                    double dx = i.getLocation().getX() - newX;
-                    double dy = i.getLocation().getY() - newY;
-                    double distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < ((i.getSize() + this.getSize()))) {
-                        if (choiceMove <= 7) {
-                            Divisor = 1;
-                            choiceMove++;
-                            if (AgentID == scanningAgent) {
-                                System.out.println(this.AgentID + " chose move " + choiceMove + " blocked with agent" + i.AgentID);
-                            }
-                            checkAgents(otherAgents);
-                            return;
-                        } else {
-                            if (AgentID == scanningAgent) {
-                                System.out.println(AgentID + " is blocked");
-                            }
-                            blockedTimer++;
-                            if (blockedTimer > 10) {
-                                choiceMove = 0;
-                                blockedTimer = 0;
-                                //scaleBuffer = (int) this.size / 4;
-                            } else {
-                                choiceMove = 0;
-                            }
-                            return;
-                        }
-                    }
+        if (willIColide(otherAgents)) {
+            if (choiceMove < 8) {
+                Divisor = 1;
+                if (AgentID == scanningAgent) {
+                    System.out.println(AgentID + " increasing choice move");
                 }
+                choiceMove++;
+                checkAgents(otherAgents);
+                return;
+            } else {
+                if (AgentID == scanningAgent) {
+                    System.out.println(AgentID + " is blocked");
+                }
+                choiceMove = 0;
+                return;
             }
         }
         //System.out.println("Moving " + AgentID);
-
         updateLocation();
     }
 
