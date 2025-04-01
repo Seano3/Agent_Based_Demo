@@ -429,8 +429,8 @@ public class Simulation extends JPanel {
                         red = 0;
                     } else if (vectorMap[i][j] == 0) {
                         red = 255;
-                    } else if (vectorMap[i][j] == Integer.MAX_VALUE) {
-                        red = 0;
+                    } else if (vectorMap[i][j] > 2275) {
+                        red = 10;
                     } else {
                         red = 255 - (vectorMap[i][j] / 10);
                     }
