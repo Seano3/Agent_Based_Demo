@@ -20,7 +20,7 @@ public class RunSimulation {
         String inputDir = System.getProperty("user.dir") + "/PopulationSimulation/inputfiles/";
 
         //Exit input
-        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "exit-input.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputDir + "exit-input-1.csv"))) {
 
             String line;
             while ((line = br.readLine()) != null) {

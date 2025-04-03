@@ -515,13 +515,16 @@ public class Simulation extends JPanel {
     public static void generateEscapeRateCSV(int numAgents, Simulation sim) {
         String csvFile = "escape-rate.csv";
         int frame = sim.frame;
-        outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
+        String outputPath = System.getProperty("user.dir") + "/PopulationSimulation/outputfiles/";
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile, true))) {
-            writer.write(numAgents + "," + frame);
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error writing to Escape Rate CSV file: " + e.getMessage());
+        if (frame % 100 == 0) {
+            double elapsedTimeInSeconds = frame / 100.0; // Calculate seconds based on frame rate
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + csvFile, true))) {
+                writer.write(numAgents + "," + frame + "," + String.format("%.2f", elapsedTimeInSeconds));
+                writer.newLine();
+            } catch (IOException e) {
+                System.err.println("Error writing to Escape Rate CSV file: " + e.getMessage());
+            }
         }
     }
 
