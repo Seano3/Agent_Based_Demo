@@ -31,6 +31,7 @@ public class Simulation extends JPanel {
     private JButton toggleHeatMapButton;
     private JLabel timeStepInputLabel;
     private JTextField timeStepInput;
+    private JLabel lastAgentFrame;
     private boolean isPaused;
     private boolean isGridEnabled;
     private boolean isAgentNumbersEnabled;
@@ -82,6 +83,7 @@ public class Simulation extends JPanel {
         agentCountLabel = new JLabel("Agents: 0");
         frameLabel = new JLabel("Frame: 0");
         timeStepInputLabel = new JLabel("TimeStep amount: ");
+        lastAgentFrame = new JLabel("");
 
         pausePlayButton = new JButton("Play");
         toggleGridButton = new JButton("Enable Grid");
@@ -224,9 +226,6 @@ public class Simulation extends JPanel {
         useVectorMap = !useVectorMap;
         if (useVectorMap) {
             map = new vectorMapGen(this);
-            for (Exit i : exits) {
-                map.addExitVM(i);
-            }
             VectorMapGeneration();
         }
     }
@@ -317,8 +316,6 @@ public class Simulation extends JPanel {
     public void update() {
         frame++;
         elapsedTime += 0.01;
-        frameLabel.setText("Frame: " + frame);
-        updateTimerLabel();
         for (Spawn i : spawns)
                 i.updateSpawner(frame, this);
 
@@ -349,6 +346,11 @@ public class Simulation extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (lifetimeAgentCount != 0 && agents.isEmpty()) {
+            lastAgentFrame.setText("Last agent left on frame " + frame);
+        }
+        frameLabel.setText("Frame: " + frame);
+        updateTimerLabel();
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.GREEN);
 
@@ -408,6 +410,8 @@ public class Simulation extends JPanel {
 
         timeStepInputLabel.setBounds(10, height - panelHeight + 50, 130, 30);
         timeStepInput.setBounds(130, height - panelHeight + 50, 40, 30);
+
+        lastAgentFrame.setBounds(10, height - panelHeight + 50, 130, 30);
 
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);

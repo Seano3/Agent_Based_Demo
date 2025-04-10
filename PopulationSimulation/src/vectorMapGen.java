@@ -30,7 +30,8 @@ public class vectorMapGen {
     }
 
     public vectorMapGen(Simulation sim) {
-        agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize() + 5); // assumes agents are present, round up to prevent bugs
+        agentScale = (int) Math.ceil(sim.getAgents().getFirst().getSize()); // assumes agents are present, round up to prevent bugs
+        agentScale += agentScale / 5;
         LENGTH = sim.width;
         HEIGHT = sim.height - sim.getPanelHeight();
         map = new int[LENGTH][HEIGHT];
@@ -61,10 +62,11 @@ public class vectorMapGen {
         addObsitcles(sim);
 
         for (Exit exit : sim.getExits()) {
+            addExitVM(exit);
             int xPos = (int) exit.getLocation().getX();
             int yPos = (int) exit.getLocation().getY();
             if (exit.getAlignment() == Exit.alignment.VERTICAL) {
-                for (int i = xPos - agentScale; i < xPos + agentScale; i++) {
+                for (int i = xPos - agentScale * 2; i < xPos + agentScale * 2; i++) {
                     for (int j = yPos + agentScale; j < yPos + exit.getSize() - agentScale; j++) {
                         if (inBounds(i, j)) {
                             if (exit.buildingExit) {
@@ -76,7 +78,7 @@ public class vectorMapGen {
                     }
                 }
             } else { // horizontal
-                for (int i = yPos - agentScale; i < yPos + agentScale; i++) {
+                for (int i = yPos - agentScale * 2; i < yPos + agentScale * 2; i++) {
                     for (int j = xPos + agentScale; j < xPos + exit.getSize() - agentScale; j++) {
                         if (inBounds(j, i)) {
                             if (exit.buildingExit) {
@@ -89,7 +91,6 @@ public class vectorMapGen {
                 }
             }
         }
-
     }
 
     public int[][] calculateMap() {
@@ -199,7 +200,7 @@ public class vectorMapGen {
             //System.out.println("Horizonal");
             for (int i = 0; i < size; i++) {
                 if (exit.buildingExit) {
-                    for (int k = x + agentScale; k < x + size - 0; k++) {
+                    for (int k = x + agentScale; k < x + size - agentScale; k++) {
                         for (int j = -agentScale; j < agentScale; j++) { //this for loop gets rid of the vector map buffer for each exits.
                             if (inBounds(k, j)) {
                                 if (y == 0) {
@@ -291,7 +292,6 @@ public class vectorMapGen {
     }
 
     public void addObsitcles(Simulation sim) {
-        int bufferScale = agentScale;
         for (Obstacle OBS : sim.getObstacles()) {
             if (Line.class.isAssignableFrom(OBS.getClass())) {
                 Line line = (Line) OBS;
@@ -302,8 +302,8 @@ public class vectorMapGen {
                 int linePasses = 250;
                 int i = 0;
                 while (i < linePasses) {
-                    for (int j = (int) (xIter - agentScale / 2.0) + 2; j < (int) (xIter + agentScale / 2.0) + 2; j++) {
-                        for (int k = (int) (yIter - agentScale / 2.0) + 2; k < (int) (yIter + agentScale / 2.0) + 2; k++) {
+                    for (int j = (int) (xIter - agentScale) - 2; j < (int) (xIter + agentScale) + 2; j++) {
+                        for (int k = (int) (yIter - agentScale) - 2; k < (int) (yIter + agentScale) + 2; k++) {
                             if (inBounds(j, k)) {
                                 map[j][k] = -1;
                             }
