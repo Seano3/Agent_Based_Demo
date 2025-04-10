@@ -44,6 +44,7 @@ public class Simulation extends JPanel {
     int[][] vectorMap;
     vectorMapGen map;
     private boolean useVectorMap;
+    private boolean simEnded = false;
     private static String outputPath;
     private int lifetimeAgentCount;
     private boolean heatMapEnabled = false;
@@ -346,8 +347,11 @@ public class Simulation extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (lifetimeAgentCount != 0 && agents.isEmpty()) {
-            lastAgentFrame.setText("Last agent left on frame " + frame);
+        if (lifetimeAgentCount != 0 && agents.isEmpty() && !simEnded) {
+            int lastFrame = frame;
+            lastAgentFrame.setText("Last agent left on frame " + lastFrame);
+            add(lastAgentFrame);
+            simEnded = true;
         }
         frameLabel.setText("Frame: " + frame);
         updateTimerLabel();
@@ -411,7 +415,7 @@ public class Simulation extends JPanel {
         timeStepInputLabel.setBounds(10, height - panelHeight + 50, 130, 30);
         timeStepInput.setBounds(130, height - panelHeight + 50, 40, 30);
 
-        lastAgentFrame.setBounds(10, height - panelHeight + 50, 130, 30);
+        lastAgentFrame.setBounds(10, height - panelHeight + 100, 200, 30);
 
         if (isGridEnabled) {
             g2d.setColor(Color.BLACK);
