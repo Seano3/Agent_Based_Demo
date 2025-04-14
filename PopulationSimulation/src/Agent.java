@@ -28,6 +28,7 @@ public class Agent {
     private int scanningAgent = -1;
     private int blockedTimer;
     private boolean blocked = false;
+    private int lostTimer = 0;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -63,6 +64,10 @@ public class Agent {
         } catch (IOException e) {
             System.err.println("Error writing to CSV file: " + e.getMessage());
         }
+    }
+
+    private void killMe() {
+        sim.removeAgent(this);
     }
 
     public double getSize() {
@@ -166,7 +171,13 @@ public class Agent {
                 if (smallestWeight >= Integer.MAX_VALUE - 30) { //This is actualy the only thing keeping spawners alive 
                     System.out.println("Agent " + AgentID + " is lost to the wall");
                     choiceMove = 8;
-                    //blocked = true;
+                    lostTimer++;
+                    if (lostTimer > 100) {
+                        System.out.println("Agent " + AgentID + " is lost to the wall, killing agent");
+                        killMe();
+                    }
+                } else {
+                    lostTimer = 0;
                 }
 
                 if (list.nearWall()) {
