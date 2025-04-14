@@ -2,6 +2,7 @@
 import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.channels.Pipe;
 import java.util.*;
 
 public class Agent {
@@ -24,8 +25,9 @@ public class Agent {
     private int xDirection;
     private int yDirection;
     public boolean inExit;
-    private int scanningAgent = 3;
+    private int scanningAgent = -1;
     private int blockedTimer;
+    private boolean blocked = false;
 
     /**
      * This is the main class we use to create agents in the simulation
@@ -107,6 +109,7 @@ public class Agent {
      */
     private void updateVelocity(boolean scaleOveride) {
         int choice = choiceMove;
+        blocked = false;
         //Change to find the choice lowest that is both unoccupied
         int yMeter = (int) location.getY();
         int xMeter = (int) location.getX();
@@ -160,9 +163,10 @@ public class Agent {
                     return;
                 }
 
-                if (smallestWeight == Integer.MAX_VALUE) { //This is actualy the only thing keeping spawners alive
+                if (smallestWeight >= Integer.MAX_VALUE - 30) { //This is actualy the only thing keeping spawners alive 
+                    System.out.println("Agent " + AgentID + " is lost to the wall");
                     choiceMove = 8;
-                    return;
+                    //blocked = true;
                 }
 
                 if (list.nearWall()) {
@@ -317,9 +321,11 @@ public class Agent {
      */
     public void updateLocation() {
         timeSinceLastWallCollision++;
-        double newX = location.getX() + (xVelocity * TIME_STEP);
-        double newY = location.getY() + (yVelocity * TIME_STEP);
-        location.changePosition(newX, newY);
+        if (!blocked) {
+            double newX = location.getX() + (xVelocity * TIME_STEP);
+            double newY = location.getY() + (yVelocity * TIME_STEP);
+            location.changePosition(newX, newY);
+        }
     }
 
     /**
