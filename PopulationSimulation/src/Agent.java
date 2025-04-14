@@ -69,7 +69,7 @@ public class Agent {
     private void killMe() { //Rough and Dirty solution agents getting stuck 
         sim.removeAgent(this);
         if (sim.getSpawns() != null) {
-            int spawner = (int) Math.random() * (sim.getSpawns().size() - 1);
+            int spawner = (int) (Math.random() * (sim.getSpawns().size() - 1));
             sim.getSpawns().get(spawner).respawnAgent();
             System.out.println("Killing Agent " + AgentID + " and respawning at spawn " + spawner);
         }
