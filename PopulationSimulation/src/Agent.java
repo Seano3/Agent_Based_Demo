@@ -66,8 +66,13 @@ public class Agent {
         }
     }
 
-    private void killMe() {
+    private void killMe() { //Rough and Dirty solution agents getting stuck 
         sim.removeAgent(this);
+        if (sim.getSpawns() != null) {
+            int spawner = (int) Math.random() * (sim.getSpawns().size() - 1);
+            sim.getSpawns().get(spawner).respawnAgent();
+            System.out.println("Killing Agent " + AgentID + " and respawning at spawn " + spawner);
+        }
     }
 
     public double getSize() {
@@ -168,16 +173,12 @@ public class Agent {
                     return;
                 }
 
-                if (smallestWeight >= Integer.MAX_VALUE - 30) { //This is actualy the only thing keeping spawners alive 
-                    System.out.println("Agent " + AgentID + " is lost to the wall");
-                    choiceMove = 8;
-                    lostTimer++;
-                    if (lostTimer > 100) {
-                        System.out.println("Agent " + AgentID + " is lost to the wall, killing agent");
-                        killMe();
-                    }
-                } else {
-                    lostTimer = 0;
+                blocked = smallestWeight >= Integer.MAX_VALUE - 30;
+                //Suppost to stop agents from going near walls");
+
+                if (lostToWall(list)) {
+                    //System.out.println("Agent " + AgentID + " is lost to the wall, killing agent");
+                    killMe();
                 }
 
                 if (list.nearWall()) {
@@ -662,5 +663,14 @@ public class Agent {
      */
     private boolean isSameSine(double value1, double value2) {
         return (value1 > 0) == (value2 > 0);
+    }
+
+    private boolean lostToWall(DirectionList list) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getWeight() < Integer.MAX_VALUE - 30) {
+                return false;
+            }
+        }
+        return true;
     }
 }

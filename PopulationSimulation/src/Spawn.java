@@ -149,6 +149,10 @@ public class Spawn {
         return true;
     }
 
+    public void respawnAgent() {
+        spawnNumber++;
+    }
+
     public void updateSpawner(int frame, Simulation sim) {
         if (frame - lastSpawnFrame >= spawnRateInterval && isActivelySpawning && (spawnNumber != 0) && (spawnDelay < frame / 100)) {
             // Spawn a new agent if the previous agent has left the spawn
