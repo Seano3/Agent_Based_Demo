@@ -68,7 +68,7 @@ public class Agent {
 
     private void killMe() { //Rough and Dirty solution agents getting stuck 
         sim.removeAgent(this);
-        if (sim.getSpawns() != null) {
+        if (sim.getSpawns() != null && !sim.getSpawns().isEmpty()) {
             int spawner = (int) (Math.random() * (sim.getSpawns().size() - 1));
             sim.getSpawns().get(spawner).respawnAgent();
             System.out.println("Killing Agent " + AgentID + " and respawning at spawn " + spawner);
@@ -460,8 +460,8 @@ public class Agent {
     private void checkObstacles(Simulation sim) {
         //If we are inside an exit, modify collision checks
         int frame = sim.getFrame();
-        if (inExit) {
-            Exit currentExit = inExit(sim.getExits());
+        Exit currentExit = inExit(sim.getExits());
+        if (currentExit != null) {
             if (currentExit.getAlignment() == Exit.alignment.VERTICAL) {
 
                 if (getLocation().getY() - getSize() < currentExit.getLocation().getY()) { // Top of exit
